@@ -119,6 +119,36 @@ python oracle_deep_parser.py
 
 ---
 
+## Verification Results (Parser vs Teammate Chunks)
+
+8 parallel agents cross-verified parser output against 19 teammate chunk deep scan files.
+
+| Metric | Result |
+|---|---|
+| Overall Coverage | **58%** |
+| Matches | 153 |
+| Parser missed | 158 |
+| Contradictions | 28 |
+
+**Parser is reliable for:** table DDL, PL/SQL signatures, trigger names, error codes  
+**Parser gaps:** Forms business rules (all empty), PLL libraries absent, LOV queries empty, seed data absent, HRMS_MENU absent  
+**5 confirmed factual errors:** wrong trigger rules copied, UTL_MAIL vs UTL_SMTP, SQL injection misattributed, missing virtual column, GRADE_CODE vs GRADE_LEVEL
+
+See [VERIFICATION_RESULTS.md](VERIFICATION_RESULTS.md) for full details, all gaps, and the roadmap to 100% coverage.
+
+---
+
+## Roadmap to 100% Coverage
+
+| Phase | Action | Target Coverage |
+|---|---|---|
+| Phase 1 | Fix parser (.pll, .mmb, LOV queries, seed data, 5 errors) | ~80% |
+| Phase 2 | Combine with old pipeline (Claude reads source directly) | ~92-95% |
+| Phase 3 | Add mandatory verification pass | ~97% |
+| Phase 4 | Human review on final output | ~100% |
+
+---
+
 ## Next Step
 
 The output from this pipeline feeds into the
