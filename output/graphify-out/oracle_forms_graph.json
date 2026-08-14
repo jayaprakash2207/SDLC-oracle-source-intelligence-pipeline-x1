@@ -1,0 +1,1118 @@
+{
+  "directed": true,
+  "nodes": [
+    {
+      "id": "hrms_employee",
+      "label": "HRMS_EMPLOYEE",
+      "file_type": "oracle_form",
+      "source_file": "HRMS_EMPLOYEE.xml",
+      "_origin": "oracle_parser",
+      "title": "HRMS - Employee Maintenance",
+      "first_block": "EMPLOYEE",
+      "canvases": [
+        "CVS_MAIN",
+        "CVS_TOOLBAR"
+      ],
+      "windows": [
+        "WIN_EMPLOYEE"
+      ],
+      "lovs": [
+        "LOV_DEPARTMENTS",
+        "LOV_JOB_TITLES",
+        "LOV_MANAGERS",
+        "LOV_LOCATIONS"
+      ]
+    },
+    {
+      "id": "hrms_employee__block_employee",
+      "label": "HRMS_EMPLOYEE.EMPLOYEE",
+      "file_type": "form_block",
+      "source_file": "HRMS_EMPLOYEE.xml",
+      "_origin": "oracle_parser",
+      "table": "HRMS.EMPLOYEES",
+      "items": [
+        "EMP_ID",
+        "EMP_NUMBER",
+        "FIRST_NAME",
+        "LAST_NAME",
+        "DATE_OF_BIRTH",
+        "GENDER",
+        "MARITAL_STATUS",
+        "EMAIL",
+        "PHONE_WORK",
+        "PHONE_MOBILE",
+        "ADDRESS_LINE1",
+        "ADDRESS_LINE2",
+        "CITY",
+        "STATE_PROVINCE",
+        "POSTAL_CODE",
+        "HIRE_DATE",
+        "DEPT_ID",
+        "DEPT_NAME_DISP",
+        "JOB_ID",
+        "JOB_TITLE_DISP",
+        "MANAGER_EMP_ID",
+        "MANAGER_NAME_DISP",
+        "LOCATION_CODE",
+        "EMPLOYMENT_TYPE",
+        "EMPLOYMENT_STATUS",
+        "TERMINATION_DATE",
+        "ACTIVE_FLAG",
+        "CREATED_BY",
+        "CREATED_DATE",
+        "MODIFIED_BY",
+        "MODIFIED_DATE"
+      ]
+    },
+    {
+      "id": "hrms_hrms_employees",
+      "label": "HRMS.HRMS.EMPLOYEES",
+      "file_type": "oracle_table",
+      "source_file": "schema/tables/",
+      "_origin": "oracle_parser"
+    },
+    {
+      "id": "hrms_employee__block_salary",
+      "label": "HRMS_EMPLOYEE.SALARY",
+      "file_type": "form_block",
+      "source_file": "HRMS_EMPLOYEE.xml",
+      "_origin": "oracle_parser",
+      "table": "",
+      "items": [
+        "SALARY_ID",
+        "EMP_ID",
+        "EFFECTIVE_DATE",
+        "END_DATE",
+        "BASE_SALARY",
+        "CHANGE_REASON",
+        "CHANGE_PCT"
+      ]
+    },
+    {
+      "id": "hrms_employee__trig_when-new-form-instance",
+      "label": "HRMS_EMPLOYEE.WHEN-NEW-FORM-INSTANCE",
+      "file_type": "form_trigger",
+      "source_file": "HRMS_EMPLOYEE.xml",
+      "_origin": "oracle_parser"
+    },
+    {
+      "id": "pkg_security",
+      "label": "PKG_SECURITY",
+      "file_type": "plsql_package",
+      "source_file": "PKG_SECURITY.pks",
+      "_origin": "oracle_parser"
+    },
+    {
+      "id": "hrms_employee__trig_on-error",
+      "label": "HRMS_EMPLOYEE.ON-ERROR",
+      "file_type": "form_trigger",
+      "source_file": "HRMS_EMPLOYEE.xml",
+      "_origin": "oracle_parser"
+    },
+    {
+      "id": "hrms_employee__trig_key-exit",
+      "label": "HRMS_EMPLOYEE.KEY-EXIT",
+      "file_type": "form_trigger",
+      "source_file": "HRMS_EMPLOYEE.xml",
+      "_origin": "oracle_parser"
+    },
+    {
+      "id": "hrms_employee__trig_pre-insert",
+      "label": "HRMS_EMPLOYEE.PRE-INSERT",
+      "file_type": "form_trigger",
+      "source_file": "HRMS_EMPLOYEE.xml",
+      "_origin": "oracle_parser"
+    },
+    {
+      "id": "pkg_employee",
+      "label": "PKG_EMPLOYEE",
+      "file_type": "plsql_package",
+      "source_file": "PKG_EMPLOYEE.pks",
+      "_origin": "oracle_parser"
+    },
+    {
+      "id": "hrms_employee__trig_pre-update",
+      "label": "HRMS_EMPLOYEE.PRE-UPDATE",
+      "file_type": "form_trigger",
+      "source_file": "HRMS_EMPLOYEE.xml",
+      "_origin": "oracle_parser"
+    },
+    {
+      "id": "hrms_employee__trig_post-query",
+      "label": "HRMS_EMPLOYEE.POST-QUERY",
+      "file_type": "form_trigger",
+      "source_file": "HRMS_EMPLOYEE.xml",
+      "_origin": "oracle_parser"
+    },
+    {
+      "id": "hrms_employee__trig_when-validate-item",
+      "label": "HRMS_EMPLOYEE.WHEN-VALIDATE-ITEM",
+      "file_type": "form_trigger",
+      "source_file": "HRMS_EMPLOYEE.xml",
+      "_origin": "oracle_parser"
+    },
+    {
+      "id": "pkg_validation",
+      "label": "PKG_VALIDATION",
+      "file_type": "plsql_package",
+      "source_file": "PKG_VALIDATION.pks",
+      "_origin": "oracle_parser"
+    },
+    {
+      "id": "hrms_common_lib",
+      "label": "HRMS_COMMON_LIB",
+      "file_type": "forms_library",
+      "source_file": "HRMS_COMMON_LIB.pll.sql",
+      "_origin": "oracle_parser"
+    },
+    {
+      "id": "hrms_validation_lib",
+      "label": "HRMS_VALIDATION_LIB",
+      "file_type": "forms_library",
+      "source_file": "HRMS_VALIDATION_LIB.pll.sql",
+      "_origin": "oracle_parser"
+    },
+    {
+      "id": "hrms_leave",
+      "label": "HRMS_LEAVE",
+      "file_type": "oracle_form",
+      "source_file": "HRMS_LEAVE.xml",
+      "_origin": "oracle_parser",
+      "title": "HRMS - Leave Management",
+      "first_block": "LEAVE_REQUEST",
+      "canvases": [
+        "CVS_MAIN"
+      ],
+      "windows": [
+        "WIN_LEAVE"
+      ],
+      "lovs": [
+        "LOV_LEAVE_TYPES"
+      ]
+    },
+    {
+      "id": "hrms_leave__block_leave_request",
+      "label": "HRMS_LEAVE.LEAVE_REQUEST",
+      "file_type": "form_block",
+      "source_file": "HRMS_LEAVE.xml",
+      "_origin": "oracle_parser",
+      "table": "",
+      "items": [
+        "REQUEST_ID",
+        "EMP_ID",
+        "LEAVE_TYPE_NAME_DISP",
+        "START_DATE",
+        "END_DATE",
+        "TOTAL_DAYS",
+        "STATUS",
+        "REASON",
+        "BTN_CANCEL_REQUEST"
+      ]
+    },
+    {
+      "id": "hrms_leave__block_new_request",
+      "label": "HRMS_LEAVE.NEW_REQUEST",
+      "file_type": "form_block",
+      "source_file": "HRMS_LEAVE.xml",
+      "_origin": "oracle_parser",
+      "table": "",
+      "items": [
+        "NR_LEAVE_TYPE_ID",
+        "NR_LEAVE_TYPE_DISP",
+        "NR_START_DATE",
+        "NR_END_DATE",
+        "NR_HALF_DAY",
+        "NR_REASON",
+        "NR_CALC_DAYS",
+        "NR_BALANCE_DISP",
+        "BTN_SUBMIT"
+      ]
+    },
+    {
+      "id": "hrms_leave__block_leave_balance",
+      "label": "HRMS_LEAVE.LEAVE_BALANCE",
+      "file_type": "form_block",
+      "source_file": "HRMS_LEAVE.xml",
+      "_origin": "oracle_parser",
+      "table": "",
+      "items": [
+        "LEAVE_TYPE_NAME_DISP",
+        "OPENING_BALANCE",
+        "ACCRUED",
+        "USED",
+        "PENDING",
+        "AVAILABLE"
+      ]
+    },
+    {
+      "id": "hrms_leave__trig_when-new-form-instance",
+      "label": "HRMS_LEAVE.WHEN-NEW-FORM-INSTANCE",
+      "file_type": "form_trigger",
+      "source_file": "HRMS_LEAVE.xml",
+      "_origin": "oracle_parser"
+    },
+    {
+      "id": "hrms_leave__trig_when-button-pressed",
+      "label": "HRMS_LEAVE.WHEN-BUTTON-PRESSED",
+      "file_type": "form_trigger",
+      "source_file": "HRMS_LEAVE.xml",
+      "_origin": "oracle_parser"
+    },
+    {
+      "id": "pkg_leave",
+      "label": "PKG_LEAVE",
+      "file_type": "plsql_package",
+      "source_file": "PKG_LEAVE.pks",
+      "_origin": "oracle_parser"
+    },
+    {
+      "id": "hrms_leave__trig_post-query",
+      "label": "HRMS_LEAVE.POST-QUERY",
+      "file_type": "form_trigger",
+      "source_file": "HRMS_LEAVE.xml",
+      "_origin": "oracle_parser"
+    },
+    {
+      "id": "hrms_login",
+      "label": "HRMS_LOGIN",
+      "file_type": "oracle_form",
+      "source_file": "HRMS_LOGIN.xml",
+      "_origin": "oracle_parser",
+      "title": "HRMS - Login",
+      "first_block": "LOGIN",
+      "canvases": [
+        "CVS_LOGIN"
+      ],
+      "windows": [
+        "WIN_LOGIN"
+      ],
+      "lovs": []
+    },
+    {
+      "id": "hrms_login__block_login",
+      "label": "HRMS_LOGIN.LOGIN",
+      "file_type": "form_block",
+      "source_file": "HRMS_LOGIN.xml",
+      "_origin": "oracle_parser",
+      "table": "",
+      "items": [
+        "COMPANY_LOGO",
+        "USERNAME",
+        "PASSWORD",
+        "ERROR_MSG",
+        "BTN_LOGIN"
+      ]
+    },
+    {
+      "id": "hrms_login__trig_when-new-form-instance",
+      "label": "HRMS_LOGIN.WHEN-NEW-FORM-INSTANCE",
+      "file_type": "form_trigger",
+      "source_file": "HRMS_LOGIN.xml",
+      "_origin": "oracle_parser"
+    },
+    {
+      "id": "hrms_login__trig_when-button-pressed",
+      "label": "HRMS_LOGIN.WHEN-BUTTON-PRESSED",
+      "file_type": "form_trigger",
+      "source_file": "HRMS_LOGIN.xml",
+      "_origin": "oracle_parser"
+    },
+    {
+      "id": "hrms_login__trig_key-next-item",
+      "label": "HRMS_LOGIN.KEY-NEXT-ITEM",
+      "file_type": "form_trigger",
+      "source_file": "HRMS_LOGIN.xml",
+      "_origin": "oracle_parser"
+    },
+    {
+      "id": "hrms_menu",
+      "label": "HRMS_MENU",
+      "file_type": "oracle_form",
+      "source_file": "HRMS_MENU.xml",
+      "_origin": "oracle_parser",
+      "title": "HRMS - Main Menu",
+      "first_block": "MENU_CONTROL",
+      "canvases": [
+        "CVS_MAIN"
+      ],
+      "windows": [
+        "WIN_MAIN"
+      ],
+      "lovs": []
+    },
+    {
+      "id": "hrms_menu__block_menu_control",
+      "label": "HRMS_MENU.MENU_CONTROL",
+      "file_type": "form_block",
+      "source_file": "HRMS_MENU.xml",
+      "_origin": "oracle_parser",
+      "table": "",
+      "items": [
+        "WELCOME_TEXT",
+        "USER_INFO",
+        "BTN_EMPLOYEES",
+        "BTN_PAYROLL",
+        "BTN_LEAVE",
+        "BTN_PERFORMANCE",
+        "BTN_REPORTS",
+        "BTN_LOGOUT"
+      ]
+    },
+    {
+      "id": "hrms_menu__trig_when-new-form-instance",
+      "label": "HRMS_MENU.WHEN-NEW-FORM-INSTANCE",
+      "file_type": "form_trigger",
+      "source_file": "HRMS_MENU.xml",
+      "_origin": "oracle_parser"
+    },
+    {
+      "id": "hrms_menu__trig_when-button-pressed",
+      "label": "HRMS_MENU.WHEN-BUTTON-PRESSED",
+      "file_type": "form_trigger",
+      "source_file": "HRMS_MENU.xml",
+      "_origin": "oracle_parser"
+    },
+    {
+      "id": "hrms_payroll",
+      "label": "HRMS_PAYROLL",
+      "file_type": "oracle_form",
+      "source_file": "HRMS_PAYROLL.xml",
+      "_origin": "oracle_parser",
+      "title": "HRMS - Payroll Processing",
+      "first_block": "PAY_PERIOD",
+      "canvases": [
+        "CVS_MAIN"
+      ],
+      "windows": [
+        "WIN_PAYROLL"
+      ],
+      "lovs": []
+    },
+    {
+      "id": "hrms_payroll__block_pay_period",
+      "label": "HRMS_PAYROLL.PAY_PERIOD",
+      "file_type": "form_block",
+      "source_file": "HRMS_PAYROLL.xml",
+      "_origin": "oracle_parser",
+      "table": "",
+      "items": [
+        "PERIOD_ID",
+        "PERIOD_NAME",
+        "PERIOD_START_DATE",
+        "PERIOD_END_DATE",
+        "PAY_DATE",
+        "STATUS"
+      ]
+    },
+    {
+      "id": "hrms_payroll__block_payroll_run",
+      "label": "HRMS_PAYROLL.PAYROLL_RUN",
+      "file_type": "form_block",
+      "source_file": "HRMS_PAYROLL.xml",
+      "_origin": "oracle_parser",
+      "table": "",
+      "items": [
+        "RUN_ID",
+        "PERIOD_ID",
+        "RUN_TYPE",
+        "RUN_DATE",
+        "STATUS",
+        "EMPLOYEE_COUNT",
+        "TOTAL_GROSS",
+        "TOTAL_NET",
+        "BTN_CREATE_RUN",
+        "BTN_CALCULATE",
+        "BTN_APPROVE"
+      ]
+    },
+    {
+      "id": "hrms_payroll__trig_when-new-form-instance",
+      "label": "HRMS_PAYROLL.WHEN-NEW-FORM-INSTANCE",
+      "file_type": "form_trigger",
+      "source_file": "HRMS_PAYROLL.xml",
+      "_origin": "oracle_parser"
+    },
+    {
+      "id": "hrms_payroll__trig_when-button-pressed",
+      "label": "HRMS_PAYROLL.WHEN-BUTTON-PRESSED",
+      "file_type": "form_trigger",
+      "source_file": "HRMS_PAYROLL.xml",
+      "_origin": "oracle_parser"
+    },
+    {
+      "id": "pkg_payroll",
+      "label": "PKG_PAYROLL",
+      "file_type": "plsql_package",
+      "source_file": "PKG_PAYROLL.pks",
+      "_origin": "oracle_parser"
+    },
+    {
+      "id": "hrms_performance",
+      "label": "HRMS_PERFORMANCE",
+      "file_type": "oracle_form",
+      "source_file": "HRMS_PERFORMANCE.xml",
+      "_origin": "oracle_parser",
+      "title": "HRMS - Performance Management",
+      "first_block": "REVIEW_CYCLE",
+      "canvases": [
+        "CVS_MAIN"
+      ],
+      "windows": [
+        "WIN_PERFORMANCE"
+      ],
+      "lovs": []
+    },
+    {
+      "id": "hrms_performance__block_review_cycle",
+      "label": "HRMS_PERFORMANCE.REVIEW_CYCLE",
+      "file_type": "form_block",
+      "source_file": "HRMS_PERFORMANCE.xml",
+      "_origin": "oracle_parser",
+      "table": "",
+      "items": [
+        "CYCLE_ID",
+        "CYCLE_NAME",
+        "CYCLE_YEAR",
+        "START_DATE",
+        "END_DATE",
+        "STATUS"
+      ]
+    },
+    {
+      "id": "hrms_performance__block_performance_review",
+      "label": "HRMS_PERFORMANCE.PERFORMANCE_REVIEW",
+      "file_type": "form_block",
+      "source_file": "HRMS_PERFORMANCE.xml",
+      "_origin": "oracle_parser",
+      "table": "",
+      "items": [
+        "REVIEW_ID",
+        "CYCLE_ID",
+        "EMP_ID",
+        "EMP_NAME_DISP",
+        "STATUS",
+        "OVERALL_RATING",
+        "RATING_LABEL",
+        "SELF_ASSESSMENT",
+        "MANAGER_ASSESSMENT"
+      ]
+    },
+    {
+      "id": "hrms_performance__block_performance_goal",
+      "label": "HRMS_PERFORMANCE.PERFORMANCE_GOAL",
+      "file_type": "form_block",
+      "source_file": "HRMS_PERFORMANCE.xml",
+      "_origin": "oracle_parser",
+      "table": "",
+      "items": [
+        "GOAL_ID",
+        "REVIEW_ID",
+        "GOAL_TITLE",
+        "GOAL_CATEGORY",
+        "WEIGHT_PCT",
+        "PROGRESS_PCT",
+        "STATUS"
+      ]
+    },
+    {
+      "id": "hrms_performance__trig_when-new-form-instance",
+      "label": "HRMS_PERFORMANCE.WHEN-NEW-FORM-INSTANCE",
+      "file_type": "form_trigger",
+      "source_file": "HRMS_PERFORMANCE.xml",
+      "_origin": "oracle_parser"
+    },
+    {
+      "id": "hrms_performance__trig_post-query",
+      "label": "HRMS_PERFORMANCE.POST-QUERY",
+      "file_type": "form_trigger",
+      "source_file": "HRMS_PERFORMANCE.xml",
+      "_origin": "oracle_parser"
+    }
+  ],
+  "links": [
+    {
+      "source": "hrms_employee",
+      "target": "hrms_employee__block_employee",
+      "relation": "contains_block",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_EMPLOYEE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_employee__block_employee",
+      "target": "hrms_hrms_employees",
+      "relation": "reads_writes",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_EMPLOYEE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_employee",
+      "target": "hrms_employee__block_salary",
+      "relation": "contains_block",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_EMPLOYEE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_employee",
+      "target": "hrms_employee__trig_when-new-form-instance",
+      "relation": "has_trigger",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_EMPLOYEE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_employee__trig_when-new-form-instance",
+      "target": "pkg_security",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_EMPLOYEE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_employee",
+      "target": "hrms_employee__trig_on-error",
+      "relation": "has_trigger",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_EMPLOYEE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_employee",
+      "target": "hrms_employee__trig_key-exit",
+      "relation": "has_trigger",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_EMPLOYEE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_employee",
+      "target": "hrms_employee__trig_pre-insert",
+      "relation": "has_trigger",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_EMPLOYEE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_employee__trig_pre-insert",
+      "target": "pkg_employee",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_EMPLOYEE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_employee",
+      "target": "hrms_employee__trig_pre-update",
+      "relation": "has_trigger",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_EMPLOYEE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_employee",
+      "target": "hrms_employee__trig_post-query",
+      "relation": "has_trigger",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_EMPLOYEE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_employee",
+      "target": "hrms_employee__trig_when-validate-item",
+      "relation": "has_trigger",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_EMPLOYEE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_employee__trig_when-validate-item",
+      "target": "pkg_validation",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_EMPLOYEE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_employee",
+      "target": "hrms_common_lib",
+      "relation": "attaches_library",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_EMPLOYEE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_employee",
+      "target": "hrms_validation_lib",
+      "relation": "attaches_library",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_EMPLOYEE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_employee",
+      "target": "pkg_security",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_EMPLOYEE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_employee",
+      "target": "pkg_validation",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_EMPLOYEE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_employee",
+      "target": "pkg_employee",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_EMPLOYEE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_leave",
+      "target": "hrms_leave__block_leave_request",
+      "relation": "contains_block",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_LEAVE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_leave",
+      "target": "hrms_leave__block_new_request",
+      "relation": "contains_block",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_LEAVE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_leave",
+      "target": "hrms_leave__block_leave_balance",
+      "relation": "contains_block",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_LEAVE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_leave",
+      "target": "hrms_leave__trig_when-new-form-instance",
+      "relation": "has_trigger",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_LEAVE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_leave__trig_when-new-form-instance",
+      "target": "pkg_security",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_LEAVE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_leave",
+      "target": "hrms_leave__trig_when-button-pressed",
+      "relation": "has_trigger",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_LEAVE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_leave__trig_when-button-pressed",
+      "target": "pkg_leave",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_LEAVE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_leave",
+      "target": "hrms_leave__trig_post-query",
+      "relation": "has_trigger",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_LEAVE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_leave",
+      "target": "hrms_leave__trig_when-button-pressed",
+      "relation": "has_trigger",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_LEAVE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_leave__trig_when-button-pressed",
+      "target": "pkg_leave",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_LEAVE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_leave",
+      "target": "hrms_common_lib",
+      "relation": "attaches_library",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_LEAVE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_leave",
+      "target": "pkg_security",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_LEAVE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_leave",
+      "target": "pkg_leave",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_LEAVE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_login",
+      "target": "hrms_login__block_login",
+      "relation": "contains_block",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_LOGIN.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_login",
+      "target": "hrms_login__trig_when-new-form-instance",
+      "relation": "has_trigger",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_LOGIN.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_login",
+      "target": "hrms_login__trig_when-button-pressed",
+      "relation": "has_trigger",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_LOGIN.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_login__trig_when-button-pressed",
+      "target": "pkg_security",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_LOGIN.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_login",
+      "target": "hrms_login__trig_key-next-item",
+      "relation": "has_trigger",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_LOGIN.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_login",
+      "target": "pkg_security",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_LOGIN.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_menu",
+      "target": "hrms_menu__block_menu_control",
+      "relation": "contains_block",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_MENU.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_menu",
+      "target": "hrms_menu__trig_when-new-form-instance",
+      "relation": "has_trigger",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_MENU.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_menu__trig_when-new-form-instance",
+      "target": "pkg_security",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_MENU.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_menu",
+      "target": "hrms_menu__trig_when-button-pressed",
+      "relation": "has_trigger",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_MENU.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_menu",
+      "target": "hrms_menu__trig_when-button-pressed",
+      "relation": "has_trigger",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_MENU.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_menu__trig_when-button-pressed",
+      "target": "pkg_security",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_MENU.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_menu",
+      "target": "hrms_menu__trig_when-button-pressed",
+      "relation": "has_trigger",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_MENU.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_menu",
+      "target": "hrms_menu__trig_when-button-pressed",
+      "relation": "has_trigger",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_MENU.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_menu",
+      "target": "hrms_menu__trig_when-button-pressed",
+      "relation": "has_trigger",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_MENU.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_menu__trig_when-button-pressed",
+      "target": "pkg_security",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_MENU.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_menu",
+      "target": "hrms_menu__trig_when-button-pressed",
+      "relation": "has_trigger",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_MENU.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_menu__trig_when-button-pressed",
+      "target": "pkg_security",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_MENU.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_menu",
+      "target": "hrms_common_lib",
+      "relation": "attaches_library",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_MENU.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_menu",
+      "target": "pkg_security",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_MENU.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_payroll",
+      "target": "hrms_payroll__block_pay_period",
+      "relation": "contains_block",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_PAYROLL.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_payroll",
+      "target": "hrms_payroll__block_payroll_run",
+      "relation": "contains_block",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_PAYROLL.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_payroll",
+      "target": "hrms_payroll__trig_when-new-form-instance",
+      "relation": "has_trigger",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_PAYROLL.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_payroll__trig_when-new-form-instance",
+      "target": "pkg_security",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_PAYROLL.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_payroll",
+      "target": "hrms_payroll__trig_when-button-pressed",
+      "relation": "has_trigger",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_PAYROLL.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_payroll__trig_when-button-pressed",
+      "target": "pkg_payroll",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_PAYROLL.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_payroll",
+      "target": "hrms_payroll__trig_when-button-pressed",
+      "relation": "has_trigger",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_PAYROLL.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_payroll__trig_when-button-pressed",
+      "target": "pkg_payroll",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_PAYROLL.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_payroll",
+      "target": "hrms_payroll__trig_when-button-pressed",
+      "relation": "has_trigger",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_PAYROLL.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_payroll__trig_when-button-pressed",
+      "target": "pkg_security",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_PAYROLL.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_payroll__trig_when-button-pressed",
+      "target": "pkg_payroll",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_PAYROLL.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_payroll",
+      "target": "hrms_common_lib",
+      "relation": "attaches_library",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_PAYROLL.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_payroll",
+      "target": "pkg_security",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_PAYROLL.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_payroll",
+      "target": "pkg_payroll",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_PAYROLL.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_performance",
+      "target": "hrms_performance__block_review_cycle",
+      "relation": "contains_block",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_PERFORMANCE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_performance",
+      "target": "hrms_performance__block_performance_review",
+      "relation": "contains_block",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_PERFORMANCE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_performance",
+      "target": "hrms_performance__block_performance_goal",
+      "relation": "contains_block",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_PERFORMANCE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_performance",
+      "target": "hrms_performance__trig_when-new-form-instance",
+      "relation": "has_trigger",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_PERFORMANCE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_performance__trig_when-new-form-instance",
+      "target": "pkg_security",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_PERFORMANCE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_performance",
+      "target": "hrms_performance__trig_post-query",
+      "relation": "has_trigger",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_PERFORMANCE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_performance",
+      "target": "hrms_common_lib",
+      "relation": "attaches_library",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_PERFORMANCE.xml",
+      "weight": 1.0
+    },
+    {
+      "source": "hrms_performance",
+      "target": "pkg_security",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "HRMS_PERFORMANCE.xml",
+      "weight": 1.0
+    }
+  ]
+}

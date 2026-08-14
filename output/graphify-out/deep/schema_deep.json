@@ -1,0 +1,2535 @@
+{
+  "tables": {
+    "HRMS.DEPARTMENTS": {
+      "name": "HRMS.DEPARTMENTS",
+      "file": "01_core_tables.sql",
+      "columns": [
+        {
+          "name": "DEPT_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "DEPT_CODE",
+          "type": "VARCHAR2(20)    NOT"
+        },
+        {
+          "name": "DEPT_NAME",
+          "type": "VARCHAR2(100)   NOT"
+        },
+        {
+          "name": "PARENT_DEPT_ID",
+          "type": "NUMBER(10),"
+        },
+        {
+          "name": "COST_CENTER",
+          "type": "VARCHAR2(20),"
+        },
+        {
+          "name": "MANAGER_EMP_ID",
+          "type": "NUMBER(10),"
+        },
+        {
+          "name": "LOCATION_CODE",
+          "type": "VARCHAR2(10),"
+        },
+        {
+          "name": "ACTIVE_FLAG",
+          "type": "CHAR(1)"
+        },
+        {
+          "name": "CREATED_BY",
+          "type": "VARCHAR2(30)    NOT"
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "DATE"
+        },
+        {
+          "name": "MODIFIED_BY",
+          "type": "VARCHAR2(30),"
+        },
+        {
+          "name": "MODIFIED_DATE",
+          "type": "DATE,"
+        }
+      ],
+      "primary_keys": [
+        "DEPT_ID"
+      ],
+      "foreign_keys": [],
+      "check_constraints": [
+        "ACTIVE_FLAG IN ('Y', 'N'"
+      ]
+    },
+    "HRMS.LOCATIONS": {
+      "name": "HRMS.LOCATIONS",
+      "file": "01_core_tables.sql",
+      "columns": [
+        {
+          "name": "LOCATION_CODE",
+          "type": "VARCHAR2(10)    NOT"
+        },
+        {
+          "name": "LOCATION_NAME",
+          "type": "VARCHAR2(100)   NOT"
+        },
+        {
+          "name": "ADDRESS_LINE1",
+          "type": "VARCHAR2(200),"
+        },
+        {
+          "name": "ADDRESS_LINE2",
+          "type": "VARCHAR2(200),"
+        },
+        {
+          "name": "CITY",
+          "type": "VARCHAR2(100),"
+        },
+        {
+          "name": "STATE_PROVINCE",
+          "type": "VARCHAR2(100),"
+        },
+        {
+          "name": "POSTAL_CODE",
+          "type": "VARCHAR2(20),"
+        },
+        {
+          "name": "COUNTRY_CODE",
+          "type": "VARCHAR2(3),"
+        },
+        {
+          "name": "PHONE_NUMBER",
+          "type": "VARCHAR2(30),"
+        },
+        {
+          "name": "TIMEZONE",
+          "type": "VARCHAR2(50)"
+        },
+        {
+          "name": "ACTIVE_FLAG",
+          "type": "CHAR(1)"
+        },
+        {
+          "name": "CREATED_BY",
+          "type": "VARCHAR2(30)    NOT"
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "DATE"
+        },
+        {
+          "name": "MODIFIED_BY",
+          "type": "VARCHAR2(30),"
+        },
+        {
+          "name": "MODIFIED_DATE",
+          "type": "DATE,"
+        }
+      ],
+      "primary_keys": [
+        "LOCATION_CODE"
+      ],
+      "foreign_keys": [],
+      "check_constraints": []
+    },
+    "HRMS.JOB_GRADES": {
+      "name": "HRMS.JOB_GRADES",
+      "file": "01_core_tables.sql",
+      "columns": [
+        {
+          "name": "GRADE_ID",
+          "type": "NUMBER(5)       NOT"
+        },
+        {
+          "name": "GRADE_CODE",
+          "type": "VARCHAR2(10)    NOT"
+        },
+        {
+          "name": "GRADE_NAME",
+          "type": "VARCHAR2(50)    NOT"
+        },
+        {
+          "name": "MIN_SALARY",
+          "type": "NUMBER(12,2)    NOT"
+        },
+        {
+          "name": "MAX_SALARY",
+          "type": "NUMBER(12,2)    NOT"
+        },
+        {
+          "name": "OVERTIME_ELIGIBLE",
+          "type": "CHAR(1)"
+        },
+        {
+          "name": "ACTIVE_FLAG",
+          "type": "CHAR(1)"
+        },
+        {
+          "name": "CREATED_BY",
+          "type": "VARCHAR2(30)    NOT"
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "DATE"
+        },
+        {
+          "name": "MODIFIED_BY",
+          "type": "VARCHAR2(30),"
+        },
+        {
+          "name": "MODIFIED_DATE",
+          "type": "DATE,"
+        }
+      ],
+      "primary_keys": [
+        "GRADE_ID"
+      ],
+      "foreign_keys": [],
+      "check_constraints": [
+        "MAX_SALARY >= MIN_SALARY"
+      ]
+    },
+    "HRMS.JOB_TITLES": {
+      "name": "HRMS.JOB_TITLES",
+      "file": "01_core_tables.sql",
+      "columns": [
+        {
+          "name": "JOB_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "JOB_CODE",
+          "type": "VARCHAR2(20)    NOT"
+        },
+        {
+          "name": "JOB_TITLE",
+          "type": "VARCHAR2(100)   NOT"
+        },
+        {
+          "name": "JOB_FAMILY",
+          "type": "VARCHAR2(50),"
+        },
+        {
+          "name": "GRADE_ID",
+          "type": "NUMBER(5)       NOT"
+        },
+        {
+          "name": "EEO_CATEGORY",
+          "type": "VARCHAR2(10),"
+        },
+        {
+          "name": "FLSA_STATUS",
+          "type": "VARCHAR2(10)"
+        },
+        {
+          "name": "ACTIVE_FLAG",
+          "type": "CHAR(1)"
+        },
+        {
+          "name": "CREATED_BY",
+          "type": "VARCHAR2(30)    NOT"
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "DATE"
+        },
+        {
+          "name": "MODIFIED_BY",
+          "type": "VARCHAR2(30),"
+        },
+        {
+          "name": "MODIFIED_DATE",
+          "type": "DATE,"
+        }
+      ],
+      "primary_keys": [
+        "JOB_ID"
+      ],
+      "foreign_keys": [
+        {
+          "constraint": "FK_JOB_GRADE",
+          "columns": "GRADE_ID",
+          "references": "HRMS.JOB_GRADES",
+          "ref_columns": "GRADE_ID"
+        }
+      ],
+      "check_constraints": []
+    },
+    "HRMS.EMPLOYEES": {
+      "name": "HRMS.EMPLOYEES",
+      "file": "01_core_tables.sql",
+      "columns": [
+        {
+          "name": "EMP_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "EMP_NUMBER",
+          "type": "VARCHAR2(20)    NOT"
+        },
+        {
+          "name": "FIRST_NAME",
+          "type": "VARCHAR2(50)    NOT"
+        },
+        {
+          "name": "MIDDLE_NAME",
+          "type": "VARCHAR2(50),"
+        },
+        {
+          "name": "LAST_NAME",
+          "type": "VARCHAR2(50)    NOT"
+        },
+        {
+          "name": "DATE_OF_BIRTH",
+          "type": "DATE,"
+        },
+        {
+          "name": "GENDER",
+          "type": "CHAR(1),"
+        },
+        {
+          "name": "MARITAL_STATUS",
+          "type": "VARCHAR2(10),"
+        },
+        {
+          "name": "NATIONALITY",
+          "type": "VARCHAR2(50),"
+        },
+        {
+          "name": "SSN_ENCRYPTED",
+          "type": "VARCHAR2(200),"
+        },
+        {
+          "name": "EMAIL",
+          "type": "VARCHAR2(100),"
+        },
+        {
+          "name": "PHONE_WORK",
+          "type": "VARCHAR2(30),"
+        },
+        {
+          "name": "PHONE_MOBILE",
+          "type": "VARCHAR2(30),"
+        },
+        {
+          "name": "ADDRESS_LINE1",
+          "type": "VARCHAR2(200),"
+        },
+        {
+          "name": "ADDRESS_LINE2",
+          "type": "VARCHAR2(200),"
+        },
+        {
+          "name": "CITY",
+          "type": "VARCHAR2(100),"
+        },
+        {
+          "name": "STATE_PROVINCE",
+          "type": "VARCHAR2(100),"
+        },
+        {
+          "name": "POSTAL_CODE",
+          "type": "VARCHAR2(20),"
+        },
+        {
+          "name": "COUNTRY_CODE",
+          "type": "VARCHAR2(3),"
+        },
+        {
+          "name": "HIRE_DATE",
+          "type": "DATE            NOT"
+        },
+        {
+          "name": "TERMINATION_DATE",
+          "type": "DATE,"
+        },
+        {
+          "name": "TERMINATION_REASON",
+          "type": "VARCHAR2(50),"
+        },
+        {
+          "name": "DEPT_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "JOB_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "MANAGER_EMP_ID",
+          "type": "NUMBER(10),"
+        },
+        {
+          "name": "LOCATION_CODE",
+          "type": "VARCHAR2(10),"
+        },
+        {
+          "name": "EMPLOYMENT_TYPE",
+          "type": "VARCHAR2(20)"
+        },
+        {
+          "name": "EMPLOYMENT_STATUS",
+          "type": "VARCHAR2(20)"
+        },
+        {
+          "name": "PHOTO_BLOB",
+          "type": "BLOB,"
+        },
+        {
+          "name": "NOTES",
+          "type": "CLOB,"
+        },
+        {
+          "name": "ACTIVE_FLAG",
+          "type": "CHAR(1)"
+        },
+        {
+          "name": "CREATED_BY",
+          "type": "VARCHAR2(30)    NOT"
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "DATE"
+        },
+        {
+          "name": "MODIFIED_BY",
+          "type": "VARCHAR2(30),"
+        },
+        {
+          "name": "MODIFIED_DATE",
+          "type": "DATE,"
+        }
+      ],
+      "primary_keys": [
+        "EMP_ID"
+      ],
+      "foreign_keys": [
+        {
+          "constraint": "FK_EMP_DEPT",
+          "columns": "DEPT_ID",
+          "references": "HRMS.DEPARTMENTS",
+          "ref_columns": "DEPT_ID"
+        },
+        {
+          "constraint": "FK_EMP_JOB",
+          "columns": "JOB_ID",
+          "references": "HRMS.JOB_TITLES",
+          "ref_columns": "JOB_ID"
+        },
+        {
+          "constraint": "FK_EMP_MANAGER",
+          "columns": "MANAGER_EMP_ID",
+          "references": "HRMS.EMPLOYEES",
+          "ref_columns": "EMP_ID"
+        },
+        {
+          "constraint": "FK_EMP_LOCATION",
+          "columns": "LOCATION_CODE",
+          "references": "HRMS.LOCATIONS",
+          "ref_columns": "LOCATION_CODE"
+        }
+      ],
+      "check_constraints": [
+        "EMPLOYMENT_STATUS IN ('ACTIVE', 'ON_LEAVE', 'SUSPENDED', 'TERMINATED'",
+        "EMPLOYMENT_TYPE IN ('FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERN'",
+        "GENDER IN ('M', 'F', 'O'"
+      ]
+    },
+    "HRMS.EMPLOYEE_HISTORY": {
+      "name": "HRMS.EMPLOYEE_HISTORY",
+      "file": "01_core_tables.sql",
+      "columns": [
+        {
+          "name": "HIST_ID",
+          "type": "NUMBER(15)      NOT"
+        },
+        {
+          "name": "EMP_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "CHANGE_TYPE",
+          "type": "VARCHAR2(30)    NOT"
+        },
+        {
+          "name": "EFFECTIVE_DATE",
+          "type": "DATE            NOT"
+        },
+        {
+          "name": "OLD_DEPT_ID",
+          "type": "NUMBER(10),"
+        },
+        {
+          "name": "NEW_DEPT_ID",
+          "type": "NUMBER(10),"
+        },
+        {
+          "name": "OLD_JOB_ID",
+          "type": "NUMBER(10),"
+        },
+        {
+          "name": "NEW_JOB_ID",
+          "type": "NUMBER(10),"
+        },
+        {
+          "name": "OLD_MANAGER_ID",
+          "type": "NUMBER(10),"
+        },
+        {
+          "name": "NEW_MANAGER_ID",
+          "type": "NUMBER(10),"
+        },
+        {
+          "name": "OLD_SALARY",
+          "type": "NUMBER(12,2),"
+        },
+        {
+          "name": "NEW_SALARY",
+          "type": "NUMBER(12,2),"
+        },
+        {
+          "name": "OLD_LOCATION",
+          "type": "VARCHAR2(10),"
+        },
+        {
+          "name": "NEW_LOCATION",
+          "type": "VARCHAR2(10),"
+        },
+        {
+          "name": "REASON_CODE",
+          "type": "VARCHAR2(30),"
+        },
+        {
+          "name": "COMMENTS",
+          "type": "VARCHAR2(4000),"
+        },
+        {
+          "name": "CREATED_BY",
+          "type": "VARCHAR2(30)    NOT"
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "DATE"
+        }
+      ],
+      "primary_keys": [
+        "HIST_ID"
+      ],
+      "foreign_keys": [
+        {
+          "constraint": "FK_HIST_EMP",
+          "columns": "EMP_ID",
+          "references": "HRMS.EMPLOYEES",
+          "ref_columns": "EMP_ID"
+        }
+      ],
+      "check_constraints": [
+        "CHANGE_TYPE IN (\n        'HIRE', 'TRANSFER', 'PROMOTION', 'DEMOTION', 'SALARY_CHANGE',\n        'TERMINATION', 'REHIRE', 'LEAVE_START', 'LEAVE_END', 'STATUS_CHANGE'\n    "
+      ]
+    },
+    "HRMS.EMPLOYEE_DEPENDENTS": {
+      "name": "HRMS.EMPLOYEE_DEPENDENTS",
+      "file": "01_core_tables.sql",
+      "columns": [
+        {
+          "name": "DEPENDENT_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "EMP_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "FIRST_NAME",
+          "type": "VARCHAR2(50)    NOT"
+        },
+        {
+          "name": "LAST_NAME",
+          "type": "VARCHAR2(50)    NOT"
+        },
+        {
+          "name": "RELATIONSHIP",
+          "type": "VARCHAR2(20)    NOT"
+        },
+        {
+          "name": "DATE_OF_BIRTH",
+          "type": "DATE,"
+        },
+        {
+          "name": "SSN_ENCRYPTED",
+          "type": "VARCHAR2(200),"
+        },
+        {
+          "name": "BENEFITS_ENROLLED",
+          "type": "CHAR(1)"
+        },
+        {
+          "name": "ACTIVE_FLAG",
+          "type": "CHAR(1)"
+        },
+        {
+          "name": "CREATED_BY",
+          "type": "VARCHAR2(30)    NOT"
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "DATE"
+        },
+        {
+          "name": "MODIFIED_BY",
+          "type": "VARCHAR2(30),"
+        },
+        {
+          "name": "MODIFIED_DATE",
+          "type": "DATE,"
+        }
+      ],
+      "primary_keys": [
+        "DEPENDENT_ID"
+      ],
+      "foreign_keys": [
+        {
+          "constraint": "FK_DEP_EMP",
+          "columns": "EMP_ID",
+          "references": "HRMS.EMPLOYEES",
+          "ref_columns": "EMP_ID"
+        }
+      ],
+      "check_constraints": [
+        "RELATIONSHIP IN ('SPOUSE', 'CHILD', 'PARENT', 'DOMESTIC_PARTNER', 'OTHER'"
+      ]
+    },
+    "HRMS.EMERGENCY_CONTACTS": {
+      "name": "HRMS.EMERGENCY_CONTACTS",
+      "file": "01_core_tables.sql",
+      "columns": [
+        {
+          "name": "CONTACT_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "EMP_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "CONTACT_NAME",
+          "type": "VARCHAR2(100)   NOT"
+        },
+        {
+          "name": "RELATIONSHIP",
+          "type": "VARCHAR2(30),"
+        },
+        {
+          "name": "PHONE_PRIMARY",
+          "type": "VARCHAR2(30)    NOT"
+        },
+        {
+          "name": "PHONE_SECONDARY",
+          "type": "VARCHAR2(30),"
+        },
+        {
+          "name": "EMAIL",
+          "type": "VARCHAR2(100),"
+        },
+        {
+          "name": "PRIORITY_ORDER",
+          "type": "NUMBER(2)"
+        },
+        {
+          "name": "ACTIVE_FLAG",
+          "type": "CHAR(1)"
+        },
+        {
+          "name": "CREATED_BY",
+          "type": "VARCHAR2(30)    NOT"
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "DATE"
+        },
+        {
+          "name": "MODIFIED_BY",
+          "type": "VARCHAR2(30),"
+        },
+        {
+          "name": "MODIFIED_DATE",
+          "type": "DATE,"
+        }
+      ],
+      "primary_keys": [
+        "CONTACT_ID"
+      ],
+      "foreign_keys": [
+        {
+          "constraint": "FK_EC_EMP",
+          "columns": "EMP_ID",
+          "references": "HRMS.EMPLOYEES",
+          "ref_columns": "EMP_ID"
+        }
+      ],
+      "check_constraints": []
+    },
+    "HRMS.SALARY_RECORDS": {
+      "name": "HRMS.SALARY_RECORDS",
+      "file": "02_payroll_tables.sql",
+      "columns": [
+        {
+          "name": "SALARY_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "EMP_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "EFFECTIVE_DATE",
+          "type": "DATE            NOT"
+        },
+        {
+          "name": "END_DATE",
+          "type": "DATE,"
+        },
+        {
+          "name": "BASE_SALARY",
+          "type": "NUMBER(12,2)    NOT"
+        },
+        {
+          "name": "CURRENCY_CODE",
+          "type": "VARCHAR2(3)"
+        },
+        {
+          "name": "PAY_FREQUENCY",
+          "type": "VARCHAR2(20)"
+        },
+        {
+          "name": "SALARY_BASIS",
+          "type": "VARCHAR2(20)"
+        },
+        {
+          "name": "CHANGE_REASON",
+          "type": "VARCHAR2(50),"
+        },
+        {
+          "name": "CHANGE_PCT",
+          "type": "NUMBER(5,2),"
+        },
+        {
+          "name": "APPROVED_BY",
+          "type": "NUMBER(10),"
+        },
+        {
+          "name": "APPROVAL_DATE",
+          "type": "DATE,"
+        },
+        {
+          "name": "ACTIVE_FLAG",
+          "type": "CHAR(1)"
+        },
+        {
+          "name": "CREATED_BY",
+          "type": "VARCHAR2(30)    NOT"
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "DATE"
+        },
+        {
+          "name": "MODIFIED_BY",
+          "type": "VARCHAR2(30),"
+        },
+        {
+          "name": "MODIFIED_DATE",
+          "type": "DATE,"
+        }
+      ],
+      "primary_keys": [
+        "SALARY_ID"
+      ],
+      "foreign_keys": [
+        {
+          "constraint": "FK_SAL_EMP",
+          "columns": "EMP_ID",
+          "references": "HRMS.EMPLOYEES",
+          "ref_columns": "EMP_ID"
+        }
+      ],
+      "check_constraints": [
+        "PAY_FREQUENCY IN ('WEEKLY', 'BIWEEKLY', 'SEMIMONTHLY', 'MONTHLY'",
+        "SALARY_BASIS IN ('ANNUAL', 'HOURLY'"
+      ]
+    },
+    "HRMS.PAY_ELEMENTS": {
+      "name": "HRMS.PAY_ELEMENTS",
+      "file": "02_payroll_tables.sql",
+      "columns": [
+        {
+          "name": "ELEMENT_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "ELEMENT_CODE",
+          "type": "VARCHAR2(30)    NOT"
+        },
+        {
+          "name": "ELEMENT_NAME",
+          "type": "VARCHAR2(100)   NOT"
+        },
+        {
+          "name": "ELEMENT_TYPE",
+          "type": "VARCHAR2(20)    NOT"
+        },
+        {
+          "name": "CALCULATION_TYPE",
+          "type": "VARCHAR2(20)    NOT"
+        },
+        {
+          "name": "DEFAULT_AMOUNT",
+          "type": "NUMBER(12,2),"
+        },
+        {
+          "name": "DEFAULT_PERCENTAGE",
+          "type": "NUMBER(5,2),"
+        },
+        {
+          "name": "TAXABLE_FLAG",
+          "type": "CHAR(1)"
+        },
+        {
+          "name": "PRETAX_FLAG",
+          "type": "CHAR(1)"
+        },
+        {
+          "name": "EMPLOYER_PAID",
+          "type": "CHAR(1)"
+        },
+        {
+          "name": "GL_ACCOUNT_CODE",
+          "type": "VARCHAR2(30),"
+        },
+        {
+          "name": "PRIORITY_ORDER",
+          "type": "NUMBER(5)"
+        },
+        {
+          "name": "ACTIVE_FLAG",
+          "type": "CHAR(1)"
+        },
+        {
+          "name": "CREATED_BY",
+          "type": "VARCHAR2(30)    NOT"
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "DATE"
+        },
+        {
+          "name": "MODIFIED_BY",
+          "type": "VARCHAR2(30),"
+        },
+        {
+          "name": "MODIFIED_DATE",
+          "type": "DATE,"
+        }
+      ],
+      "primary_keys": [
+        "ELEMENT_ID"
+      ],
+      "foreign_keys": [],
+      "check_constraints": [
+        "ELEMENT_TYPE IN ('EARNING', 'DEDUCTION', 'TAX', 'BENEFIT', 'REIMBURSEMENT'",
+        "CALCULATION_TYPE IN ('FLAT', 'PERCENTAGE', 'HOURS', 'FORMULA'"
+      ]
+    },
+    "HRMS.EMPLOYEE_PAY_ELEMENTS": {
+      "name": "HRMS.EMPLOYEE_PAY_ELEMENTS",
+      "file": "02_payroll_tables.sql",
+      "columns": [
+        {
+          "name": "EMP_ELEMENT_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "EMP_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "ELEMENT_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "EFFECTIVE_DATE",
+          "type": "DATE            NOT"
+        },
+        {
+          "name": "END_DATE",
+          "type": "DATE,"
+        },
+        {
+          "name": "AMOUNT",
+          "type": "NUMBER(12,2),"
+        },
+        {
+          "name": "PERCENTAGE",
+          "type": "NUMBER(5,2),"
+        },
+        {
+          "name": "OVERRIDE_AMOUNT",
+          "type": "NUMBER(12,2),"
+        },
+        {
+          "name": "ACTIVE_FLAG",
+          "type": "CHAR(1)"
+        },
+        {
+          "name": "CREATED_BY",
+          "type": "VARCHAR2(30)    NOT"
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "DATE"
+        },
+        {
+          "name": "MODIFIED_BY",
+          "type": "VARCHAR2(30),"
+        },
+        {
+          "name": "MODIFIED_DATE",
+          "type": "DATE,"
+        }
+      ],
+      "primary_keys": [
+        "EMP_ELEMENT_ID"
+      ],
+      "foreign_keys": [
+        {
+          "constraint": "FK_EPE_EMP",
+          "columns": "EMP_ID",
+          "references": "HRMS.EMPLOYEES",
+          "ref_columns": "EMP_ID"
+        },
+        {
+          "constraint": "FK_EPE_ELEMENT",
+          "columns": "ELEMENT_ID",
+          "references": "HRMS.PAY_ELEMENTS",
+          "ref_columns": "ELEMENT_ID"
+        }
+      ],
+      "check_constraints": []
+    },
+    "HRMS.PAY_PERIODS": {
+      "name": "HRMS.PAY_PERIODS",
+      "file": "02_payroll_tables.sql",
+      "columns": [
+        {
+          "name": "PERIOD_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "PERIOD_NAME",
+          "type": "VARCHAR2(50)    NOT"
+        },
+        {
+          "name": "PAY_FREQUENCY",
+          "type": "VARCHAR2(20)    NOT"
+        },
+        {
+          "name": "PERIOD_START_DATE",
+          "type": "DATE            NOT"
+        },
+        {
+          "name": "PERIOD_END_DATE",
+          "type": "DATE            NOT"
+        },
+        {
+          "name": "PAY_DATE",
+          "type": "DATE            NOT"
+        },
+        {
+          "name": "STATUS",
+          "type": "VARCHAR2(20)"
+        },
+        {
+          "name": "CLOSED_BY",
+          "type": "VARCHAR2(30),"
+        },
+        {
+          "name": "CLOSED_DATE",
+          "type": "DATE,"
+        },
+        {
+          "name": "CREATED_BY",
+          "type": "VARCHAR2(30)    NOT"
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "DATE"
+        },
+        {
+          "name": "MODIFIED_BY",
+          "type": "VARCHAR2(30),"
+        },
+        {
+          "name": "MODIFIED_DATE",
+          "type": "DATE,"
+        }
+      ],
+      "primary_keys": [
+        "PERIOD_ID"
+      ],
+      "foreign_keys": [],
+      "check_constraints": [
+        "STATUS IN ('OPEN', 'PROCESSING', 'CLOSED', 'REVERSED'"
+      ]
+    },
+    "HRMS.PAYROLL_RUNS": {
+      "name": "HRMS.PAYROLL_RUNS",
+      "file": "02_payroll_tables.sql",
+      "columns": [
+        {
+          "name": "RUN_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "PERIOD_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "RUN_TYPE",
+          "type": "VARCHAR2(20)"
+        },
+        {
+          "name": "RUN_DATE",
+          "type": "DATE            NOT"
+        },
+        {
+          "name": "STATUS",
+          "type": "VARCHAR2(20)"
+        },
+        {
+          "name": "TOTAL_GROSS",
+          "type": "NUMBER(15,2),"
+        },
+        {
+          "name": "TOTAL_DEDUCTIONS",
+          "type": "NUMBER(15,2),"
+        },
+        {
+          "name": "TOTAL_NET",
+          "type": "NUMBER(15,2),"
+        },
+        {
+          "name": "TOTAL_EMPLOYER_COST",
+          "type": "NUMBER(15,2),"
+        },
+        {
+          "name": "EMPLOYEE_COUNT",
+          "type": "NUMBER(10),"
+        },
+        {
+          "name": "ERROR_COUNT",
+          "type": "NUMBER(10)"
+        },
+        {
+          "name": "SUBMITTED_BY",
+          "type": "VARCHAR2(30),"
+        },
+        {
+          "name": "SUBMITTED_DATE",
+          "type": "DATE,"
+        },
+        {
+          "name": "APPROVED_BY",
+          "type": "VARCHAR2(30),"
+        },
+        {
+          "name": "APPROVED_DATE",
+          "type": "DATE,"
+        },
+        {
+          "name": "CREATED_BY",
+          "type": "VARCHAR2(30)    NOT"
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "DATE"
+        },
+        {
+          "name": "MODIFIED_BY",
+          "type": "VARCHAR2(30),"
+        },
+        {
+          "name": "MODIFIED_DATE",
+          "type": "DATE,"
+        }
+      ],
+      "primary_keys": [
+        "RUN_ID"
+      ],
+      "foreign_keys": [
+        {
+          "constraint": "FK_PR_PERIOD",
+          "columns": "PERIOD_ID",
+          "references": "HRMS.PAY_PERIODS",
+          "ref_columns": "PERIOD_ID"
+        }
+      ],
+      "check_constraints": [
+        "RUN_TYPE IN ('REGULAR', 'SUPPLEMENTAL', 'BONUS', 'FINAL'",
+        "STATUS IN ('PENDING', 'CALCULATING', 'CALCULATED', 'APPROVED', 'PAID', 'REVERSED', 'ERROR'"
+      ]
+    },
+    "HRMS.PAYROLL_DETAILS": {
+      "name": "HRMS.PAYROLL_DETAILS",
+      "file": "02_payroll_tables.sql",
+      "columns": [
+        {
+          "name": "DETAIL_ID",
+          "type": "NUMBER(15)      NOT"
+        },
+        {
+          "name": "RUN_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "EMP_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "ELEMENT_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "ELEMENT_TYPE",
+          "type": "VARCHAR2(20)    NOT"
+        },
+        {
+          "name": "HOURS_WORKED",
+          "type": "NUMBER(6,2),"
+        },
+        {
+          "name": "RATE",
+          "type": "NUMBER(12,4),"
+        },
+        {
+          "name": "AMOUNT",
+          "type": "NUMBER(12,2)    NOT"
+        },
+        {
+          "name": "YTD_AMOUNT",
+          "type": "NUMBER(15,2),"
+        },
+        {
+          "name": "STATUS",
+          "type": "VARCHAR2(20)"
+        },
+        {
+          "name": "ERROR_MESSAGE",
+          "type": "VARCHAR2(4000),"
+        },
+        {
+          "name": "CREATED_BY",
+          "type": "VARCHAR2(30)    NOT"
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "DATE"
+        }
+      ],
+      "primary_keys": [
+        "DETAIL_ID"
+      ],
+      "foreign_keys": [
+        {
+          "constraint": "FK_PD_RUN",
+          "columns": "RUN_ID",
+          "references": "HRMS.PAYROLL_RUNS",
+          "ref_columns": "RUN_ID"
+        },
+        {
+          "constraint": "FK_PD_EMP",
+          "columns": "EMP_ID",
+          "references": "HRMS.EMPLOYEES",
+          "ref_columns": "EMP_ID"
+        },
+        {
+          "constraint": "FK_PD_ELEMENT",
+          "columns": "ELEMENT_ID",
+          "references": "HRMS.PAY_ELEMENTS",
+          "ref_columns": "ELEMENT_ID"
+        }
+      ],
+      "check_constraints": []
+    },
+    "HRMS.TAX_BRACKETS": {
+      "name": "HRMS.TAX_BRACKETS",
+      "file": "02_payroll_tables.sql",
+      "columns": [
+        {
+          "name": "BRACKET_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "TAX_YEAR",
+          "type": "NUMBER(4)       NOT"
+        },
+        {
+          "name": "FILING_STATUS",
+          "type": "VARCHAR2(30)    NOT"
+        },
+        {
+          "name": "BRACKET_MIN",
+          "type": "NUMBER(12,2)    NOT"
+        },
+        {
+          "name": "BRACKET_MAX",
+          "type": "NUMBER(12,2),"
+        },
+        {
+          "name": "TAX_RATE",
+          "type": "NUMBER(5,4)     NOT"
+        },
+        {
+          "name": "BASE_TAX",
+          "type": "NUMBER(12,2)"
+        },
+        {
+          "name": "STATE_CODE",
+          "type": "VARCHAR2(3),"
+        },
+        {
+          "name": "ACTIVE_FLAG",
+          "type": "CHAR(1)"
+        },
+        {
+          "name": "CREATED_BY",
+          "type": "VARCHAR2(30)    NOT"
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "DATE"
+        }
+      ],
+      "primary_keys": [
+        "BRACKET_ID"
+      ],
+      "foreign_keys": [],
+      "check_constraints": [
+        "FILING_STATUS IN ('SINGLE', 'MARRIED_JOINT', 'MARRIED_SEPARATE', 'HEAD_OF_HOUSEHOLD'"
+      ]
+    },
+    "HRMS.EMPLOYEE_TAX_INFO": {
+      "name": "HRMS.EMPLOYEE_TAX_INFO",
+      "file": "02_payroll_tables.sql",
+      "columns": [
+        {
+          "name": "TAX_INFO_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "EMP_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "TAX_YEAR",
+          "type": "NUMBER(4)       NOT"
+        },
+        {
+          "name": "FILING_STATUS",
+          "type": "VARCHAR2(30)    NOT"
+        },
+        {
+          "name": "FEDERAL_ALLOWANCES",
+          "type": "NUMBER(3)"
+        },
+        {
+          "name": "STATE_ALLOWANCES",
+          "type": "NUMBER(3)"
+        },
+        {
+          "name": "ADDITIONAL_FED_WH",
+          "type": "NUMBER(12,2)"
+        },
+        {
+          "name": "ADDITIONAL_STATE_WH",
+          "type": "NUMBER(12,2)"
+        },
+        {
+          "name": "EXEMPT_FLAG",
+          "type": "CHAR(1)"
+        },
+        {
+          "name": "STATE_CODE",
+          "type": "VARCHAR2(3),"
+        },
+        {
+          "name": "W4_RECEIVED_DATE",
+          "type": "DATE,"
+        },
+        {
+          "name": "ACTIVE_FLAG",
+          "type": "CHAR(1)"
+        },
+        {
+          "name": "CREATED_BY",
+          "type": "VARCHAR2(30)    NOT"
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "DATE"
+        },
+        {
+          "name": "MODIFIED_BY",
+          "type": "VARCHAR2(30),"
+        },
+        {
+          "name": "MODIFIED_DATE",
+          "type": "DATE,"
+        }
+      ],
+      "primary_keys": [
+        "TAX_INFO_ID"
+      ],
+      "foreign_keys": [
+        {
+          "constraint": "FK_ETI_EMP",
+          "columns": "EMP_ID",
+          "references": "HRMS.EMPLOYEES",
+          "ref_columns": "EMP_ID"
+        }
+      ],
+      "check_constraints": []
+    },
+    "HRMS.EMPLOYEE_BANK_ACCOUNTS": {
+      "name": "HRMS.EMPLOYEE_BANK_ACCOUNTS",
+      "file": "02_payroll_tables.sql",
+      "columns": [
+        {
+          "name": "BANK_ACCT_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "EMP_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "BANK_NAME",
+          "type": "VARCHAR2(100),"
+        },
+        {
+          "name": "ROUTING_NUMBER",
+          "type": "VARCHAR2(20)    NOT"
+        },
+        {
+          "name": "ACCOUNT_NUMBER_ENC",
+          "type": "VARCHAR2(200)   NOT"
+        },
+        {
+          "name": "ACCOUNT_TYPE",
+          "type": "VARCHAR2(20)"
+        },
+        {
+          "name": "DEPOSIT_TYPE",
+          "type": "VARCHAR2(20)"
+        },
+        {
+          "name": "DEPOSIT_AMOUNT",
+          "type": "NUMBER(12,2),"
+        },
+        {
+          "name": "DEPOSIT_PERCENTAGE",
+          "type": "NUMBER(5,2),"
+        },
+        {
+          "name": "PRIORITY_ORDER",
+          "type": "NUMBER(2)"
+        },
+        {
+          "name": "PRENOTE_SENT",
+          "type": "CHAR(1)"
+        },
+        {
+          "name": "PRENOTE_DATE",
+          "type": "DATE,"
+        },
+        {
+          "name": "ACTIVE_FLAG",
+          "type": "CHAR(1)"
+        },
+        {
+          "name": "CREATED_BY",
+          "type": "VARCHAR2(30)    NOT"
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "DATE"
+        },
+        {
+          "name": "MODIFIED_BY",
+          "type": "VARCHAR2(30),"
+        },
+        {
+          "name": "MODIFIED_DATE",
+          "type": "DATE,"
+        }
+      ],
+      "primary_keys": [
+        "BANK_ACCT_ID"
+      ],
+      "foreign_keys": [
+        {
+          "constraint": "FK_BA_EMP",
+          "columns": "EMP_ID",
+          "references": "HRMS.EMPLOYEES",
+          "ref_columns": "EMP_ID"
+        }
+      ],
+      "check_constraints": [
+        "ACCOUNT_TYPE IN ('CHECKING', 'SAVINGS'",
+        "DEPOSIT_TYPE IN ('FULL', 'PARTIAL_AMOUNT', 'PARTIAL_PERCENT', 'REMAINDER'"
+      ]
+    },
+    "HRMS.LEAVE_TYPES": {
+      "name": "HRMS.LEAVE_TYPES",
+      "file": "03_leave_tables.sql",
+      "columns": [
+        {
+          "name": "LEAVE_TYPE_ID",
+          "type": "NUMBER(5)       NOT"
+        },
+        {
+          "name": "LEAVE_TYPE_CODE",
+          "type": "VARCHAR2(20)    NOT"
+        },
+        {
+          "name": "LEAVE_TYPE_NAME",
+          "type": "VARCHAR2(50)    NOT"
+        },
+        {
+          "name": "PAID_FLAG",
+          "type": "CHAR(1)"
+        },
+        {
+          "name": "ACCRUAL_FLAG",
+          "type": "CHAR(1)"
+        },
+        {
+          "name": "ACCRUAL_RATE",
+          "type": "NUMBER(6,2),"
+        },
+        {
+          "name": "ACCRUAL_FREQUENCY",
+          "type": "VARCHAR2(20),"
+        },
+        {
+          "name": "MAX_BALANCE",
+          "type": "NUMBER(6,2),"
+        },
+        {
+          "name": "CARRYOVER_MAX",
+          "type": "NUMBER(6,2),"
+        },
+        {
+          "name": "CARRYOVER_EXPIRY",
+          "type": "NUMBER(3),"
+        },
+        {
+          "name": "MIN_TENURE_DAYS",
+          "type": "NUMBER(5)"
+        },
+        {
+          "name": "REQUIRES_APPROVAL",
+          "type": "CHAR(1)"
+        },
+        {
+          "name": "REQUIRES_DOCUMENT",
+          "type": "CHAR(1)"
+        },
+        {
+          "name": "ACTIVE_FLAG",
+          "type": "CHAR(1)"
+        },
+        {
+          "name": "CREATED_BY",
+          "type": "VARCHAR2(30)    NOT"
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "DATE"
+        },
+        {
+          "name": "MODIFIED_BY",
+          "type": "VARCHAR2(30),"
+        },
+        {
+          "name": "MODIFIED_DATE",
+          "type": "DATE,"
+        }
+      ],
+      "primary_keys": [
+        "LEAVE_TYPE_ID"
+      ],
+      "foreign_keys": [],
+      "check_constraints": [
+        "ACCRUAL_FREQUENCY IN ('MONTHLY', 'BIWEEKLY', 'ANNUAL', NULL"
+      ]
+    },
+    "HRMS.LEAVE_BALANCES": {
+      "name": "HRMS.LEAVE_BALANCES",
+      "file": "03_leave_tables.sql",
+      "columns": [
+        {
+          "name": "BALANCE_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "EMP_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "LEAVE_TYPE_ID",
+          "type": "NUMBER(5)       NOT"
+        },
+        {
+          "name": "CALENDAR_YEAR",
+          "type": "NUMBER(4)       NOT"
+        },
+        {
+          "name": "OPENING_BALANCE",
+          "type": "NUMBER(6,2)"
+        },
+        {
+          "name": "ACCRUED",
+          "type": "NUMBER(6,2)"
+        },
+        {
+          "name": "USED",
+          "type": "NUMBER(6,2)"
+        },
+        {
+          "name": "ADJUSTMENT",
+          "type": "NUMBER(6,2)"
+        },
+        {
+          "name": "PENDING",
+          "type": "NUMBER(6,2)"
+        },
+        {
+          "name": "CARRYOVER_FROM_PREV",
+          "type": "NUMBER(6,2)"
+        },
+        {
+          "name": "CARRYOVER_EXPIRY_DT",
+          "type": "DATE,"
+        },
+        {
+          "name": "CREATED_BY",
+          "type": "VARCHAR2(30)    NOT"
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "DATE"
+        },
+        {
+          "name": "MODIFIED_BY",
+          "type": "VARCHAR2(30),"
+        },
+        {
+          "name": "MODIFIED_DATE",
+          "type": "DATE,"
+        }
+      ],
+      "primary_keys": [
+        "BALANCE_ID"
+      ],
+      "foreign_keys": [
+        {
+          "constraint": "FK_LB_EMP",
+          "columns": "EMP_ID",
+          "references": "HRMS.EMPLOYEES",
+          "ref_columns": "EMP_ID"
+        },
+        {
+          "constraint": "FK_LB_TYPE",
+          "columns": "LEAVE_TYPE_ID",
+          "references": "HRMS.LEAVE_TYPES",
+          "ref_columns": "LEAVE_TYPE_ID"
+        }
+      ],
+      "check_constraints": []
+    },
+    "HRMS.LEAVE_REQUESTS": {
+      "name": "HRMS.LEAVE_REQUESTS",
+      "file": "03_leave_tables.sql",
+      "columns": [
+        {
+          "name": "REQUEST_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "EMP_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "LEAVE_TYPE_ID",
+          "type": "NUMBER(5)       NOT"
+        },
+        {
+          "name": "START_DATE",
+          "type": "DATE            NOT"
+        },
+        {
+          "name": "END_DATE",
+          "type": "DATE            NOT"
+        },
+        {
+          "name": "TOTAL_DAYS",
+          "type": "NUMBER(5,1)     NOT"
+        },
+        {
+          "name": "HALF_DAY_FLAG",
+          "type": "CHAR(1)"
+        },
+        {
+          "name": "HALF_DAY_PERIOD",
+          "type": "VARCHAR2(10),"
+        },
+        {
+          "name": "STATUS",
+          "type": "VARCHAR2(20)"
+        },
+        {
+          "name": "REASON",
+          "type": "VARCHAR2(4000),"
+        },
+        {
+          "name": "SUPPORTING_DOC_PATH",
+          "type": "VARCHAR2(500),"
+        },
+        {
+          "name": "APPROVER_EMP_ID",
+          "type": "NUMBER(10),"
+        },
+        {
+          "name": "APPROVAL_DATE",
+          "type": "DATE,"
+        },
+        {
+          "name": "APPROVAL_COMMENTS",
+          "type": "VARCHAR2(4000),"
+        },
+        {
+          "name": "CANCEL_REASON",
+          "type": "VARCHAR2(4000),"
+        },
+        {
+          "name": "CANCELLED_DATE",
+          "type": "DATE,"
+        },
+        {
+          "name": "CREATED_BY",
+          "type": "VARCHAR2(30)    NOT"
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "DATE"
+        },
+        {
+          "name": "MODIFIED_BY",
+          "type": "VARCHAR2(30),"
+        },
+        {
+          "name": "MODIFIED_DATE",
+          "type": "DATE,"
+        }
+      ],
+      "primary_keys": [
+        "REQUEST_ID"
+      ],
+      "foreign_keys": [
+        {
+          "constraint": "FK_LR_EMP",
+          "columns": "EMP_ID",
+          "references": "HRMS.EMPLOYEES",
+          "ref_columns": "EMP_ID"
+        },
+        {
+          "constraint": "FK_LR_TYPE",
+          "columns": "LEAVE_TYPE_ID",
+          "references": "HRMS.LEAVE_TYPES",
+          "ref_columns": "LEAVE_TYPE_ID"
+        },
+        {
+          "constraint": "FK_LR_APPROVER",
+          "columns": "APPROVER_EMP_ID",
+          "references": "HRMS.EMPLOYEES",
+          "ref_columns": "EMP_ID"
+        }
+      ],
+      "check_constraints": [
+        "STATUS IN ('PENDING', 'APPROVED', 'REJECTED', 'CANCELLED', 'TAKEN'",
+        "END_DATE >= START_DATE",
+        "HALF_DAY_PERIOD IN ('AM', 'PM', NULL"
+      ]
+    },
+    "HRMS.LEAVE_ACCRUAL_LOG": {
+      "name": "HRMS.LEAVE_ACCRUAL_LOG",
+      "file": "03_leave_tables.sql",
+      "columns": [
+        {
+          "name": "ACCRUAL_ID",
+          "type": "NUMBER(15)      NOT"
+        },
+        {
+          "name": "EMP_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "LEAVE_TYPE_ID",
+          "type": "NUMBER(5)       NOT"
+        },
+        {
+          "name": "ACCRUAL_DATE",
+          "type": "DATE            NOT"
+        },
+        {
+          "name": "ACCRUAL_AMOUNT",
+          "type": "NUMBER(6,2)     NOT"
+        },
+        {
+          "name": "BALANCE_AFTER",
+          "type": "NUMBER(6,2),"
+        },
+        {
+          "name": "RUN_ID",
+          "type": "NUMBER(10),"
+        },
+        {
+          "name": "CREATED_BY",
+          "type": "VARCHAR2(30)    NOT"
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "DATE"
+        }
+      ],
+      "primary_keys": [
+        "ACCRUAL_ID"
+      ],
+      "foreign_keys": [
+        {
+          "constraint": "FK_LAL_EMP",
+          "columns": "EMP_ID",
+          "references": "HRMS.EMPLOYEES",
+          "ref_columns": "EMP_ID"
+        },
+        {
+          "constraint": "FK_LAL_TYPE",
+          "columns": "LEAVE_TYPE_ID",
+          "references": "HRMS.LEAVE_TYPES",
+          "ref_columns": "LEAVE_TYPE_ID"
+        }
+      ],
+      "check_constraints": []
+    },
+    "HRMS.HOLIDAYS": {
+      "name": "HRMS.HOLIDAYS",
+      "file": "03_leave_tables.sql",
+      "columns": [
+        {
+          "name": "HOLIDAY_ID",
+          "type": "NUMBER(5)       NOT"
+        },
+        {
+          "name": "HOLIDAY_DATE",
+          "type": "DATE            NOT"
+        },
+        {
+          "name": "HOLIDAY_NAME",
+          "type": "VARCHAR2(100)   NOT"
+        },
+        {
+          "name": "LOCATION_CODE",
+          "type": "VARCHAR2(10),"
+        },
+        {
+          "name": "FLOATING_FLAG",
+          "type": "CHAR(1)"
+        },
+        {
+          "name": "ACTIVE_FLAG",
+          "type": "CHAR(1)"
+        },
+        {
+          "name": "CREATED_BY",
+          "type": "VARCHAR2(30)    NOT"
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "DATE"
+        }
+      ],
+      "primary_keys": [
+        "HOLIDAY_ID"
+      ],
+      "foreign_keys": [],
+      "check_constraints": []
+    },
+    "HRMS.REVIEW_CYCLES": {
+      "name": "HRMS.REVIEW_CYCLES",
+      "file": "04_performance_tables.sql",
+      "columns": [
+        {
+          "name": "CYCLE_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "CYCLE_NAME",
+          "type": "VARCHAR2(100)   NOT"
+        },
+        {
+          "name": "CYCLE_YEAR",
+          "type": "NUMBER(4)       NOT"
+        },
+        {
+          "name": "START_DATE",
+          "type": "DATE            NOT"
+        },
+        {
+          "name": "END_DATE",
+          "type": "DATE            NOT"
+        },
+        {
+          "name": "SELF_REVIEW_DUE",
+          "type": "DATE,"
+        },
+        {
+          "name": "MANAGER_REVIEW_DUE",
+          "type": "DATE,"
+        },
+        {
+          "name": "CALIBRATION_DUE",
+          "type": "DATE,"
+        },
+        {
+          "name": "STATUS",
+          "type": "VARCHAR2(20)"
+        },
+        {
+          "name": "CREATED_BY",
+          "type": "VARCHAR2(30)    NOT"
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "DATE"
+        },
+        {
+          "name": "MODIFIED_BY",
+          "type": "VARCHAR2(30),"
+        },
+        {
+          "name": "MODIFIED_DATE",
+          "type": "DATE,"
+        }
+      ],
+      "primary_keys": [
+        "CYCLE_ID"
+      ],
+      "foreign_keys": [],
+      "check_constraints": [
+        "STATUS IN ('DRAFT', 'OPEN', 'IN_PROGRESS', 'CALIBRATION', 'CLOSED'"
+      ]
+    },
+    "HRMS.PERFORMANCE_REVIEWS": {
+      "name": "HRMS.PERFORMANCE_REVIEWS",
+      "file": "04_performance_tables.sql",
+      "columns": [
+        {
+          "name": "REVIEW_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "CYCLE_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "EMP_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "REVIEWER_EMP_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "REVIEW_TYPE",
+          "type": "VARCHAR2(20)"
+        },
+        {
+          "name": "STATUS",
+          "type": "VARCHAR2(20)"
+        },
+        {
+          "name": "OVERALL_RATING",
+          "type": "NUMBER(2,1),"
+        },
+        {
+          "name": "RATING_LABEL",
+          "type": "VARCHAR2(50),"
+        },
+        {
+          "name": "SELF_ASSESSMENT",
+          "type": "CLOB,"
+        },
+        {
+          "name": "MANAGER_ASSESSMENT",
+          "type": "CLOB,"
+        },
+        {
+          "name": "STRENGTHS",
+          "type": "CLOB,"
+        },
+        {
+          "name": "AREAS_FOR_IMPROVEMENT",
+          "type": "CLOB,"
+        },
+        {
+          "name": "DEVELOPMENT_PLAN",
+          "type": "CLOB,"
+        },
+        {
+          "name": "EMPLOYEE_COMMENTS",
+          "type": "CLOB,"
+        },
+        {
+          "name": "EMPLOYEE_ACK_DATE",
+          "type": "DATE,"
+        },
+        {
+          "name": "CALIBRATED_RATING",
+          "type": "NUMBER(2,1),"
+        },
+        {
+          "name": "CALIBRATION_NOTES",
+          "type": "VARCHAR2(4000),"
+        },
+        {
+          "name": "CREATED_BY",
+          "type": "VARCHAR2(30)    NOT"
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "DATE"
+        },
+        {
+          "name": "MODIFIED_BY",
+          "type": "VARCHAR2(30),"
+        },
+        {
+          "name": "MODIFIED_DATE",
+          "type": "DATE,"
+        }
+      ],
+      "primary_keys": [
+        "REVIEW_ID"
+      ],
+      "foreign_keys": [
+        {
+          "constraint": "FK_PR_CYCLE",
+          "columns": "CYCLE_ID",
+          "references": "HRMS.REVIEW_CYCLES",
+          "ref_columns": "CYCLE_ID"
+        },
+        {
+          "constraint": "FK_PR_EMP",
+          "columns": "EMP_ID",
+          "references": "HRMS.EMPLOYEES",
+          "ref_columns": "EMP_ID"
+        },
+        {
+          "constraint": "FK_PR_REVIEWER",
+          "columns": "REVIEWER_EMP_ID",
+          "references": "HRMS.EMPLOYEES",
+          "ref_columns": "EMP_ID"
+        }
+      ],
+      "check_constraints": [
+        "STATUS IN ('NOT_STARTED', 'SELF_REVIEW', 'MANAGER_REVIEW', 'MEETING_SCHEDULED', 'COMPLETED', 'ACKNOWLEDGED'",
+        "OVERALL_RATING BETWEEN 1.0 AND 5.0"
+      ]
+    },
+    "HRMS.PERFORMANCE_GOALS": {
+      "name": "HRMS.PERFORMANCE_GOALS",
+      "file": "04_performance_tables.sql",
+      "columns": [
+        {
+          "name": "GOAL_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "REVIEW_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "EMP_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "GOAL_TITLE",
+          "type": "VARCHAR2(200)   NOT"
+        },
+        {
+          "name": "GOAL_DESCRIPTION",
+          "type": "CLOB,"
+        },
+        {
+          "name": "GOAL_CATEGORY",
+          "type": "VARCHAR2(30),"
+        },
+        {
+          "name": "WEIGHT_PCT",
+          "type": "NUMBER(5,2)"
+        },
+        {
+          "name": "TARGET_DATE",
+          "type": "DATE,"
+        },
+        {
+          "name": "STATUS",
+          "type": "VARCHAR2(20)"
+        },
+        {
+          "name": "PROGRESS_PCT",
+          "type": "NUMBER(5,2)"
+        },
+        {
+          "name": "SELF_RATING",
+          "type": "NUMBER(2,1),"
+        },
+        {
+          "name": "MANAGER_RATING",
+          "type": "NUMBER(2,1),"
+        },
+        {
+          "name": "COMMENTS",
+          "type": "CLOB,"
+        },
+        {
+          "name": "CREATED_BY",
+          "type": "VARCHAR2(30)    NOT"
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "DATE"
+        },
+        {
+          "name": "MODIFIED_BY",
+          "type": "VARCHAR2(30),"
+        },
+        {
+          "name": "MODIFIED_DATE",
+          "type": "DATE,"
+        }
+      ],
+      "primary_keys": [
+        "GOAL_ID"
+      ],
+      "foreign_keys": [
+        {
+          "constraint": "FK_PG_REVIEW",
+          "columns": "REVIEW_ID",
+          "references": "HRMS.PERFORMANCE_REVIEWS",
+          "ref_columns": "REVIEW_ID"
+        },
+        {
+          "constraint": "FK_PG_EMP",
+          "columns": "EMP_ID",
+          "references": "HRMS.EMPLOYEES",
+          "ref_columns": "EMP_ID"
+        }
+      ],
+      "check_constraints": [
+        "STATUS IN ('NOT_STARTED', 'IN_PROGRESS', 'COMPLETED', 'DEFERRED', 'CANCELLED'",
+        "GOAL_CATEGORY IN ('BUSINESS', 'DEVELOPMENT', 'LEADERSHIP', 'INNOVATION', 'COMPLIANCE'"
+      ]
+    },
+    "HRMS.AUDIT_LOG": {
+      "name": "HRMS.AUDIT_LOG",
+      "file": "04_performance_tables.sql",
+      "columns": [
+        {
+          "name": "AUDIT_ID",
+          "type": "NUMBER(15)      NOT"
+        },
+        {
+          "name": "TABLE_NAME",
+          "type": "VARCHAR2(60)    NOT"
+        },
+        {
+          "name": "RECORD_ID",
+          "type": "NUMBER(15)      NOT"
+        },
+        {
+          "name": "ACTION_TYPE",
+          "type": "VARCHAR2(10)    NOT"
+        },
+        {
+          "name": "OLD_VALUES",
+          "type": "CLOB,"
+        },
+        {
+          "name": "NEW_VALUES",
+          "type": "CLOB,"
+        },
+        {
+          "name": "CHANGED_BY",
+          "type": "VARCHAR2(30)    NOT"
+        },
+        {
+          "name": "CHANGED_DATE",
+          "type": "DATE"
+        },
+        {
+          "name": "IP_ADDRESS",
+          "type": "VARCHAR2(50),"
+        },
+        {
+          "name": "SESSION_ID",
+          "type": "VARCHAR2(100),"
+        }
+      ],
+      "primary_keys": [
+        "AUDIT_ID"
+      ],
+      "foreign_keys": [],
+      "check_constraints": [
+        "ACTION_TYPE IN ('INSERT', 'UPDATE', 'DELETE'"
+      ]
+    },
+    "HRMS.SYSTEM_PARAMETERS": {
+      "name": "HRMS.SYSTEM_PARAMETERS",
+      "file": "04_performance_tables.sql",
+      "columns": [
+        {
+          "name": "PARAM_ID",
+          "type": "NUMBER(5)       NOT"
+        },
+        {
+          "name": "PARAM_GROUP",
+          "type": "VARCHAR2(50)    NOT"
+        },
+        {
+          "name": "PARAM_CODE",
+          "type": "VARCHAR2(50)    NOT"
+        },
+        {
+          "name": "PARAM_VALUE",
+          "type": "VARCHAR2(4000)  NOT"
+        },
+        {
+          "name": "PARAM_DESCRIPTION",
+          "type": "VARCHAR2(200),"
+        },
+        {
+          "name": "DATA_TYPE",
+          "type": "VARCHAR2(20)"
+        },
+        {
+          "name": "EDITABLE_FLAG",
+          "type": "CHAR(1)"
+        },
+        {
+          "name": "CREATED_BY",
+          "type": "VARCHAR2(30)    NOT"
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "DATE"
+        },
+        {
+          "name": "MODIFIED_BY",
+          "type": "VARCHAR2(30),"
+        },
+        {
+          "name": "MODIFIED_DATE",
+          "type": "DATE,"
+        }
+      ],
+      "primary_keys": [
+        "PARAM_ID"
+      ],
+      "foreign_keys": [],
+      "check_constraints": []
+    },
+    "HRMS.NOTIFICATION_QUEUE": {
+      "name": "HRMS.NOTIFICATION_QUEUE",
+      "file": "04_performance_tables.sql",
+      "columns": [
+        {
+          "name": "NOTIFICATION_ID",
+          "type": "NUMBER(15)      NOT"
+        },
+        {
+          "name": "RECIPIENT_EMP_ID",
+          "type": "NUMBER(10),"
+        },
+        {
+          "name": "RECIPIENT_EMAIL",
+          "type": "VARCHAR2(100),"
+        },
+        {
+          "name": "NOTIFICATION_TYPE",
+          "type": "VARCHAR2(30)    NOT"
+        },
+        {
+          "name": "SUBJECT",
+          "type": "VARCHAR2(200)   NOT"
+        },
+        {
+          "name": "BODY",
+          "type": "CLOB            NOT"
+        },
+        {
+          "name": "STATUS",
+          "type": "VARCHAR2(20)"
+        },
+        {
+          "name": "PRIORITY",
+          "type": "NUMBER(2)"
+        },
+        {
+          "name": "SENT_DATE",
+          "type": "DATE,"
+        },
+        {
+          "name": "ERROR_MESSAGE",
+          "type": "VARCHAR2(4000),"
+        },
+        {
+          "name": "RETRY_COUNT",
+          "type": "NUMBER(3)"
+        },
+        {
+          "name": "REFERENCE_TABLE",
+          "type": "VARCHAR2(60),"
+        },
+        {
+          "name": "REFERENCE_ID",
+          "type": "NUMBER(15),"
+        },
+        {
+          "name": "CREATED_BY",
+          "type": "VARCHAR2(30)    NOT"
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "DATE"
+        }
+      ],
+      "primary_keys": [
+        "NOTIFICATION_ID"
+      ],
+      "foreign_keys": [],
+      "check_constraints": [
+        "STATUS IN ('PENDING', 'SENT', 'FAILED', 'CANCELLED'",
+        "NOTIFICATION_TYPE IN ('EMAIL', 'IN_APP', 'SMS'"
+      ]
+    },
+    "HRMS.USER_SESSIONS": {
+      "name": "HRMS.USER_SESSIONS",
+      "file": "04_performance_tables.sql",
+      "columns": [
+        {
+          "name": "SESSION_ID",
+          "type": "NUMBER(15)      NOT"
+        },
+        {
+          "name": "EMP_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "USERNAME",
+          "type": "VARCHAR2(30)    NOT"
+        },
+        {
+          "name": "LOGIN_TIME",
+          "type": "DATE            NOT"
+        },
+        {
+          "name": "LOGOUT_TIME",
+          "type": "DATE,"
+        },
+        {
+          "name": "IP_ADDRESS",
+          "type": "VARCHAR2(50),"
+        },
+        {
+          "name": "FORMS_MODULE",
+          "type": "VARCHAR2(100),"
+        },
+        {
+          "name": "SESSION_STATUS",
+          "type": "VARCHAR2(20)"
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "DATE"
+        }
+      ],
+      "primary_keys": [
+        "SESSION_ID"
+      ],
+      "foreign_keys": [
+        {
+          "constraint": "FK_US_EMP",
+          "columns": "EMP_ID",
+          "references": "HRMS.EMPLOYEES",
+          "ref_columns": "EMP_ID"
+        }
+      ],
+      "check_constraints": []
+    },
+    "HRMS.LOOKUP_VALUES": {
+      "name": "HRMS.LOOKUP_VALUES",
+      "file": "04_performance_tables.sql",
+      "columns": [
+        {
+          "name": "LOOKUP_ID",
+          "type": "NUMBER(10)      NOT"
+        },
+        {
+          "name": "LOOKUP_TYPE",
+          "type": "VARCHAR2(50)    NOT"
+        },
+        {
+          "name": "LOOKUP_CODE",
+          "type": "VARCHAR2(50)    NOT"
+        },
+        {
+          "name": "LOOKUP_VALUE",
+          "type": "VARCHAR2(200)   NOT"
+        },
+        {
+          "name": "DISPLAY_ORDER",
+          "type": "NUMBER(5)"
+        },
+        {
+          "name": "PARENT_LOOKUP_ID",
+          "type": "NUMBER(10),"
+        },
+        {
+          "name": "ACTIVE_FLAG",
+          "type": "CHAR(1)"
+        },
+        {
+          "name": "CREATED_BY",
+          "type": "VARCHAR2(30)    NOT"
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "DATE"
+        }
+      ],
+      "primary_keys": [
+        "LOOKUP_ID"
+      ],
+      "foreign_keys": [],
+      "check_constraints": []
+    }
+  },
+  "views": {
+    "HRMS.VW_ACTIVE_EMPLOYEES": {
+      "name": "HRMS.VW_ACTIVE_EMPLOYEES",
+      "tables_used": [
+        "EMPLOYEES"
+      ],
+      "joins": [
+        "JOB_TITLES",
+        "LOCATIONS",
+        "EMPLOYEES",
+        "JOB_GRADES",
+        "SALARY_RECORDS",
+        "DEPARTMENTS"
+      ],
+      "query_snippet": "SELECT e.EMP_ID, e.EMP_NUMBER, e.FIRST_NAME, e.LAST_NAME,\n       e.FIRST_NAME || ' ' || e.LAST_NAME AS FULL_NAME,\n       e.EMAIL, e.PHONE_WORK, e.PHONE_MOBILE,\n       e.HIRE_DATE,\n       TRUNC(MONTHS_BETWEEN(SYSDATE, e.HIRE_DATE) / 12, 1) AS TENURE_YEARS,\n       e.EMPLOYMENT_TYPE, e.EMPLOYMENT_STATU"
+    },
+    "HRMS.VW_ORG_HIERARCHY": {
+      "name": "HRMS.VW_ORG_HIERARCHY",
+      "tables_used": [
+        "EMPLOYEES"
+      ],
+      "joins": [],
+      "query_snippet": "SELECT EMP_ID, EMP_NUMBER, FIRST_NAME || ' ' || LAST_NAME AS EMP_NAME,\n       MANAGER_EMP_ID, DEPT_ID,\n       LEVEL AS ORG_LEVEL,\n       SYS_CONNECT_BY_PATH(FIRST_NAME || ' ' || LAST_NAME, ' > ') AS ORG_PATH,\n       CONNECT_BY_ISLEAF AS IS_LEAF\nFROM EMPLOYEES\nWHERE EMPLOYMENT_STATUS = 'ACTIVE'\nSTART"
+    },
+    "HRMS.VW_EMPLOYEE_COMPENSATION": {
+      "name": "HRMS.VW_EMPLOYEE_COMPENSATION",
+      "tables_used": [
+        "EMPLOYEES"
+      ],
+      "joins": [
+        "JOB_GRADES",
+        "SALARY_RECORDS",
+        "JOB_TITLES",
+        "DEPARTMENTS"
+      ],
+      "query_snippet": "SELECT e.EMP_ID, e.EMP_NUMBER,\n       e.FIRST_NAME || ' ' || e.LAST_NAME AS EMP_NAME,\n       d.DEPT_NAME, j.JOB_TITLE, g.GRADE_NAME,\n       sr.BASE_SALARY,\n       g.MIN_SALARY AS GRADE_MIN,\n       g.MAX_SALARY AS GRADE_MAX,\n       (g.MIN_SALARY + g.MAX_SALARY) / 2 AS GRADE_MIDPOINT,\n       ROUND(sr."
+    },
+    "HRMS.VW_LEAVE_SUMMARY": {
+      "name": "HRMS.VW_LEAVE_SUMMARY",
+      "tables_used": [
+        "SYSDATE",
+        "LEAVE_BALANCES"
+      ],
+      "joins": [
+        "LEAVE_TYPES",
+        "EMPLOYEES",
+        "DEPARTMENTS"
+      ],
+      "query_snippet": "SELECT e.EMP_ID, e.EMP_NUMBER,\n       e.FIRST_NAME || ' ' || e.LAST_NAME AS EMP_NAME,\n       d.DEPT_NAME,\n       lt.LEAVE_TYPE_NAME,\n       lb.OPENING_BALANCE,\n       lb.ACCRUED,\n       lb.USED,\n       lb.ADJUSTMENT,\n       lb.PENDING,\n       lb.OPENING_BALANCE + lb.ACCRUED - lb.USED + lb.ADJUSTMENT"
+    },
+    "HRMS.VW_PAYROLL_LATEST": {
+      "name": "HRMS.VW_PAYROLL_LATEST",
+      "tables_used": [
+        "PAYROLL_DETAILS",
+        "PAYROLL_RUNS"
+      ],
+      "joins": [
+        "PAYROLL_RUNS",
+        "PAY_PERIODS",
+        "EMPLOYEES"
+      ],
+      "query_snippet": "SELECT pd.EMP_ID, e.EMP_NUMBER,\n       e.FIRST_NAME || ' ' || e.LAST_NAME AS EMP_NAME,\n       pp.PERIOD_NAME,\n       SUM(CASE WHEN pd.ELEMENT_TYPE = 'EARNING' THEN pd.AMOUNT ELSE 0 END) AS GROSS_PAY,\n       SUM(CASE WHEN pd.ELEMENT_TYPE = 'TAX' THEN ABS(pd.AMOUNT) ELSE 0 END) AS TOTAL_TAXES,\n       "
+    },
+    "HRMS.VW_PENDING_APPROVALS": {
+      "name": "HRMS.VW_PENDING_APPROVALS",
+      "tables_used": [],
+      "joins": [],
+      "query_snippet": "SELECT 'LEAVE' AS APPROVAL_TYPE,\n       lr.REQUEST_ID AS ITEM_ID,\n       lr.APPROVER_EMP_ID AS APPROVER_ID,\n       e.FIRST_NAME || ' ' || e.LAST_NAME AS REQUESTOR_NAME,\n       lt.LEAVE_TYPE_NAME AS ITEM_DESCRIPTION,\n       lr."
+    }
+  },
+  "triggers": {
+    "TRG_SALARY_AUDIT": {
+      "name": "TRG_SALARY_AUDIT",
+      "file": "trg_audit.sql",
+      "timing": "AFTER",
+      "events": "INSERT OR UPDATE OR DELETE",
+      "table": "HRMS.SALARY_RECORDS",
+      "business_rules": [],
+      "rules": [
+        "When a new salary record is inserted, the audit log must capture employee ID, base salary, and effective date to establish the initial compensation record",
+        "When a salary record is updated, both the previous and new base salary and active status must be preserved in the audit trail to support compensation change reviews",
+        "When a salary record is deleted, the employee identity and last known salary must be preserved in the audit log to maintain a complete compensation history",
+        "Only STATUS column changes on leave requests are subject to audit tracking; updates to other fields (e.g. comments, dates) do not generate an audit record",
+        "Every structural change to a department record (creation, modification, or removal) must be captured in the audit log to support organisational governance and accountability",
+        "For department changes, the database session user (USER) is always recorded as the actor; there is no application-supplied MODIFIED_BY column on this table"
+      ],
+      "pkg_calls": [
+        "PKG_AUDIT.log_action"
+      ]
+    },
+    "TRG_DEPARTMENT_AUDIT": {
+      "name": "TRG_DEPARTMENT_AUDIT",
+      "file": "trg_audit.sql",
+      "timing": "AFTER",
+      "events": "INSERT OR UPDATE OR DELETE",
+      "table": "HRMS.DEPARTMENTS",
+      "business_rules": [],
+      "rules": [
+        "When a new salary record is inserted, the audit log must capture employee ID, base salary, and effective date to establish the initial compensation record",
+        "When a salary record is updated, both the previous and new base salary and active status must be preserved in the audit trail to support compensation change reviews",
+        "When a salary record is deleted, the employee identity and last known salary must be preserved in the audit log to maintain a complete compensation history",
+        "Only STATUS column changes on leave requests are subject to audit tracking; updates to other fields (e.g. comments, dates) do not generate an audit record",
+        "Every structural change to a department record (creation, modification, or removal) must be captured in the audit log to support organisational governance and accountability",
+        "For department changes, the database session user (USER) is always recorded as the actor; there is no application-supplied MODIFIED_BY column on this table"
+      ],
+      "pkg_calls": [
+        "PKG_AUDIT.log_action"
+      ]
+    },
+    "TRG_EMP_BEFORE_INSERT": {
+      "name": "TRG_EMP_BEFORE_INSERT",
+      "file": "trg_employees.sql",
+      "timing": "BEFORE",
+      "events": "INSERT",
+      "table": "HRMS.EMPLOYEES",
+      "business_rules": [
+        "Only active employees (ACTIVE_FLAG = 'Y') are considered when checking email uniqueness; inactive or terminated employee records do not block reuse of an email address"
+      ],
+      "rules": [
+        "CREATED_BY must be populated; defaults to the current database session user if not supplied by the caller",
+        "CREATED_DATE must be populated; defaults to the current system timestamp if not supplied by the caller",
+        "A new employee record is considered active by default unless ACTIVE_FLAG is explicitly set to a different value",
+        "A new employee record defaults to ACTIVE employment status unless an alternative status is explicitly provided on insert",
+        "Hire date cannot be more than 180 days in the future, preventing erroneous or speculative pre-dated hires beyond a 6-month planning horizon",
+        "Inserting an employee with a hire date more than 180 days in the future is not permitted",
+        "An email address already assigned to an active employee cannot be reused for a new employee record",
+        "Inserting an employee whose email is already in use by an active employee record is not permitted",
+        "A terminated employee cannot be directly reactivated by changing EMPLOYMENT_STATUS from TERMINATED to ACTIVE via a plain UPDATE; the formal rehire process (PKG_EMPLOYEE.rehire_employee) must be used instead",
+        "Bypassing the rehire process to reactivate a terminated employee is not permitted",
+        "Every change to an employee's EMPLOYMENT_STATUS must be recorded in the EMPLOYEE_HISTORY audit table with the old and new status values",
+        "Every change to an employee's department assignment (DEPT_ID) must be recorded in the EMPLOYEE_HISTORY audit table as a DEPARTMENT_CHANGE event; NULL department is treated as a distinct value to catch assignments to or from an unassigned state",
+        "Every change to an employee's job assignment (JOB_ID) must be recorded in the EMPLOYEE_HISTORY audit table as a JOB_CHANGE event; NULL job is treated as a distinct value to catch assignments to or from an unassigned state",
+        "Physical deletion of employee records is never permitted; callers must deactivate a record by setting ACTIVE_FLAG to 'N' or by running the formal termination process"
+      ],
+      "pkg_calls": [
+        "PKG_EMPLOYEE.rehire_employee"
+      ]
+    },
+    "TRG_EMP_BEFORE_UPDATE": {
+      "name": "TRG_EMP_BEFORE_UPDATE",
+      "file": "trg_employees.sql",
+      "timing": "BEFORE",
+      "events": "UPDATE",
+      "table": "HRMS.EMPLOYEES",
+      "business_rules": [
+        "Only active employees (ACTIVE_FLAG = 'Y') are considered when checking email uniqueness; inactive or terminated employee records do not block reuse of an email address"
+      ],
+      "rules": [
+        "CREATED_BY must be populated; defaults to the current database session user if not supplied by the caller",
+        "CREATED_DATE must be populated; defaults to the current system timestamp if not supplied by the caller",
+        "A new employee record is considered active by default unless ACTIVE_FLAG is explicitly set to a different value",
+        "A new employee record defaults to ACTIVE employment status unless an alternative status is explicitly provided on insert",
+        "Hire date cannot be more than 180 days in the future, preventing erroneous or speculative pre-dated hires beyond a 6-month planning horizon",
+        "Inserting an employee with a hire date more than 180 days in the future is not permitted",
+        "An email address already assigned to an active employee cannot be reused for a new employee record",
+        "Inserting an employee whose email is already in use by an active employee record is not permitted",
+        "A terminated employee cannot be directly reactivated by changing EMPLOYMENT_STATUS from TERMINATED to ACTIVE via a plain UPDATE; the formal rehire process (PKG_EMPLOYEE.rehire_employee) must be used instead",
+        "Bypassing the rehire process to reactivate a terminated employee is not permitted",
+        "Every change to an employee's EMPLOYMENT_STATUS must be recorded in the EMPLOYEE_HISTORY audit table with the old and new status values",
+        "Every change to an employee's department assignment (DEPT_ID) must be recorded in the EMPLOYEE_HISTORY audit table as a DEPARTMENT_CHANGE event; NULL department is treated as a distinct value to catch assignments to or from an unassigned state",
+        "Every change to an employee's job assignment (JOB_ID) must be recorded in the EMPLOYEE_HISTORY audit table as a JOB_CHANGE event; NULL job is treated as a distinct value to catch assignments to or from an unassigned state",
+        "Physical deletion of employee records is never permitted; callers must deactivate a record by setting ACTIVE_FLAG to 'N' or by running the formal termination process"
+      ],
+      "pkg_calls": [
+        "PKG_EMPLOYEE.rehire_employee"
+      ]
+    },
+    "TRG_EMP_INSTEAD_OF_DELETE": {
+      "name": "TRG_EMP_INSTEAD_OF_DELETE",
+      "file": "trg_employees.sql",
+      "timing": "BEFORE",
+      "events": "DELETE",
+      "table": "HRMS.EMPLOYEES",
+      "business_rules": [
+        "Only active employees (ACTIVE_FLAG = 'Y') are considered when checking email uniqueness; inactive or terminated employee records do not block reuse of an email address"
+      ],
+      "rules": [
+        "CREATED_BY must be populated; defaults to the current database session user if not supplied by the caller",
+        "CREATED_DATE must be populated; defaults to the current system timestamp if not supplied by the caller",
+        "A new employee record is considered active by default unless ACTIVE_FLAG is explicitly set to a different value",
+        "A new employee record defaults to ACTIVE employment status unless an alternative status is explicitly provided on insert",
+        "Hire date cannot be more than 180 days in the future, preventing erroneous or speculative pre-dated hires beyond a 6-month planning horizon",
+        "Inserting an employee with a hire date more than 180 days in the future is not permitted",
+        "An email address already assigned to an active employee cannot be reused for a new employee record",
+        "Inserting an employee whose email is already in use by an active employee record is not permitted",
+        "A terminated employee cannot be directly reactivated by changing EMPLOYMENT_STATUS from TERMINATED to ACTIVE via a plain UPDATE; the formal rehire process (PKG_EMPLOYEE.rehire_employee) must be used instead",
+        "Bypassing the rehire process to reactivate a terminated employee is not permitted",
+        "Every change to an employee's EMPLOYMENT_STATUS must be recorded in the EMPLOYEE_HISTORY audit table with the old and new status values",
+        "Every change to an employee's department assignment (DEPT_ID) must be recorded in the EMPLOYEE_HISTORY audit table as a DEPARTMENT_CHANGE event; NULL department is treated as a distinct value to catch assignments to or from an unassigned state",
+        "Every change to an employee's job assignment (JOB_ID) must be recorded in the EMPLOYEE_HISTORY audit table as a JOB_CHANGE event; NULL job is treated as a distinct value to catch assignments to or from an unassigned state",
+        "Physical deletion of employee records is never permitted; callers must deactivate a record by setting ACTIVE_FLAG to 'N' or by running the formal termination process"
+      ],
+      "pkg_calls": [
+        "PKG_EMPLOYEE.rehire_employee"
+      ]
+    }
+  }
+}

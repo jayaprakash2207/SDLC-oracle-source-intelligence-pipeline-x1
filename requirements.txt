@@ -1,0 +1,12 @@
+# Oracle Source Intelligence Pipeline — Python Dependencies
+# Install with: pip install -r requirements.txt
+
+# Graphify — knowledge graph from source code
+graphifyy>=0.9.41
+graphifyy[sql]
+
+# SQL parsing support
+sqlparse>=0.5.0
+
+# ANTLR4 runtime (grammar-based parsing)
+antlr4-python3-runtime>=4.13.0

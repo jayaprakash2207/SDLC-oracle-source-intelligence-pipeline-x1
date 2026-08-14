@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+venv/
+.venv/
+
+# Graphify cache (auto-regenerated on run)
+output/graphify-out/cache/
+output/graphify-out/.graphify_root
+output/graphify-out/.graphify_labels.json
+output/graphify-out/.graphify_labels.json.sig

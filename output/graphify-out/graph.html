@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>graphify - graphify-out/graph.html</title>
+<script src="https://unpkg.com/vis-network@9.1.6/standalone/umd/vis-network.min.js"
+        integrity="sha384-Ux6phic9PEHJ38YtrijhkzyJ8yQlH8i/+buBR8s3mAZOJrP1gwyvAcIYl3GWtpX1"
+        crossorigin="anonymous"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0f0f1a; color: #e0e0e0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; display: flex; height: 100vh; overflow: hidden; }
+  #graph { flex: 1; }
+  #sidebar { width: 280px; background: #1a1a2e; border-left: 1px solid #2a2a4e; display: flex; flex-direction: column; overflow: hidden; }
+  #search-wrap { padding: 12px; border-bottom: 1px solid #2a2a4e; }
+  #search { width: 100%; background: #0f0f1a; border: 1px solid #3a3a5e; color: #e0e0e0; padding: 7px 10px; border-radius: 6px; font-size: 13px; outline: none; }
+  #search:focus { border-color: #4E79A7; }
+  #search-results { max-height: 140px; overflow-y: auto; padding: 4px 12px; border-bottom: 1px solid #2a2a4e; display: none; }
+  .search-item { padding: 4px 6px; cursor: pointer; border-radius: 4px; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .search-item:hover { background: #2a2a4e; }
+  #info-panel { padding: 14px; border-bottom: 1px solid #2a2a4e; min-height: 140px; }
+  #info-panel h3 { font-size: 13px; color: #aaa; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+  #info-content { font-size: 13px; color: #ccc; line-height: 1.6; }
+  #info-content .field { margin-bottom: 5px; }
+  #info-content .field b { color: #e0e0e0; }
+  #info-content .empty { color: #555; font-style: italic; }
+  .neighbor-link { display: block; padding: 2px 6px; margin: 2px 0; border-radius: 3px; cursor: pointer; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-left: 3px solid #333; }
+  .neighbor-link:hover { background: #2a2a4e; }
+  #neighbors-list { max-height: 160px; overflow-y: auto; margin-top: 4px; }
+  #legend-wrap { flex: 1; overflow-y: auto; padding: 12px; }
+  #legend-wrap h3 { font-size: 13px; color: #aaa; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .legend-item { display: flex; align-items: center; gap: 8px; padding: 4px 0; cursor: pointer; border-radius: 4px; font-size: 12px; }
+  .legend-item:hover { background: #2a2a4e; padding-left: 4px; }
+  .legend-item.dimmed { opacity: 0.35; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+  .legend-label { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .legend-count { color: #666; font-size: 11px; }
+  #stats { padding: 10px 14px; border-top: 1px solid #2a2a4e; font-size: 11px; color: #555; }
+  #legend-controls { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; padding: 4px 0; }
+  #legend-controls label { display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 12px; color: #aaa; user-select: none; }
+  #legend-controls label:hover { color: #e0e0e0; }
+  .legend-cb, #select-all-cb { appearance: none; -webkit-appearance: none; width: 14px; height: 14px; border: 1.5px solid #3a3a5e; border-radius: 3px; background: #0f0f1a; cursor: pointer; position: relative; flex-shrink: 0; }
+  .legend-cb:checked, #select-all-cb:checked { background: #4E79A7; border-color: #4E79A7; }
+  .legend-cb:checked::after, #select-all-cb:checked::after { content: ''; position: absolute; left: 3.5px; top: 1px; width: 4px; height: 7px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+  #select-all-cb:indeterminate { background: #4E79A7; border-color: #4E79A7; }
+  #select-all-cb:indeterminate::after { content: ''; position: absolute; left: 2px; top: 5px; width: 8px; height: 2px; background: #fff; border: none; transform: none; }
+</style>
+</head>
+<body>
+<div id="graph"></div>
+<div id="sidebar">
+  <div id="search-wrap">
+    <input id="search" type="text" placeholder="Search nodes..." autocomplete="off">
+    <div id="search-results"></div>
+  </div>
+  <div id="info-panel">
+    <h3>Node Info</h3>
+    <div id="info-content"><span class="empty">Click a node to inspect it</span></div>
+  </div>
+  <div id="legend-wrap">
+    <h3>Communities</h3>
+    <div id="legend-controls">
+      <label><input type="checkbox" id="select-all-cb" checked onchange="toggleAllCommunities(!this.checked)">Select All</label>
+    </div>
+    <div id="legend"></div>
+  </div>
+  <div id="stats">74 nodes &middot; 71 edges &middot; 15 communities</div>
+</div>
+<script>
+const RAW_NODES = [{"id": "data_seed_01_reference_data", "label": "01_reference_data.sql", "color": {"background": "#FF9DA7", "border": "#FF9DA7", "highlight": {"background": "#ffffff", "border": "#FF9DA7"}}, "size": 10.0, "font": {"size": 0, "color": "#ffffff"}, "title": "01_reference_data.sql", "community": 7, "community_name": "01_reference_data.sql", "source_file": "data/seed/01_reference_data.sql", "file_type": "code", "degree": 0}, {"id": "data_seed_02_employee_data", "label": "02_employee_data.sql", "color": {"background": "#9C755F", "border": "#9C755F", "highlight": {"background": "#ffffff", "border": "#9C755F"}}, "size": 10.0, "font": {"size": 0, "color": "#ffffff"}, "title": "02_employee_data.sql", "community": 8, "community_name": "02_employee_data.sql", "source_file": "data/seed/02_employee_data.sql", "file_type": "code", "degree": 0}, {"id": "forms_libraries_hrms_common_lib_pll", "label": "HRMS_COMMON_LIB.pll.sql", "color": {"background": "#BAB0AC", "border": "#BAB0AC", "highlight": {"background": "#ffffff", "border": "#BAB0AC"}}, "size": 10.0, "font": {"size": 0, "color": "#ffffff"}, "title": "HRMS_COMMON_LIB.pll.sql", "community": 9, "community_name": "HRMS_COMMON_LIB.pll.sql", "source_file": "forms/libraries/HRMS_COMMON_LIB.pll.sql", "file_type": "code", "degree": 0}, {"id": "forms_libraries_hrms_validation_lib_pll", "label": "HRMS_VALIDATION_LIB.pll.sql", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 10.0, "font": {"size": 0, "color": "#ffffff"}, "title": "HRMS_VALIDATION_LIB.pll.sql", "community": 10, "community_name": "HRMS_VALIDATION_LIB.pll.sql", "source_file": "forms/libraries/HRMS_VALIDATION_LIB.pll.sql", "file_type": "code", "degree": 0}, {"id": "forms_menus_hrms_menu_mmb", "label": "HRMS_MENU.mmb.sql", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 10.0, "font": {"size": 0, "color": "#ffffff"}, "title": "HRMS_MENU.mmb.sql", "community": 11, "community_name": "HRMS_MENU.mmb.sql", "source_file": "forms/menus/HRMS_MENU.mmb.sql", "file_type": "code", "degree": 0}, {"id": "plsql_triggers_trg_audit", "label": "trg_audit.sql", "color": {"background": "#E15759", "border": "#E15759", "highlight": {"background": "#ffffff", "border": "#E15759"}}, "size": 10.0, "font": {"size": 0, "color": "#ffffff"}, "title": "trg_audit.sql", "community": 12, "community_name": "trg_audit.sql", "source_file": "plsql/triggers/trg_audit.sql", "file_type": "code", "degree": 0}, {"id": "plsql_triggers_trg_employees", "label": "trg_employees.sql", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 10.0, "font": {"size": 0, "color": "#ffffff"}, "title": "trg_employees.sql", "community": 13, "community_name": "trg_employees.sql", "source_file": "plsql/triggers/trg_employees.sql", "file_type": "code", "degree": 0}, {"id": "schema_sequences_hrms_sequences", "label": "hrms_sequences.sql", "color": {"background": "#59A14F", "border": "#59A14F", "highlight": {"background": "#ffffff", "border": "#59A14F"}}, "size": 10.0, "font": {"size": 0, "color": "#ffffff"}, "title": "hrms_sequences.sql", "community": 14, "community_name": "hrms_sequences.sql", "source_file": "schema/sequences/hrms_sequences.sql", "file_type": "code", "degree": 0}, {"id": "schema_tables_01_core_tables", "label": "01_core_tables.sql", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 36.7, "font": {"size": 12, "color": "#ffffff"}, "title": "01_core_tables.sql", "community": 3, "community_name": "01_core_tables.sql", "source_file": "schema/tables/01_core_tables.sql", "file_type": "code", "degree": 8}, {"id": "schema_tables_01_core_tables_hrms_departments", "label": "HRMS.DEPARTMENTS", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "HRMS.DEPARTMENTS", "community": 3, "community_name": "01_core_tables.sql", "source_file": "schema/tables/01_core_tables.sql", "file_type": "code", "degree": 1}, {"id": "schema_tables_01_core_tables_hrms_locations", "label": "HRMS.LOCATIONS", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "HRMS.LOCATIONS", "community": 3, "community_name": "01_core_tables.sql", "source_file": "schema/tables/01_core_tables.sql", "file_type": "code", "degree": 1}, {"id": "schema_tables_01_core_tables_hrms_job_grades", "label": "HRMS.JOB_GRADES", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "HRMS.JOB_GRADES", "community": 3, "community_name": "01_core_tables.sql", "source_file": "schema/tables/01_core_tables.sql", "file_type": "code", "degree": 1}, {"id": "schema_tables_01_core_tables_hrms_job_titles", "label": "HRMS.JOB_TITLES", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "HRMS.JOB_TITLES", "community": 3, "community_name": "01_core_tables.sql", "source_file": "schema/tables/01_core_tables.sql", "file_type": "code", "degree": 1}, {"id": "schema_tables_01_core_tables_hrms_employees", "label": "HRMS.EMPLOYEES", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "HRMS.EMPLOYEES", "community": 3, "community_name": "01_core_tables.sql", "source_file": "schema/tables/01_core_tables.sql", "file_type": "code", "degree": 1}, {"id": "schema_tables_01_core_tables_hrms_employee_history", "label": "HRMS.EMPLOYEE_HISTORY", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "HRMS.EMPLOYEE_HISTORY", "community": 3, "community_name": "01_core_tables.sql", "source_file": "schema/tables/01_core_tables.sql", "file_type": "code", "degree": 1}, {"id": "schema_tables_01_core_tables_hrms_employee_dependents", "label": "HRMS.EMPLOYEE_DEPENDENTS", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "HRMS.EMPLOYEE_DEPENDENTS", "community": 3, "community_name": "01_core_tables.sql", "source_file": "schema/tables/01_core_tables.sql", "file_type": "code", "degree": 1}, {"id": "schema_tables_01_core_tables_hrms_emergency_contacts", "label": "HRMS.EMERGENCY_CONTACTS", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "HRMS.EMERGENCY_CONTACTS", "community": 3, "community_name": "01_core_tables.sql", "source_file": "schema/tables/01_core_tables.sql", "file_type": "code", "degree": 1}, {"id": "schema_tables_02_payroll_tables", "label": "02_payroll_tables.sql", "color": {"background": "#E15759", "border": "#E15759", "highlight": {"background": "#ffffff", "border": "#E15759"}}, "size": 40.0, "font": {"size": 12, "color": "#ffffff"}, "title": "02_payroll_tables.sql", "community": 2, "community_name": "02_payroll_tables.sql", "source_file": "schema/tables/02_payroll_tables.sql", "file_type": "code", "degree": 9}, {"id": "schema_tables_02_payroll_tables_hrms_salary_records", "label": "HRMS.SALARY_RECORDS", "color": {"background": "#E15759", "border": "#E15759", "highlight": {"background": "#ffffff", "border": "#E15759"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "HRMS.SALARY_RECORDS", "community": 2, "community_name": "02_payroll_tables.sql", "source_file": "schema/tables/02_payroll_tables.sql", "file_type": "code", "degree": 1}, {"id": "schema_tables_02_payroll_tables_hrms_pay_elements", "label": "HRMS.PAY_ELEMENTS", "color": {"background": "#E15759", "border": "#E15759", "highlight": {"background": "#ffffff", "border": "#E15759"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "HRMS.PAY_ELEMENTS", "community": 2, "community_name": "02_payroll_tables.sql", "source_file": "schema/tables/02_payroll_tables.sql", "file_type": "code", "degree": 1}, {"id": "schema_tables_02_payroll_tables_hrms_employee_pay_elements", "label": "HRMS.EMPLOYEE_PAY_ELEMENTS", "color": {"background": "#E15759", "border": "#E15759", "highlight": {"background": "#ffffff", "border": "#E15759"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "HRMS.EMPLOYEE_PAY_ELEMENTS", "community": 2, "community_name": "02_payroll_tables.sql", "source_file": "schema/tables/02_payroll_tables.sql", "file_type": "code", "degree": 1}, {"id": "schema_tables_02_payroll_tables_hrms_pay_periods", "label": "HRMS.PAY_PERIODS", "color": {"background": "#E15759", "border": "#E15759", "highlight": {"background": "#ffffff", "border": "#E15759"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "HRMS.PAY_PERIODS", "community": 2, "community_name": "02_payroll_tables.sql", "source_file": "schema/tables/02_payroll_tables.sql", "file_type": "code", "degree": 1}, {"id": "schema_tables_02_payroll_tables_hrms_payroll_runs", "label": "HRMS.PAYROLL_RUNS", "color": {"background": "#E15759", "border": "#E15759", "highlight": {"background": "#ffffff", "border": "#E15759"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "HRMS.PAYROLL_RUNS", "community": 2, "community_name": "02_payroll_tables.sql", "source_file": "schema/tables/02_payroll_tables.sql", "file_type": "code", "degree": 1}, {"id": "schema_tables_02_payroll_tables_hrms_payroll_details", "label": "HRMS.PAYROLL_DETAILS", "color": {"background": "#E15759", "border": "#E15759", "highlight": {"background": "#ffffff", "border": "#E15759"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "HRMS.PAYROLL_DETAILS", "community": 2, "community_name": "02_payroll_tables.sql", "source_file": "schema/tables/02_payroll_tables.sql", "file_type": "code", "degree": 1}, {"id": "schema_tables_02_payroll_tables_hrms_tax_brackets", "label": "HRMS.TAX_BRACKETS", "color": {"background": "#E15759", "border": "#E15759", "highlight": {"background": "#ffffff", "border": "#E15759"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "HRMS.TAX_BRACKETS", "community": 2, "community_name": "02_payroll_tables.sql", "source_file": "schema/tables/02_payroll_tables.sql", "file_type": "code", "degree": 1}, {"id": "schema_tables_02_payroll_tables_hrms_employee_tax_info", "label": "HRMS.EMPLOYEE_TAX_INFO", "color": {"background": "#E15759", "border": "#E15759", "highlight": {"background": "#ffffff", "border": "#E15759"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "HRMS.EMPLOYEE_TAX_INFO", "community": 2, "community_name": "02_payroll_tables.sql", "source_file": "schema/tables/02_payroll_tables.sql", "file_type": "code", "degree": 1}, {"id": "schema_tables_02_payroll_tables_hrms_employee_bank_accounts", "label": "HRMS.EMPLOYEE_BANK_ACCOUNTS", "color": {"background": "#E15759", "border": "#E15759", "highlight": {"background": "#ffffff", "border": "#E15759"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "HRMS.EMPLOYEE_BANK_ACCOUNTS", "community": 2, "community_name": "02_payroll_tables.sql", "source_file": "schema/tables/02_payroll_tables.sql", "file_type": "code", "degree": 1}, {"id": "schema_tables_03_leave_tables", "label": "03_leave_tables.sql", "color": {"background": "#EDC948", "border": "#EDC948", "highlight": {"background": "#ffffff", "border": "#EDC948"}}, "size": 26.7, "font": {"size": 12, "color": "#ffffff"}, "title": "03_leave_tables.sql", "community": 5, "community_name": "03_leave_tables.sql", "source_file": "schema/tables/03_leave_tables.sql", "file_type": "code", "degree": 5}, {"id": "schema_tables_03_leave_tables_hrms_leave_types", "label": "HRMS.LEAVE_TYPES", "color": {"background": "#EDC948", "border": "#EDC948", "highlight": {"background": "#ffffff", "border": "#EDC948"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "HRMS.LEAVE_TYPES", "community": 5, "community_name": "03_leave_tables.sql", "source_file": "schema/tables/03_leave_tables.sql", "file_type": "code", "degree": 1}, {"id": "schema_tables_03_leave_tables_hrms_leave_balances", "label": "HRMS.LEAVE_BALANCES", "color": {"background": "#EDC948", "border": "#EDC948", "highlight": {"background": "#ffffff", "border": "#EDC948"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "HRMS.LEAVE_BALANCES", "community": 5, "community_name": "03_leave_tables.sql", "source_file": "schema/tables/03_leave_tables.sql", "file_type": "code", "degree": 1}, {"id": "schema_tables_03_leave_tables_hrms_leave_requests", "label": "HRMS.LEAVE_REQUESTS", "color": {"background": "#EDC948", "border": "#EDC948", "highlight": {"background": "#ffffff", "border": "#EDC948"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "HRMS.LEAVE_REQUESTS", "community": 5, "community_name": "03_leave_tables.sql", "source_file": "schema/tables/03_leave_tables.sql", "file_type": "code", "degree": 1}, {"id": "schema_tables_03_leave_tables_hrms_leave_accrual_log", "label": "HRMS.LEAVE_ACCRUAL_LOG", "color": {"background": "#EDC948", "border": "#EDC948", "highlight": {"background": "#ffffff", "border": "#EDC948"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "HRMS.LEAVE_ACCRUAL_LOG", "community": 5, "community_name": "03_leave_tables.sql", "source_file": "schema/tables/03_leave_tables.sql", "file_type": "code", "degree": 1}, {"id": "schema_tables_03_leave_tables_hrms_holidays", "label": "HRMS.HOLIDAYS", "color": {"background": "#EDC948", "border": "#EDC948", "highlight": {"background": "#ffffff", "border": "#EDC948"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "HRMS.HOLIDAYS", "community": 5, "community_name": "03_leave_tables.sql", "source_file": "schema/tables/03_leave_tables.sql", "file_type": "code", "degree": 1}, {"id": "schema_tables_04_performance_tables", "label": "04_performance_tables.sql", "color": {"background": "#59A14F", "border": "#59A14F", "highlight": {"background": "#ffffff", "border": "#59A14F"}}, "size": 36.7, "font": {"size": 12, "color": "#ffffff"}, "title": "04_performance_tables.sql", "community": 4, "community_name": "04_performance_tables.sql", "source_file": "schema/tables/04_performance_tables.sql", "file_type": "code", "degree": 8}, {"id": "schema_tables_04_performance_tables_hrms_review_cycles", "label": "HRMS.REVIEW_CYCLES", "color": {"background": "#59A14F", "border": "#59A14F", "highlight": {"background": "#ffffff", "border": "#59A14F"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "HRMS.REVIEW_CYCLES", "community": 4, "community_name": "04_performance_tables.sql", "source_file": "schema/tables/04_performance_tables.sql", "file_type": "code", "degree": 1}, {"id": "schema_tables_04_performance_tables_hrms_performance_reviews", "label": "HRMS.PERFORMANCE_REVIEWS", "color": {"background": "#59A14F", "border": "#59A14F", "highlight": {"background": "#ffffff", "border": "#59A14F"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "HRMS.PERFORMANCE_REVIEWS", "community": 4, "community_name": "04_performance_tables.sql", "source_file": "schema/tables/04_performance_tables.sql", "file_type": "code", "degree": 1}, {"id": "schema_tables_04_performance_tables_hrms_performance_goals", "label": "HRMS.PERFORMANCE_GOALS", "color": {"background": "#59A14F", "border": "#59A14F", "highlight": {"background": "#ffffff", "border": "#59A14F"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "HRMS.PERFORMANCE_GOALS", "community": 4, "community_name": "04_performance_tables.sql", "source_file": "schema/tables/04_performance_tables.sql", "file_type": "code", "degree": 1}, {"id": "schema_tables_04_performance_tables_hrms_audit_log", "label": "HRMS.AUDIT_LOG", "color": {"background": "#59A14F", "border": "#59A14F", "highlight": {"background": "#ffffff", "border": "#59A14F"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "HRMS.AUDIT_LOG", "community": 4, "community_name": "04_performance_tables.sql", "source_file": "schema/tables/04_performance_tables.sql", "file_type": "code", "degree": 1}, {"id": "schema_tables_04_performance_tables_hrms_system_parameters", "label": "HRMS.SYSTEM_PARAMETERS", "color": {"background": "#59A14F", "border": "#59A14F", "highlight": {"background": "#ffffff", "border": "#59A14F"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "HRMS.SYSTEM_PARAMETERS", "community": 4, "community_name": "04_performance_tables.sql", "source_file": "schema/tables/04_performance_tables.sql", "file_type": "code", "degree": 1}, {"id": "schema_tables_04_performance_tables_hrms_notification_queue", "label": "HRMS.NOTIFICATION_QUEUE", "color": {"background": "#59A14F", "border": "#59A14F", "highlight": {"background": "#ffffff", "border": "#59A14F"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "HRMS.NOTIFICATION_QUEUE", "community": 4, "community_name": "04_performance_tables.sql", "source_file": "schema/tables/04_performance_tables.sql", "file_type": "code", "degree": 1}, {"id": "schema_tables_04_performance_tables_hrms_user_sessions", "label": "HRMS.USER_SESSIONS", "color": {"background": "#59A14F", "border": "#59A14F", "highlight": {"background": "#ffffff", "border": "#59A14F"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "HRMS.USER_SESSIONS", "community": 4, "community_name": "04_performance_tables.sql", "source_file": "schema/tables/04_performance_tables.sql", "file_type": "code", "degree": 1}, {"id": "schema_tables_04_performance_tables_hrms_lookup_values", "label": "HRMS.LOOKUP_VALUES", "color": {"background": "#59A14F", "border": "#59A14F", "highlight": {"background": "#ffffff", "border": "#59A14F"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "HRMS.LOOKUP_VALUES", "community": 4, "community_name": "04_performance_tables.sql", "source_file": "schema/tables/04_performance_tables.sql", "file_type": "code", "degree": 1}, {"id": "schema_views_hrms_views", "label": "hrms_views.sql", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 30.0, "font": {"size": 12, "color": "#ffffff"}, "title": "hrms_views.sql", "community": 1, "community_name": "HRMS.VW_ACTIVE_EMPLOYEES", "source_file": "schema/views/hrms_views.sql", "file_type": "code", "degree": 6}, {"id": "schema_views_hrms_views_hrms_vw_active_employees", "label": "HRMS.VW_ACTIVE_EMPLOYEES", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 33.3, "font": {"size": 12, "color": "#ffffff"}, "title": "HRMS.VW_ACTIVE_EMPLOYEES", "community": 1, "community_name": "HRMS.VW_ACTIVE_EMPLOYEES", "source_file": "schema/views/hrms_views.sql", "file_type": "code", "degree": 7}, {"id": "employees", "label": "EMPLOYEES", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 30.0, "font": {"size": 12, "color": "#ffffff"}, "title": "EMPLOYEES", "community": 1, "community_name": "HRMS.VW_ACTIVE_EMPLOYEES", "source_file": "", "file_type": "code", "degree": 6}, {"id": "departments", "label": "DEPARTMENTS", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 20.0, "font": {"size": 12, "color": "#ffffff"}, "title": "DEPARTMENTS", "community": 1, "community_name": "HRMS.VW_ACTIVE_EMPLOYEES", "source_file": "", "file_type": "code", "degree": 3}, {"id": "job_titles", "label": "JOB_TITLES", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 16.7, "font": {"size": 12, "color": "#ffffff"}, "title": "JOB_TITLES", "community": 1, "community_name": "HRMS.VW_ACTIVE_EMPLOYEES", "source_file": "", "file_type": "code", "degree": 2}, {"id": "job_grades", "label": "JOB_GRADES", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 16.7, "font": {"size": 12, "color": "#ffffff"}, "title": "JOB_GRADES", "community": 1, "community_name": "HRMS.VW_ACTIVE_EMPLOYEES", "source_file": "", "file_type": "code", "degree": 2}, {"id": "locations", "label": "LOCATIONS", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "LOCATIONS", "community": 1, "community_name": "HRMS.VW_ACTIVE_EMPLOYEES", "source_file": "", "file_type": "code", "degree": 1}, {"id": "salary_records", "label": "SALARY_RECORDS", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 16.7, "font": {"size": 12, "color": "#ffffff"}, "title": "SALARY_RECORDS", "community": 1, "community_name": "HRMS.VW_ACTIVE_EMPLOYEES", "source_file": "", "file_type": "code", "degree": 2}, {"id": "schema_views_hrms_views_hrms_vw_org_hierarchy", "label": "HRMS.VW_ORG_HIERARCHY", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 16.7, "font": {"size": 12, "color": "#ffffff"}, "title": "HRMS.VW_ORG_HIERARCHY", "community": 1, "community_name": "HRMS.VW_ACTIVE_EMPLOYEES", "source_file": "schema/views/hrms_views.sql", "file_type": "code", "degree": 2}, {"id": "schema_views_hrms_views_hrms_vw_employee_compensation", "label": "HRMS.VW_EMPLOYEE_COMPENSATION", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 30.0, "font": {"size": 12, "color": "#ffffff"}, "title": "HRMS.VW_EMPLOYEE_COMPENSATION", "community": 1, "community_name": "HRMS.VW_ACTIVE_EMPLOYEES", "source_file": "schema/views/hrms_views.sql", "file_type": "code", "degree": 6}, {"id": "schema_views_hrms_views_hrms_vw_leave_summary", "label": "HRMS.VW_LEAVE_SUMMARY", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 26.7, "font": {"size": 12, "color": "#ffffff"}, "title": "HRMS.VW_LEAVE_SUMMARY", "community": 1, "community_name": "HRMS.VW_ACTIVE_EMPLOYEES", "source_file": "schema/views/hrms_views.sql", "file_type": "code", "degree": 5}, {"id": "leave_balances", "label": "LEAVE_BALANCES", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "LEAVE_BALANCES", "community": 1, "community_name": "HRMS.VW_ACTIVE_EMPLOYEES", "source_file": "", "file_type": "code", "degree": 1}, {"id": "leave_types", "label": "LEAVE_TYPES", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 16.7, "font": {"size": 12, "color": "#ffffff"}, "title": "LEAVE_TYPES", "community": 1, "community_name": "HRMS.VW_ACTIVE_EMPLOYEES", "source_file": "", "file_type": "code", "degree": 2}, {"id": "schema_views_hrms_views_hrms_vw_payroll_latest", "label": "HRMS.VW_PAYROLL_LATEST", "color": {"background": "#B07AA1", "border": "#B07AA1", "highlight": {"background": "#ffffff", "border": "#B07AA1"}}, "size": 26.7, "font": {"size": 12, "color": "#ffffff"}, "title": "HRMS.VW_PAYROLL_LATEST", "community": 6, "community_name": "HRMS.VW_PAYROLL_LATEST", "source_file": "schema/views/hrms_views.sql", "file_type": "code", "degree": 5}, {"id": "payroll_details", "label": "PAYROLL_DETAILS", "color": {"background": "#B07AA1", "border": "#B07AA1", "highlight": {"background": "#ffffff", "border": "#B07AA1"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "PAYROLL_DETAILS", "community": 6, "community_name": "HRMS.VW_PAYROLL_LATEST", "source_file": "", "file_type": "code", "degree": 1}, {"id": "payroll_runs", "label": "PAYROLL_RUNS", "color": {"background": "#B07AA1", "border": "#B07AA1", "highlight": {"background": "#ffffff", "border": "#B07AA1"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "PAYROLL_RUNS", "community": 6, "community_name": "HRMS.VW_PAYROLL_LATEST", "source_file": "", "file_type": "code", "degree": 1}, {"id": "pay_periods", "label": "PAY_PERIODS", "color": {"background": "#B07AA1", "border": "#B07AA1", "highlight": {"background": "#ffffff", "border": "#B07AA1"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "PAY_PERIODS", "community": 6, "community_name": "HRMS.VW_PAYROLL_LATEST", "source_file": "", "file_type": "code", "degree": 1}, {"id": "schema_views_hrms_views_hrms_vw_pending_approvals", "label": "HRMS.VW_PENDING_APPROVALS", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 30.0, "font": {"size": 12, "color": "#ffffff"}, "title": "HRMS.VW_PENDING_APPROVALS", "community": 1, "community_name": "HRMS.VW_ACTIVE_EMPLOYEES", "source_file": "schema/views/hrms_views.sql", "file_type": "code", "degree": 6}, {"id": "leave_requests", "label": "LEAVE_REQUESTS", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "LEAVE_REQUESTS", "community": 1, "community_name": "HRMS.VW_ACTIVE_EMPLOYEES", "source_file": "", "file_type": "code", "degree": 1}, {"id": "performance_reviews", "label": "PERFORMANCE_REVIEWS", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "PERFORMANCE_REVIEWS", "community": 1, "community_name": "HRMS.VW_ACTIVE_EMPLOYEES", "source_file": "", "file_type": "code", "degree": 1}, {"id": "review_cycles", "label": "REVIEW_CYCLES", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "REVIEW_CYCLES", "community": 1, "community_name": "HRMS.VW_ACTIVE_EMPLOYEES", "source_file": "", "file_type": "code", "degree": 1}, {"id": "readme", "label": "README.md", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "README.md", "community": 0, "community_name": "Oracle Forms Legacy HR System", "source_file": "README.md", "file_type": "document", "degree": 1}, {"id": "readme_oracle_forms_legacy_hr_system", "label": "Oracle Forms Legacy HR System", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 30.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Oracle Forms Legacy HR System", "community": 0, "community_name": "Oracle Forms Legacy HR System", "source_file": "README.md", "file_type": "document", "degree": 6}, {"id": "readme_application_overview", "label": "Application Overview", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "Application Overview", "community": 0, "community_name": "Oracle Forms Legacy HR System", "source_file": "README.md", "file_type": "document", "degree": 1}, {"id": "readme_architecture", "label": "Architecture", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "Architecture", "community": 0, "community_name": "Oracle Forms Legacy HR System", "source_file": "README.md", "file_type": "document", "degree": 1}, {"id": "readme_directory_structure", "label": "Directory Structure", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "Directory Structure", "community": 0, "community_name": "Oracle Forms Legacy HR System", "source_file": "README.md", "file_type": "document", "degree": 1}, {"id": "readme_key_technical_characteristics", "label": "Key Technical Characteristics", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 26.7, "font": {"size": 12, "color": "#ffffff"}, "title": "Key Technical Characteristics", "community": 0, "community_name": "Oracle Forms Legacy HR System", "source_file": "README.md", "file_type": "document", "degree": 5}, {"id": "readme_oracle_forms_specifics", "label": "Oracle Forms Specifics", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "Oracle Forms Specifics", "community": 0, "community_name": "Oracle Forms Legacy HR System", "source_file": "README.md", "file_type": "document", "degree": 1}, {"id": "readme_pl_sql_patterns", "label": "PL/SQL Patterns", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "PL/SQL Patterns", "community": 0, "community_name": "Oracle Forms Legacy HR System", "source_file": "README.md", "file_type": "document", "degree": 1}, {"id": "readme_database_patterns", "label": "Database Patterns", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "Database Patterns", "community": 0, "community_name": "Oracle Forms Legacy HR System", "source_file": "README.md", "file_type": "document", "degree": 1}, {"id": "readme_known_technical_debt", "label": "Known Technical Debt", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "Known Technical Debt", "community": 0, "community_name": "Oracle Forms Legacy HR System", "source_file": "README.md", "file_type": "document", "degree": 1}, {"id": "readme_license", "label": "License", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 13.3, "font": {"size": 0, "color": "#ffffff"}, "title": "License", "community": 0, "community_name": "Oracle Forms Legacy HR System", "source_file": "README.md", "file_type": "document", "degree": 1}];
+const RAW_EDGES = [{"from": "schema_tables_01_core_tables", "to": "schema_tables_01_core_tables_hrms_departments", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_tables_01_core_tables", "to": "schema_tables_01_core_tables_hrms_emergency_contacts", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_tables_01_core_tables", "to": "schema_tables_01_core_tables_hrms_employee_dependents", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_tables_01_core_tables", "to": "schema_tables_01_core_tables_hrms_employee_history", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_tables_01_core_tables", "to": "schema_tables_01_core_tables_hrms_employees", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_tables_01_core_tables", "to": "schema_tables_01_core_tables_hrms_job_grades", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_tables_01_core_tables", "to": "schema_tables_01_core_tables_hrms_job_titles", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_tables_01_core_tables", "to": "schema_tables_01_core_tables_hrms_locations", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_tables_02_payroll_tables", "to": "schema_tables_02_payroll_tables_hrms_employee_bank_accounts", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_tables_02_payroll_tables", "to": "schema_tables_02_payroll_tables_hrms_employee_pay_elements", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_tables_02_payroll_tables", "to": "schema_tables_02_payroll_tables_hrms_employee_tax_info", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_tables_02_payroll_tables", "to": "schema_tables_02_payroll_tables_hrms_pay_elements", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_tables_02_payroll_tables", "to": "schema_tables_02_payroll_tables_hrms_pay_periods", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_tables_02_payroll_tables", "to": "schema_tables_02_payroll_tables_hrms_payroll_details", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_tables_02_payroll_tables", "to": "schema_tables_02_payroll_tables_hrms_payroll_runs", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_tables_02_payroll_tables", "to": "schema_tables_02_payroll_tables_hrms_salary_records", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_tables_02_payroll_tables", "to": "schema_tables_02_payroll_tables_hrms_tax_brackets", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_tables_03_leave_tables", "to": "schema_tables_03_leave_tables_hrms_holidays", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_tables_03_leave_tables", "to": "schema_tables_03_leave_tables_hrms_leave_accrual_log", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_tables_03_leave_tables", "to": "schema_tables_03_leave_tables_hrms_leave_balances", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_tables_03_leave_tables", "to": "schema_tables_03_leave_tables_hrms_leave_requests", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_tables_03_leave_tables", "to": "schema_tables_03_leave_tables_hrms_leave_types", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_tables_04_performance_tables", "to": "schema_tables_04_performance_tables_hrms_audit_log", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_tables_04_performance_tables", "to": "schema_tables_04_performance_tables_hrms_lookup_values", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_tables_04_performance_tables", "to": "schema_tables_04_performance_tables_hrms_notification_queue", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_tables_04_performance_tables", "to": "schema_tables_04_performance_tables_hrms_performance_goals", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_tables_04_performance_tables", "to": "schema_tables_04_performance_tables_hrms_performance_reviews", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_tables_04_performance_tables", "to": "schema_tables_04_performance_tables_hrms_review_cycles", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_tables_04_performance_tables", "to": "schema_tables_04_performance_tables_hrms_system_parameters", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_tables_04_performance_tables", "to": "schema_tables_04_performance_tables_hrms_user_sessions", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_views_hrms_views", "to": "schema_views_hrms_views_hrms_vw_active_employees", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_views_hrms_views", "to": "schema_views_hrms_views_hrms_vw_employee_compensation", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_views_hrms_views", "to": "schema_views_hrms_views_hrms_vw_leave_summary", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_views_hrms_views", "to": "schema_views_hrms_views_hrms_vw_org_hierarchy", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_views_hrms_views", "to": "schema_views_hrms_views_hrms_vw_payroll_latest", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_views_hrms_views", "to": "schema_views_hrms_views_hrms_vw_pending_approvals", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_views_hrms_views_hrms_vw_active_employees", "to": "departments", "label": "reads_from", "title": "reads_from [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_views_hrms_views_hrms_vw_active_employees", "to": "employees", "label": "reads_from", "title": "reads_from [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_views_hrms_views_hrms_vw_active_employees", "to": "job_grades", "label": "reads_from", "title": "reads_from [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_views_hrms_views_hrms_vw_active_employees", "to": "job_titles", "label": "reads_from", "title": "reads_from [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_views_hrms_views_hrms_vw_active_employees", "to": "locations", "label": "reads_from", "title": "reads_from [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_views_hrms_views_hrms_vw_active_employees", "to": "salary_records", "label": "reads_from", "title": "reads_from [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_views_hrms_views_hrms_vw_employee_compensation", "to": "employees", "label": "reads_from", "title": "reads_from [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_views_hrms_views_hrms_vw_leave_summary", "to": "employees", "label": "reads_from", "title": "reads_from [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_views_hrms_views_hrms_vw_org_hierarchy", "to": "employees", "label": "reads_from", "title": "reads_from [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_views_hrms_views_hrms_vw_payroll_latest", "to": "employees", "label": "reads_from", "title": "reads_from [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_views_hrms_views_hrms_vw_pending_approvals", "to": "employees", "label": "reads_from", "title": "reads_from [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_views_hrms_views_hrms_vw_employee_compensation", "to": "departments", "label": "reads_from", "title": "reads_from [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_views_hrms_views_hrms_vw_leave_summary", "to": "departments", "label": "reads_from", "title": "reads_from [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_views_hrms_views_hrms_vw_employee_compensation", "to": "job_titles", "label": "reads_from", "title": "reads_from [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_views_hrms_views_hrms_vw_employee_compensation", "to": "job_grades", "label": "reads_from", "title": "reads_from [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_views_hrms_views_hrms_vw_employee_compensation", "to": "salary_records", "label": "reads_from", "title": "reads_from [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_views_hrms_views_hrms_vw_leave_summary", "to": "leave_balances", "label": "reads_from", "title": "reads_from [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_views_hrms_views_hrms_vw_leave_summary", "to": "leave_types", "label": "reads_from", "title": "reads_from [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_views_hrms_views_hrms_vw_pending_approvals", "to": "leave_types", "label": "reads_from", "title": "reads_from [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_views_hrms_views_hrms_vw_payroll_latest", "to": "pay_periods", "label": "reads_from", "title": "reads_from [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_views_hrms_views_hrms_vw_payroll_latest", "to": "payroll_details", "label": "reads_from", "title": "reads_from [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_views_hrms_views_hrms_vw_payroll_latest", "to": "payroll_runs", "label": "reads_from", "title": "reads_from [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_views_hrms_views_hrms_vw_pending_approvals", "to": "leave_requests", "label": "reads_from", "title": "reads_from [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_views_hrms_views_hrms_vw_pending_approvals", "to": "performance_reviews", "label": "reads_from", "title": "reads_from [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "schema_views_hrms_views_hrms_vw_pending_approvals", "to": "review_cycles", "label": "reads_from", "title": "reads_from [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "readme", "to": "readme_oracle_forms_legacy_hr_system", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "readme_oracle_forms_legacy_hr_system", "to": "readme_application_overview", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "readme_oracle_forms_legacy_hr_system", "to": "readme_architecture", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "readme_oracle_forms_legacy_hr_system", "to": "readme_directory_structure", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "readme_oracle_forms_legacy_hr_system", "to": "readme_key_technical_characteristics", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "readme_oracle_forms_legacy_hr_system", "to": "readme_license", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "readme_key_technical_characteristics", "to": "readme_database_patterns", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "readme_key_technical_characteristics", "to": "readme_known_technical_debt", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "readme_key_technical_characteristics", "to": "readme_oracle_forms_specifics", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "readme_key_technical_characteristics", "to": "readme_pl_sql_patterns", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}];
+const LEGEND = [{"cid": 0, "color": "#4E79A7", "label": "Oracle Forms Legacy HR System", "count": 11}, {"cid": 1, "color": "#F28E2B", "label": "HRMS.VW_ACTIVE_EMPLOYEES", "count": 17}, {"cid": 2, "color": "#E15759", "label": "02_payroll_tables.sql", "count": 10}, {"cid": 3, "color": "#76B7B2", "label": "01_core_tables.sql", "count": 9}, {"cid": 4, "color": "#59A14F", "label": "04_performance_tables.sql", "count": 9}, {"cid": 5, "color": "#EDC948", "label": "03_leave_tables.sql", "count": 6}, {"cid": 6, "color": "#B07AA1", "label": "HRMS.VW_PAYROLL_LATEST", "count": 4}, {"cid": 7, "color": "#FF9DA7", "label": "01_reference_data.sql", "count": 1}, {"cid": 8, "color": "#9C755F", "label": "02_employee_data.sql", "count": 1}, {"cid": 9, "color": "#BAB0AC", "label": "HRMS_COMMON_LIB.pll.sql", "count": 1}, {"cid": 10, "color": "#4E79A7", "label": "HRMS_VALIDATION_LIB.pll.sql", "count": 1}, {"cid": 11, "color": "#F28E2B", "label": "HRMS_MENU.mmb.sql", "count": 1}, {"cid": 12, "color": "#E15759", "label": "trg_audit.sql", "count": 1}, {"cid": 13, "color": "#76B7B2", "label": "trg_employees.sql", "count": 1}, {"cid": 14, "color": "#59A14F", "label": "hrms_sequences.sql", "count": 1}];
+
+// HTML-escape helper — prevents XSS when injecting graph data into innerHTML
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+// Build vis datasets
+const nodesDS = new vis.DataSet(RAW_NODES.map(n => ({
+  id: n.id, label: n.label, color: n.color, size: n.size,
+  font: n.font, title: n.title,
+  _community: n.community, _community_name: n.community_name,
+  _source_file: n.source_file, _file_type: n.file_type, _degree: n.degree,
+})));
+
+const edgesDS = new vis.DataSet(RAW_EDGES.map((e, i) => ({
+  id: i, from: e.from, to: e.to,
+  label: '',
+  title: e.title,
+  dashes: e.dashes,
+  width: e.width,
+  color: e.color,
+  arrows: { to: { enabled: true, scaleFactor: 0.5 } },
+})));
+
+const container = document.getElementById('graph');
+const network = new vis.Network(container, { nodes: nodesDS, edges: edgesDS }, {
+  physics: {
+    enabled: true,
+    solver: 'forceAtlas2Based',
+    forceAtlas2Based: {
+      gravitationalConstant: -60,
+      centralGravity: 0.005,
+      springLength: 120,
+      springConstant: 0.08,
+      damping: 0.4,
+      avoidOverlap: 0.8,
+    },
+    stabilization: { iterations: 200, fit: true },
+  },
+  interaction: {
+    hover: true,
+    tooltipDelay: 100,
+    hideEdgesOnDrag: true,
+    navigationButtons: false,
+    keyboard: false,
+  },
+  nodes: { shape: 'dot', borderWidth: 1.5 },
+  edges: { smooth: { type: 'continuous', roundness: 0.2 }, selectionWidth: 3 },
+});
+
+network.once('stabilizationIterationsDone', () => {
+  network.setOptions({ physics: { enabled: false } });
+});
+
+function showInfo(nodeId) {
+  const n = nodesDS.get(nodeId);
+  if (!n) return;
+  const neighborIds = network.getConnectedNodes(nodeId);
+  const neighborItems = neighborIds.map(nid => {
+    const nb = nodesDS.get(nid);
+    const color = nb ? nb.color.background : '#555';
+    return `<span class="neighbor-link" style="border-left-color:${esc(color)}" data-nid="${esc(nid)}">${esc(nb ? nb.label : nid)}</span>`;
+  }).join('');
+  document.getElementById('info-content').innerHTML = `
+    <div class="field"><b>${esc(n.label)}</b></div>
+    <div class="field">Type: ${esc(n._file_type || 'unknown')}</div>
+    <div class="field">Community: ${esc(n._community_name)}</div>
+    <div class="field">Source: ${esc(n._source_file || '-')}</div>
+    <div class="field">Degree: ${n._degree}</div>
+    ${neighborIds.length ? `<div class="field" style="margin-top:8px;color:#aaa;font-size:11px">Neighbors (${neighborIds.length})</div><div id="neighbors-list">${neighborItems}</div>` : ''}
+  `;
+}
+
+function focusNode(nodeId) {
+  network.focus(nodeId, { scale: 1.4, animation: true });
+  network.selectNodes([nodeId]);
+  showInfo(nodeId);
+}
+
+// Neighbor links use a data attribute + one delegated listener rather than an
+// inline onclick. A node id/label sourced from a document or a scraped URL
+// (graphify add) can contain a double-quote; dropping the stringified id
+// unescaped into a quoted onclick both broke every link and allowed a hostile
+// source to inject an event handler into the local report (stored XSS, #1838).
+// esc() on data-nid keeps the value inside the attribute; the listener reads it
+// back verbatim. Bound to document so it survives the innerHTML rebuild that
+// recreates #neighbors-list on each showInfo().
+document.addEventListener('click', e => {
+  const el = e.target.closest('.neighbor-link');
+  if (el && el.dataset.nid !== undefined) focusNode(el.dataset.nid);
+});
+
+// Track hovered node — hover detection is more reliable than click params
+let hoveredNodeId = null;
+network.on('hoverNode', params => {
+  hoveredNodeId = params.node;
+  container.style.cursor = 'pointer';
+});
+network.on('blurNode', () => {
+  hoveredNodeId = null;
+  container.style.cursor = 'default';
+});
+container.addEventListener('click', () => {
+  if (hoveredNodeId !== null) {
+    showInfo(hoveredNodeId);
+    network.selectNodes([hoveredNodeId]);
+  }
+});
+network.on('click', params => {
+  if (params.nodes.length > 0) {
+    showInfo(params.nodes[0]);
+  } else if (hoveredNodeId === null) {
+    document.getElementById('info-content').innerHTML = '<span class="empty">Click a node to inspect it</span>';
+  }
+});
+
+const searchInput = document.getElementById('search');
+const searchResults = document.getElementById('search-results');
+searchInput.addEventListener('input', () => {
+  const q = searchInput.value.toLowerCase().trim();
+  searchResults.innerHTML = '';
+  if (!q) { searchResults.style.display = 'none'; return; }
+  const matches = RAW_NODES.filter(n => n.label.toLowerCase().includes(q)).slice(0, 20);
+  if (!matches.length) { searchResults.style.display = 'none'; return; }
+  searchResults.style.display = 'block';
+  matches.forEach(n => {
+    const el = document.createElement('div');
+    el.className = 'search-item';
+    el.textContent = n.label;
+    el.style.borderLeft = `3px solid ${n.color.background}`;
+    el.style.paddingLeft = '8px';
+    el.onclick = () => {
+      network.focus(n.id, { scale: 1.5, animation: true });
+      network.selectNodes([n.id]);
+      showInfo(n.id);
+      searchResults.style.display = 'none';
+      searchInput.value = '';
+    };
+    searchResults.appendChild(el);
+  });
+});
+document.addEventListener('click', e => {
+  if (!searchResults.contains(e.target) && e.target !== searchInput)
+    searchResults.style.display = 'none';
+});
+
+const hiddenCommunities = new Set();
+
+const selectAllCb = document.getElementById('select-all-cb');
+
+function updateSelectAllState() {
+  const total = LEGEND.length;
+  const hidden = hiddenCommunities.size;
+  selectAllCb.checked = hidden === 0;
+  selectAllCb.indeterminate = hidden > 0 && hidden < total;
+}
+
+function toggleAllCommunities(hide) {
+  document.querySelectorAll('.legend-item').forEach(item => {
+    hide ? item.classList.add('dimmed') : item.classList.remove('dimmed');
+  });
+  document.querySelectorAll('.legend-cb').forEach(cb => {
+    cb.checked = !hide;
+  });
+  LEGEND.forEach(c => {
+    if (hide) hiddenCommunities.add(c.cid); else hiddenCommunities.delete(c.cid);
+  });
+  const updates = RAW_NODES.map(n => ({ id: n.id, hidden: hide }));
+  nodesDS.update(updates);
+  updateSelectAllState();
+}
+
+const legendEl = document.getElementById('legend');
+LEGEND.forEach(c => {
+  const item = document.createElement('div');
+  item.className = 'legend-item';
+  const cb = document.createElement('input');
+  cb.type = 'checkbox';
+  cb.className = 'legend-cb';
+  cb.checked = true;
+  cb.addEventListener('change', (e) => {
+    e.stopPropagation();
+    if (cb.checked) {
+      hiddenCommunities.delete(c.cid);
+      item.classList.remove('dimmed');
+    } else {
+      hiddenCommunities.add(c.cid);
+      item.classList.add('dimmed');
+    }
+    const updates = RAW_NODES
+      .filter(n => n.community === c.cid)
+      .map(n => ({ id: n.id, hidden: !cb.checked }));
+    nodesDS.update(updates);
+    updateSelectAllState();
+  });
+  item.innerHTML = `<div class="legend-dot" style="background:${c.color}"></div>
+    <span class="legend-label">${c.label}</span>
+    <span class="legend-count">${c.count}</span>`;
+  item.prepend(cb);
+  item.onclick = (e) => {
+    if (e.target === cb) return;
+    cb.checked = !cb.checked;
+    cb.dispatchEvent(new Event('change'));
+  };
+  legendEl.appendChild(item);
+});
+</script>
+<script>
+// Render hyperedges as shaded regions
+const hyperedges = [];
+// afterDrawing passes ctx already transformed to network coordinate space.
+// Draw node positions raw — no manual pan/zoom/DPR math needed.
+network.on('afterDrawing', function(ctx) {
+    hyperedges.forEach(h => {
+        const positions = h.nodes
+            .map(nid => network.getPositions([nid])[nid])
+            .filter(p => p !== undefined);
+        if (positions.length < 2) return;
+        ctx.save();
+        ctx.globalAlpha = 0.12;
+        ctx.fillStyle = '#6366f1';
+        ctx.strokeStyle = '#6366f1';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        // Centroid and expanded hull in network coordinates
+        const cx = positions.reduce((s, p) => s + p.x, 0) / positions.length;
+        const cy = positions.reduce((s, p) => s + p.y, 0) / positions.length;
+        const expanded = positions.map(p => ({
+            x: cx + (p.x - cx) * 1.15,
+            y: cy + (p.y - cy) * 1.15
+        }));
+        ctx.moveTo(expanded[0].x, expanded[0].y);
+        expanded.slice(1).forEach(p => ctx.lineTo(p.x, p.y));
+        ctx.closePath();
+        ctx.fill();
+        ctx.globalAlpha = 0.4;
+        ctx.stroke();
+        // Label
+        ctx.globalAlpha = 0.8;
+        ctx.fillStyle = '#4f46e5';
+        ctx.font = 'bold 11px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(h.label, cx, cy - 5);
+        ctx.restore();
+    });
+});
+</script>
+</body>
+</html>
