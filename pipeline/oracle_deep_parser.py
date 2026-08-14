@@ -26,7 +26,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 SOURCE_DIR   = Path(__file__).parent.parent / "source"
-OUTPUT_DIR   = Path(__file__).parent.parent / "output" / "graphify-out" / "deep"
+OUTPUT_DIR   = Path(__file__).parent.parent / "output" / "02_oracle_parser_output"
 PKG_DIR      = SOURCE_DIR / "plsql" / "packages"
 FORMS_DIR    = SOURCE_DIR / "forms" / "xml-exports"
 TRIGGERS_DIR = SOURCE_DIR / "plsql" / "triggers"

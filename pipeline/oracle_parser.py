@@ -20,7 +20,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 SOURCE_DIR   = Path(__file__).parent.parent / "source"
-OUTPUT_DIR   = Path(__file__).parent.parent / "output" / "graphify-out"
+OUTPUT_DIR   = Path(__file__).parent.parent / "output" / "01_graphify_output"
 PACKAGES_DIR = SOURCE_DIR / "plsql" / "packages"
 FORMS_DIR    = SOURCE_DIR / "forms" / "xml-exports"
 EXISTING_GRAPH = OUTPUT_DIR / "graph.json"

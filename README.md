@@ -33,21 +33,23 @@ oracle-source-intelligence-pipeline/
     oracle_parser.py             — Step 2: PL/SQL + Forms structure parser
     oracle_deep_parser.py        — Step 3: Deep business logic extractor
 
-  output/                        — all extraction results (generated)
-    graphify-out/
-      graph.json                 — Graphify knowledge graph (74 nodes, 71 edges)
-      graph.html                 — Interactive visual graph (open in browser)
-      GRAPH_REPORT.md            — Graphify summary
-      ORACLE_PARSER_REPORT.md    — Oracle parser summary
-      oracle_plsql_graph.json    — PL/SQL package graph
-      oracle_forms_graph.json    — Oracle Forms graph
-      oracle_combined_graph.json — Everything merged (338 nodes, 451 edges)
-      deep/
-        plsql_deep.json          — Full PL/SQL deep extraction
-        forms_deep.json          — Full Oracle Forms deep extraction
-        schema_deep.json         — All tables, views, triggers
-        business_rules.json      — 581 rules with IDs (BR-0001 to BR-0581)
-        DEEP_REPORT.md           — Full human-readable deep report
+  output/                              — all extraction results (generated)
+    01_graphify_output/                — Step 1: Graphify knowledge graph
+      graph.json                       — knowledge graph (74 nodes, 71 edges)
+      graph.html                       — interactive visual graph (open in browser)
+      GRAPH_REPORT.md                  — graphify summary report
+      oracle_plsql_graph.json          — PL/SQL package graph nodes + edges
+      oracle_forms_graph.json          — Oracle Forms graph nodes + edges
+      oracle_combined_graph.json       — everything merged (338 nodes, 451 edges)
+      ORACLE_PARSER_REPORT.md          — oracle parser summary report
+      manifest.json                    — files scanned by graphify
+
+    02_oracle_parser_output/           — Step 2+3: USE THESE 4 FILES for next step
+      business_rules.json              — 581 rules with IDs (BR-0001 to BR-0581)
+      plsql_deep.json                  — all 11 packages deep extraction
+      schema_deep.json                 — all 30 tables, views, triggers
+      forms_deep.json                  — all 6 Oracle Forms deep extraction
+      DEEP_REPORT.md                   — full human-readable deep report
 
   WHAT_WE_DID.md                 — Full explanation of approach and results
   requirements.txt               — Python dependencies
@@ -69,7 +71,7 @@ cp -r source/ C:/oracle-hrms-src/
 cd C:/oracle-hrms-src
 python -m graphify update . --force
 # Copy output back
-cp -r C:/oracle-hrms-src/graphify-out/ output/graphify-out/
+cp -r C:/oracle-hrms-src/graphify-out/ output/01_graphify_output/
 ```
 
 ### 3. Run Oracle Parser (Step 2)
