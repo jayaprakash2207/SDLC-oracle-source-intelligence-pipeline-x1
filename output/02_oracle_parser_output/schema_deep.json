@@ -1937,11 +1937,11 @@
       ],
       "joins": [
         "JOB_TITLES",
-        "LOCATIONS",
-        "JOB_GRADES",
         "DEPARTMENTS",
-        "SALARY_RECORDS",
-        "EMPLOYEES"
+        "JOB_GRADES",
+        "LOCATIONS",
+        "EMPLOYEES",
+        "SALARY_RECORDS"
       ],
       "query_snippet": "SELECT e.EMP_ID, e.EMP_NUMBER, e.FIRST_NAME, e.LAST_NAME,\n       e.FIRST_NAME || ' ' || e.LAST_NAME AS FULL_NAME,\n       e.EMAIL, e.PHONE_WORK, e.PHONE_MOBILE,\n       e.HIRE_DATE,\n       TRUNC(MONTHS_BETWEEN(SYSDATE, e.HIRE_DATE) / 12, 1) AS TENURE_YEARS,\n       e.EMPLOYMENT_TYPE, e.EMPLOYMENT_STATU"
     },
@@ -1959,10 +1959,10 @@
         "EMPLOYEES"
       ],
       "joins": [
-        "DEPARTMENTS",
-        "SALARY_RECORDS",
         "JOB_TITLES",
-        "JOB_GRADES"
+        "DEPARTMENTS",
+        "JOB_GRADES",
+        "SALARY_RECORDS"
       ],
       "query_snippet": "SELECT e.EMP_ID, e.EMP_NUMBER,\n       e.FIRST_NAME || ' ' || e.LAST_NAME AS EMP_NAME,\n       d.DEPT_NAME, j.JOB_TITLE, g.GRADE_NAME,\n       sr.BASE_SALARY,\n       g.MIN_SALARY AS GRADE_MIN,\n       g.MAX_SALARY AS GRADE_MAX,\n       (g.MIN_SALARY + g.MAX_SALARY) / 2 AS GRADE_MIDPOINT,\n       ROUND(sr."
     },
@@ -2011,9 +2011,24 @@
         "When a new salary record is inserted, the audit log must capture employee ID, base salary, and effective date to establish the initial compensation record",
         "When a salary record is updated, both the previous and new base salary and active status must be preserved in the audit trail to support compensation change reviews",
         "When a salary record is deleted, the employee identity and last known salary must be preserved in the audit log to maintain a complete compensation history",
-        "Only STATUS column changes on leave requests are subject to audit tracking; updates to other fields (e.g. comments, dates) do not generate an audit record",
-        "Every structural change to a department record (creation, modification, or removal) must be captured in the audit log to support organisational governance and accountability",
-        "For department changes, the database session user (USER) is always recorded as the actor; there is no application-supplied MODIFIED_BY column on this table"
+        "Only STATUS column changes on leave requests are subject to audit tracking; updates to other fields (e.g. comments, dates) do not generate an audit record"
+      ],
+      "bugs": [],
+      "pkg_calls": [
+        "PKG_AUDIT.log_action"
+      ],
+      "pragma_autonomous": false,
+      "uses_sys_context": false
+    },
+    "TRG_LEAVE_REQUEST_AUDIT": {
+      "name": "TRG_LEAVE_REQUEST_AUDIT",
+      "file": "trg_audit.sql",
+      "timing": "AFTER",
+      "events": "UPDATE OF STATUS",
+      "table": "HRMS.LEAVE_REQUESTS",
+      "business_rules": [],
+      "rules": [
+        "Only STATUS column changes on leave requests are subject to audit tracking; updates to other fields (e.g. comments, dates) do not generate an audit record"
       ],
       "bugs": [],
       "pkg_calls": [
@@ -2057,20 +2072,10 @@
         "Hire date cannot be more than 180 days in the future, preventing erroneous or speculative pre-dated hires beyond a 6-month planning horizon",
         "Inserting an employee with a hire date more than 180 days in the future is not permitted",
         "An email address already assigned to an active employee cannot be reused for a new employee record",
-        "Inserting an employee whose email is already in use by an active employee record is not permitted",
-        "A terminated employee cannot be directly reactivated by changing EMPLOYMENT_STATUS from TERMINATED to ACTIVE via a plain UPDATE; the formal rehire process (PKG_EMPLOYEE.rehire_employee) must be used instead",
-        "Bypassing the rehire process to reactivate a terminated employee is not permitted",
-        "Every change to an employee's EMPLOYMENT_STATUS must be recorded in the EMPLOYEE_HISTORY audit table with the old and new status values",
-        "Every change to an employee's department assignment (DEPT_ID) must be recorded in the EMPLOYEE_HISTORY audit table as a DEPARTMENT_CHANGE event; NULL department is treated as a distinct value to catch assignments to or from an unassigned state",
-        "Every change to an employee's job assignment (JOB_ID) must be recorded in the EMPLOYEE_HISTORY audit table as a JOB_CHANGE event; NULL job is treated as a distinct value to catch assignments to or from an unassigned state",
-        "Physical deletion of employee records is never permitted; callers must deactivate a record by setting ACTIVE_FLAG to 'N' or by running the formal termination process"
+        "Inserting an employee whose email is already in use by an active employee record is not permitted"
       ],
-      "bugs": [
-        "This actually prevents deletion, but Forms expects DELETE to succeed."
-      ],
-      "pkg_calls": [
-        "PKG_EMPLOYEE.rehire_employee"
-      ],
+      "bugs": [],
+      "pkg_calls": [],
       "pragma_autonomous": false,
       "uses_sys_context": false
     },
@@ -2086,12 +2091,9 @@
         "Bypassing the rehire process to reactivate a terminated employee is not permitted",
         "Every change to an employee's EMPLOYMENT_STATUS must be recorded in the EMPLOYEE_HISTORY audit table with the old and new status values",
         "Every change to an employee's department assignment (DEPT_ID) must be recorded in the EMPLOYEE_HISTORY audit table as a DEPARTMENT_CHANGE event; NULL department is treated as a distinct value to catch assignments to or from an unassigned state",
-        "Every change to an employee's job assignment (JOB_ID) must be recorded in the EMPLOYEE_HISTORY audit table as a JOB_CHANGE event; NULL job is treated as a distinct value to catch assignments to or from an unassigned state",
-        "Physical deletion of employee records is never permitted; callers must deactivate a record by setting ACTIVE_FLAG to 'N' or by running the formal termination process"
+        "Every change to an employee's job assignment (JOB_ID) must be recorded in the EMPLOYEE_HISTORY audit table as a JOB_CHANGE event; NULL job is treated as a distinct value to catch assignments to or from an unassigned state"
       ],
-      "bugs": [
-        "This actually prevents deletion, but Forms expects DELETE to succeed."
-      ],
+      "bugs": [],
       "pkg_calls": [
         "PKG_EMPLOYEE.rehire_employee"
       ],

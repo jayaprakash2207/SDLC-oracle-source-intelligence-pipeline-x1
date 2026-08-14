@@ -21,6 +21,103 @@
         ]
       },
       {
+        "name": "toolbar_save",
+        "params": [],
+        "business_rules": [],
+        "rules": [],
+        "bugs": [],
+        "pkg_calls": []
+      },
+      {
+        "name": "toolbar_clear",
+        "params": [],
+        "business_rules": [],
+        "rules": [],
+        "bugs": [],
+        "pkg_calls": []
+      },
+      {
+        "name": "toolbar_query",
+        "params": [],
+        "business_rules": [],
+        "rules": [
+          "Toolbar Query button behaviour depends on current form mode \u2014 pressing it once opens query mode ('NORMAL'), pressing it again while already in query-entry mode ('ENTER-QUERY') executes the query"
+        ],
+        "bugs": [],
+        "pkg_calls": []
+      },
+      {
+        "name": "toolbar_first",
+        "params": [],
+        "business_rules": [],
+        "rules": [],
+        "bugs": [],
+        "pkg_calls": []
+      },
+      {
+        "name": "toolbar_prev",
+        "params": [],
+        "business_rules": [],
+        "rules": [],
+        "bugs": [],
+        "pkg_calls": []
+      },
+      {
+        "name": "toolbar_next",
+        "params": [],
+        "business_rules": [],
+        "rules": [],
+        "bugs": [],
+        "pkg_calls": []
+      },
+      {
+        "name": "toolbar_last",
+        "params": [],
+        "business_rules": [],
+        "rules": [],
+        "bugs": [],
+        "pkg_calls": []
+      },
+      {
+        "name": "toolbar_insert",
+        "params": [],
+        "business_rules": [],
+        "rules": [],
+        "bugs": [],
+        "pkg_calls": []
+      },
+      {
+        "name": "toolbar_delete",
+        "params": [],
+        "business_rules": [],
+        "rules": [],
+        "bugs": [],
+        "pkg_calls": []
+      },
+      {
+        "name": "toolbar_exit",
+        "params": [],
+        "business_rules": [],
+        "rules": [],
+        "bugs": [],
+        "pkg_calls": []
+      },
+      {
+        "name": "check_session",
+        "params": [],
+        "business_rules": [],
+        "rules": [
+          "A valid HRMS session ID must exist in the global context before any form operation is permitted \u2014 absence of a session ID means the user has not logged in",
+          "Abort form processing when no session exists; the user must authenticate before continuing",
+          "Even when a session ID is present, it must pass the PKG_SECURITY validity check \u2014 an ID that fails this check is treated as an expired session, blocking further use of the form",
+          "Abort form processing when the session has expired; the user must re-authenticate"
+        ],
+        "bugs": [],
+        "pkg_calls": [
+          "PKG_SECURITY.is_session_valid"
+        ]
+      },
+      {
         "name": "refresh_lov",
         "params": [
           "p_lov_name"
@@ -39,22 +136,40 @@
         "params": [
           "p_date"
         ],
-        "returns": "VARCHAR2",
         "business_rules": [],
         "rules": [],
         "bugs": [],
-        "pkg_calls": []
+        "pkg_calls": [],
+        "returns": "VARCHAR2"
       },
       {
         "name": "format_datetime",
         "params": [
           "p_date"
         ],
-        "returns": "VARCHAR2",
         "business_rules": [],
         "rules": [],
         "bugs": [],
-        "pkg_calls": []
+        "pkg_calls": [],
+        "returns": "VARCHAR2"
+      },
+      {
+        "name": "get_current_user",
+        "params": [],
+        "business_rules": [],
+        "rules": [],
+        "bugs": [],
+        "pkg_calls": [],
+        "returns": "VARCHAR2"
+      },
+      {
+        "name": "get_session_id",
+        "params": [],
+        "business_rules": [],
+        "rules": [],
+        "bugs": [],
+        "pkg_calls": [],
+        "returns": "NUMBER"
       }
     ],
     "all_business_rules": [],
@@ -68,8 +183,8 @@
     ],
     "all_bugs": [],
     "pkg_calls": [
-      "PKG_COMMON.log_error",
-      "PKG_SECURITY.is_session_valid"
+      "PKG_SECURITY.is_session_valid",
+      "PKG_COMMON.log_error"
     ]
   },
   {
@@ -84,7 +199,6 @@
         "params": [
           "p_email"
         ],
-        "returns": "BOOLEAN",
         "business_rules": [],
         "rules": [
           "Email address is not a required field; NULL is treated as valid and bypasses all format checks",
@@ -94,41 +208,41 @@
         "bugs": [
           "Only checks for one dot after @, rejects valid subdomains"
         ],
-        "pkg_calls": []
+        "pkg_calls": [],
+        "returns": "BOOLEAN"
       },
       {
         "name": "validate_phone",
         "params": [
           "p_phone"
         ],
-        "returns": "BOOLEAN",
         "business_rules": [],
         "rules": [
           "Phone number is not a required field; NULL is treated as valid"
         ],
         "bugs": [],
-        "pkg_calls": []
+        "pkg_calls": [],
+        "returns": "BOOLEAN"
       },
       {
         "name": "validate_ssn",
         "params": [
           "p_ssn"
         ],
-        "returns": "BOOLEAN",
         "business_rules": [],
         "rules": [
           "SSN is not a required field; NULL is treated as valid",
           "Each of the three SSN segments must contain at least one non-zero digit: the area number (digits 1-3), the group number (digits 4-5), and the serial number (digits 6-9) must never be all zeros, in accordance with SSA issuance rules"
         ],
         "bugs": [],
-        "pkg_calls": []
+        "pkg_calls": [],
+        "returns": "BOOLEAN"
       },
       {
         "name": "validate_date_not_future",
         "params": [
           "p_date"
         ],
-        "returns": "BOOLEAN",
         "business_rules": [],
         "rules": [
           "A date value must not be in the future; only today's date or any prior date is accepted; NULL bypasses the check"
@@ -136,7 +250,8 @@
         "bugs": [
           "Uses a hard-coded cache that's populated at form startup"
         ],
-        "pkg_calls": []
+        "pkg_calls": [],
+        "returns": "BOOLEAN"
       },
       {
         "name": "validate_salary_range",
@@ -144,7 +259,6 @@
           "p_salary",
           "p_grade_id"
         ],
-        "returns": "VARCHAR2",
         "business_rules": [
           "Salary boundaries are determined by the employee's assigned job grade; the allowable minimum and maximum pay are read from the JOB_GRADES reference table for the given grade"
         ],
@@ -154,7 +268,8 @@
           "An employee's salary must not exceed the maximum pay threshold defined for their job grade"
         ],
         "bugs": [],
-        "pkg_calls": []
+        "pkg_calls": [],
+        "returns": "VARCHAR2"
       }
     ],
     "all_business_rules": [

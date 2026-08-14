@@ -10,16 +10,16 @@
 | Menu Modules parsed | 1 |
 | DDL Tables parsed | 30 |
 | Views parsed | 6 |
-| DB Triggers parsed | 5 |
+| DB Triggers parsed | 6 |
 | Sequences parsed | 29 |
 | Seed data rows | 133 |
 | Business rules extracted | 100 |
-| Validation rules extracted | 440 |
+| Validation rules extracted | 428 |
 | Constraints extracted | 33 |
-| Known bugs extracted | 17 |
+| Known bugs extracted | 15 |
 | Error codes extracted | 37 |
 | Check constraints extracted | 29 |
-| **Total rules** | **656** |
+| **Total rules** | **642** |
 
 ---
 
@@ -204,7 +204,7 @@
 
 **Tables accessed (14):** BALANCE, BUSINESS, EMPLOYEES, HOLIDAYS, LEAVE_ACCRUAL_LOG, LEAVE_BALANCES, LEAVE_REQUESTS, LEAVE_TYPES, PENDING, P_ACCRUAL_DATE, P_START_DATE, REQUEST, THE, V_REQUEST
 
-**Sequences used:** SEQ_LEAVE_BALANCE, SEQ_LEAVE_ACCRUAL, SEQ_LEAVE_REQUEST
+**Sequences used:** SEQ_LEAVE_REQUEST, SEQ_LEAVE_BALANCE, SEQ_LEAVE_ACCRUAL
 
 ### HRMS.PKG_NOTIFICATION
 **Known Issues:**
@@ -214,7 +214,7 @@
 
 **PRAGMA AUTONOMOUS_TRANSACTION: YES**
 
-**UTL Packages used:** UTL_SMTP, UTL_TCP
+**UTL Packages used:** UTL_TCP, UTL_SMTP
 
 **Validation Rules (3):**
 - Package uses PRAGMA AUTONOMOUS_TRANSACTION — audit/notification writes are independent of caller transactions
@@ -299,7 +299,7 @@
 
 **Tables accessed (17):** EMPLOYEES, EMPLOYEE_PAY_ELEMENTS, EMPLOYEE_TAX_INFO, GET_SALARY_AS_OF, PAYROLL_DETAILS, PAYROLL_RUNS, PAY_PERIODS, PP, RUN, SALARY_RECORDS, SS, STATUS, TAX_BRACKETS, THE, V_END_DATE, V_PERIOD_END, V_START_DATE
 
-**Sequences used:** SEQ_PAYROLL_RUN, SEQ_PAY_PERIOD, SEQ_PAYROLL_DETAIL, SEQ_SALARY
+**Sequences used:** SEQ_PAY_PERIOD, SEQ_PAYROLL_RUN, SEQ_SALARY, SEQ_PAYROLL_DETAIL
 
 ### HRMS.PKG_PERFORMANCE
 
@@ -322,7 +322,7 @@
 
 **Tables accessed (6):** BULK, EMPLOYEES, PERFORMANCE_GOALS, PERFORMANCE_REVIEWS, REVIEW_CYCLES, THE
 
-**Sequences used:** SEQ_PERF_REVIEW, SEQ_PERF_GOAL, SEQ_REVIEW_CYCLE
+**Sequences used:** SEQ_PERF_GOAL, SEQ_REVIEW_CYCLE, SEQ_PERF_REVIEW
 
 ### HRMS.PKG_REPORTING
 **Known Issues:**
@@ -425,8 +425,8 @@
 
 ### HRMS_COMMON_LIB
 - Attached by: All HRMS forms via ATTACH_LIBRARY
-- Procedures: 2
-- Functions: 2
+- Procedures: 13
+- Functions: 4
 
 **Validation Rules (6):**
 - Toolbar Query button behaviour depends on current form mode — pressing it once opens query mode ('NORMAL'), pressing it again while already in query-entry mode ('ENTER-QUERY') executes the query
@@ -465,7 +465,7 @@
 - Menu bar: MAIN_MENUBAR
 - Menus: File, Edit, Query, Navigate, Modules, Admin
 - Total items: 31
-- OPEN_FORM calls: HRMS_PERFORMANCE, HRMS_LEAVE, HRMS_PAYROLL, HRMS_EMPLOYEE, HRMS_REPORTS, HRMS_ADMIN
+- OPEN_FORM calls: HRMS_PAYROLL, HRMS_ADMIN, HRMS_LEAVE, HRMS_PERFORMANCE, HRMS_EMPLOYEE, HRMS_REPORTS
 - Security calls: PKG_SECURITY.has_permission
 - NOTE: Menu items are enabled/disabled at runtime based on PKG_SECURITY.has_permission() checks in WHEN-NEW-FORM-INSTANCE
 - NOTE: Compiled binary: HRMS_MENU.mmb — this file is the source representation
@@ -808,7 +808,7 @@ Total: 29 sequences
 
 ## Consolidated Business Rules
 
-Total: 656 rules
+Total: 642 rules
 
 | ID | Source | Type | Rule |
 |---|---|---|---|
@@ -956,11 +956,11 @@ Total: 656 rules
 | BR-0142 | HRMS.PKG_EMPLOYEE.terminate_employee | validation_rule | Attempting to terminate an already-terminated employee raises an application error |
 | BR-0143 | HRMS.PKG_EMPLOYEE.terminate_employee | validation_rule | All pending leave requests for a terminating employee are automatically cancelled; no manual action is required from the |
 | BR-0144 | HRMS.PKG_EMPLOYEE.terminate_employee | validation_rule | A termination notification is sent to the employee's direct manager only when a manager is assigned; top-level employees |
-| BR-0145 | HRMS.PKG_EMPLOYEE.terminate_employee | validation_rule | terminate_employee: LEGACY/stub — marked as placeholder or not fully implemented |
-| BR-0146 | HRMS.PKG_EMPLOYEE.terminate_employee | error_rule | Error -20005: Employee  |
-| BR-0147 | HRMS.PKG_EMPLOYEE.rehire_employee | validation_rule | Rehiring an employee overwrites their hire date with the rehire date and clears all prior termination data; the employee |
-| BR-0148 | HRMS.PKG_EMPLOYEE.rehire_employee | validation_rule | Attempting to rehire an employee ID that does not exist in the EMPLOYEES table raises an application error |
-| BR-0149 | HRMS.PKG_EMPLOYEE.rehire_employee | error_rule | Error -20001: Employee not found for rehire:  |
-| BR-0150 | HRMS.PKG_EMPLOYEE.get_headcount_by_dept | business_rule | Headcount counts only employees who were actively employed on the specified as-of date — hired on or before that date an |
+| BR-0145 | HRMS.PKG_EMPLOYEE.terminate_employee | error_rule | Error -20005: Employee  |
+| BR-0146 | HRMS.PKG_EMPLOYEE.rehire_employee | validation_rule | Rehiring an employee overwrites their hire date with the rehire date and clears all prior termination data; the employee |
+| BR-0147 | HRMS.PKG_EMPLOYEE.rehire_employee | validation_rule | Attempting to rehire an employee ID that does not exist in the EMPLOYEES table raises an application error |
+| BR-0148 | HRMS.PKG_EMPLOYEE.rehire_employee | error_rule | Error -20001: Employee not found for rehire:  |
+| BR-0149 | HRMS.PKG_EMPLOYEE.get_headcount_by_dept | business_rule | Headcount counts only employees who were actively employed on the specified as-of date — hired on or before that date an |
+| BR-0150 | HRMS.PKG_EMPLOYEE.is_active | validation_rule | An employee is considered active if and only if their EMPLOYMENT_STATUS column value equals 'ACTIVE' |
 
-*... and 506 more rules in business_rules.json*
+*... and 492 more rules in business_rules.json*

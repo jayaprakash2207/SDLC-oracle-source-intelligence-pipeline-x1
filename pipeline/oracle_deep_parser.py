@@ -1,6 +1,6 @@
 """
-oracle_deep_parser.py — v2 (full coverage)
--------------------------------------------
+oracle_deep_parser.py — v3 (verified full coverage)
+-----------------------------------------------------
 Deep extraction of Oracle PL/SQL packages, Oracle Forms XML,
 PLL libraries, menu modules, sequences, and seed data.
 
@@ -123,23 +123,38 @@ def infer_behavioral_rules_from_code(proc_name: str, body: str) -> list:
     if re.search(r"v_sql\s*:=\s*v_sql\s*\|\|.*p_\w+", body, re.IGNORECASE):
         rules.append(f"{proc_name}: BUG — uses dynamic SQL concatenation with user input; vulnerable to SQL injection")
     # UTL_FILE file operations
-    if re.search(r"UTL_FILE\.FOPEN", body, re.IGNORECASE):
-        fname_m = re.search(r"v_filename\s*:=\s*'([^']+)'|v_filename\s*:=\s*([^;]+);", body, re.IGNORECASE)
-        rules.append(f"{proc_name}: Writes output file to Oracle directory object via UTL_FILE")
-    if re.search(r"UTL_FILE\.GET_LINE", body, re.IGNORECASE):
+    if re.search(r"UTL_FILE\.FOPEN.*'W'", body, re.IGNORECASE):
+        # Extract filename pattern if present
+        fn_m = re.search(r"v_filename\s*:=\s*'([^']+)'", body, re.IGNORECASE)
+        fn_detail = f" (pattern: {fn_m.group(1)})" if fn_m else ""
+        rules.append(f"{proc_name}: Writes output file to Oracle directory object via UTL_FILE{fn_detail}")
+    if re.search(r"UTL_FILE\.FOPEN.*'R'|UTL_FILE\.GET_LINE", body, re.IGNORECASE):
         rules.append(f"{proc_name}: Reads input file line-by-line via UTL_FILE")
-    # LEGACY/stub markers
-    if re.search(r"LEGACY|Placeholder|stub|not.yet.implemented|TODO", body, re.IGNORECASE):
-        rules.append(f"{proc_name}: LEGACY/stub — marked as placeholder or not fully implemented")
+    # ONLY flag as stub if body is truly empty/placeholder — not if it has real logic
+    body_stripped = re.sub(r"--[^\n]*", "", body).strip()
+    meaningful_lines = [l.strip() for l in body_stripped.splitlines()
+                        if l.strip() and l.strip() not in ("BEGIN", "END;", "/")]
+    is_stub = (
+        re.search(r"Placeholder\s+for\s+\w+", body, re.IGNORECASE) and
+        len(meaningful_lines) <= 3
+    )
+    if is_stub:
+        rules.append(f"{proc_name}: STUB — body is a placeholder; not yet implemented")
     # Fixed-width format markers
-    if re.search(r"fixed.width|RPAD|LPAD.*fixed", body, re.IGNORECASE):
-        rules.append(f"{proc_name}: Generates fixed-width format file (vendor-specific format)")
+    if re.search(r"LEGACY.*[Ff]ixed.width|ADP.*vendor|fixed.width.*ADP", body, re.IGNORECASE):
+        rules.append(f"{proc_name}: LEGACY fixed-width format specific to ADP vendor")
     # SMTP email
     if re.search(r"UTL_SMTP\.", body, re.IGNORECASE):
         rules.append(f"{proc_name}: Sends email via UTL_SMTP (not UTL_MAIL)")
     # Default retention
-    for m in re.finditer(r"DEFAULT\s+(\d+)\s*\).*(?:days|purge|retain|keep)", body, re.IGNORECASE):
+    for m in re.finditer(r"DEFAULT\s+(\d+)\s*[,)].*(?:days|purge|retain|keep)", body, re.IGNORECASE):
         rules.append(f"{proc_name}: Default retention period is {m.group(1)} days")
+    # Pipe-delimited file format
+    if re.search(r"'H\|'|'T\|'|UTL_FILE.*'\|'", body, re.IGNORECASE):
+        rules.append(f"{proc_name}: File format is pipe-delimited with H| header and T| trailer records")
+    # Debit/credit GL logic
+    if re.search(r"EARNING.*debit|debit.*EARNING|credit.*DEDUCTION|DEDUCTION.*credit", body, re.IGNORECASE):
+        rules.append(f"{proc_name}: GL journal: EARNING type = debit entry; non-EARNING = credit entry")
     return rules
 
 
@@ -219,6 +234,7 @@ def deep_parse_pkb(filepath: Path) -> dict:
         "pragma_autonomous": bool(re.search(r"PRAGMA\s+AUTONOMOUS_TRANSACTION", content, re.IGNORECASE)),
         "uses_sys_context": bool(re.search(r"SYS_CONTEXT\s*\(", content, re.IGNORECASE)),
         "utl_packages_used": utl_pkgs,
+        "dbms_packages_used": list(set(re.findall(r"(DBMS_\w+)\.", content, re.IGNORECASE))),
     }
 
 
@@ -228,13 +244,19 @@ def deep_parse_pks(filepath: Path) -> dict:
     pkg_name = pkg_match.group(1) if pkg_match else filepath.stem
 
     procedures = []
-    for m in re.finditer(r"PROCEDURE\s+(\w+)\s*\(([^)]*)\)", content, re.IGNORECASE):
-        params = [p.strip().split()[0] for p in m.group(2).split(",") if p.strip()]
+    for m in re.finditer(r"PROCEDURE\s+(\w+)\s*(?:\(([^)]*)\))?(?:\s*;|\s+IS|\s+AS)", content, re.IGNORECASE):
+        params_raw = m.group(2) or ""
+        params = [p.strip().split()[0] for p in params_raw.split(",") if p.strip()]
         procedures.append({"name": m.group(1), "params": params})
 
     functions = []
-    for m in re.finditer(r"FUNCTION\s+(\w+)\s*\(([^)]*)\)\s*RETURN\s+(\w+)", content, re.IGNORECASE):
-        params = [p.strip().split()[0] for p in m.group(2).split(",") if p.strip()]
+    # Match functions with params, and also no-param functions like: FUNCTION generate_emp_number RETURN VARCHAR2
+    for m in re.finditer(
+        r"FUNCTION\s+(\w+)\s*(?:\(([^)]*)\))?\s*RETURN\s+(\w+)",
+        content, re.IGNORECASE
+    ):
+        params_raw = m.group(2) or ""
+        params = [p.strip().split()[0] for p in params_raw.split(",") if p.strip()]
         functions.append({"name": m.group(1), "params": params, "returns": m.group(3)})
 
     # Capture ALL exceptions — both PRAGMA-linked and plain EXCEPTION declarations
@@ -271,6 +293,21 @@ def deep_parse_pks(filepath: Path) -> dict:
             if line:
                 issues_lines.append(line)
 
+    # Extract global variables declared in spec
+    globals_vars = []
+    for m in re.finditer(
+        r"^\s+(g_\w+)\s+(VARCHAR2|NUMBER|BOOLEAN|DATE|PLS_INTEGER)[\w\(\),\s]*(?::=\s*([^;]+))?;",
+        content, re.MULTILINE | re.IGNORECASE
+    ):
+        globals_vars.append({
+            "name": m.group(1),
+            "type": m.group(2),
+            "default": m.group(3).strip() if m.group(3) else None,
+        })
+
+    # Note what library packages are referenced in comments/header
+    noted_libraries = list(set(re.findall(r"(UTL_\w+|DBMS_\w+)", content, re.IGNORECASE)))
+
     return {
         "name": pkg_name,
         "file": filepath.name,
@@ -278,6 +315,8 @@ def deep_parse_pks(filepath: Path) -> dict:
         "functions": functions,
         "exceptions": exceptions,
         "types": [{"name": t[0], "kind": t[1]} for t in types],
+        "global_variables": globals_vars,
+        "noted_libraries": noted_libraries,
         "dependencies": [d.strip() for d in deps_match.group(1).split(",")] if deps_match else [],
         "callers": [c.strip() for c in callers_match.group(1).split(",")] if callers_match else [],
         "known_issues": issues_lines,
@@ -307,38 +346,39 @@ def parse_pll_library(filepath: Path) -> dict:
     content = read_file(filepath)
     lib_name = filepath.stem.replace(".pll", "").upper()
 
-    procedures = []
-    for m in re.finditer(
-        r"PROCEDURE\s+(\w+)\s*\(([^)]*)\)\s+IS\s*\n(.*?)(?=\n(?:PROCEDURE|FUNCTION)\s+\w|\Z)",
-        content, re.DOTALL | re.IGNORECASE
-    ):
-        name = m.group(1)
-        body = m.group(3)
-        procedures.append({
-            "name": name,
-            "params": [p.strip().split()[0] for p in m.group(2).split(",") if p.strip()],
-            "business_rules": extract_inline_comments(body, "BUSINESS"),
-            "rules": extract_inline_comments(body, "RULE"),
-            "bugs": extract_inline_comments(body, "BUG"),
-            "pkg_calls": list(set(re.findall(r"(PKG_\w+\.\w+)", body, re.IGNORECASE))),
-        })
+    # Find all proc/function start positions to properly scope bodies
+    sub_pattern = re.compile(
+        r"^(?:PROCEDURE|FUNCTION)\s+(\w+)\s*(?:\(([^)]*)\))?\s*(?:RETURN\s+(\w+))?\s+IS",
+        re.MULTILINE | re.IGNORECASE
+    )
+    sub_matches = list(sub_pattern.finditer(content))
 
+    procedures = []
     functions = []
-    for m in re.finditer(
-        r"FUNCTION\s+(\w+)\s*\(([^)]*)\)\s+RETURN\s+(\w+)\s+IS\s*\n(.*?)(?=\n(?:PROCEDURE|FUNCTION)\s+\w|\Z)",
-        content, re.DOTALL | re.IGNORECASE
-    ):
+    for i, m in enumerate(sub_matches):
+        kind = content[m.start():m.start()+8].strip().upper()
         name = m.group(1)
-        body = m.group(4)
-        functions.append({
+        params_raw = m.group(2) or ""
+        returns = m.group(3)
+        params = [p.strip().split()[0] for p in params_raw.split(",") if p.strip()]
+        # Scope body to this subprogram only
+        body_start = m.end()
+        body_end = sub_matches[i+1].start() if i+1 < len(sub_matches) else len(content)
+        body = content[body_start:body_end]
+
+        entry = {
             "name": name,
-            "params": [p.strip().split()[0] for p in m.group(2).split(",") if p.strip()],
-            "returns": m.group(3),
+            "params": params,
             "business_rules": extract_inline_comments(body, "BUSINESS"),
             "rules": extract_inline_comments(body, "RULE"),
             "bugs": extract_inline_comments(body, "BUG"),
             "pkg_calls": list(set(re.findall(r"(PKG_\w+\.\w+)", body, re.IGNORECASE))),
-        })
+        }
+        if returns:
+            entry["returns"] = returns
+            functions.append(entry)
+        else:
+            procedures.append(entry)
 
     # Dependencies/metadata from header comments
     deps_match = re.search(r"Dependencies:\s*(.+)", content)
@@ -468,6 +508,18 @@ def parse_seed_file(filepath: Path) -> dict:
     content = read_file(filepath)
     tables = {}
 
+    # Extract UPDATE statements (e.g. post-insert manager assignments)
+    update_stmts = []
+    for m in re.finditer(
+        r"UPDATE\s+(\w+)\s+SET\s+(.+?)\s+WHERE\s+(.+?)\s*;",
+        content, re.IGNORECASE | re.DOTALL
+    ):
+        update_stmts.append({
+            "table": m.group(1).upper(),
+            "set": re.sub(r"\s+", " ", m.group(2).strip()),
+            "where": re.sub(r"\s+", " ", m.group(3).strip()),
+        })
+
     # Extract INSERT INTO statements
     pattern = re.compile(
         r"INSERT\s+INTO\s+(\w+)\s*\(([^)]+)\)\s*\n?\s*VALUES\s*\(([^;]+)\)\s*;",
@@ -517,7 +569,9 @@ def parse_seed_file(filepath: Path) -> dict:
     return {
         "file": filepath.name,
         "tables": tables,
+        "updates": update_stmts,
         "total_rows": sum(len(t["rows"]) for t in tables.values()),
+        "total_updates": len(update_stmts),
     }
 
 
@@ -617,6 +671,13 @@ def deep_parse_form(filepath: Path) -> dict:
                 "update_allowed": item.attrib.get("UpdateAllowed", ""),
                 "query_allowed": item.attrib.get("QueryAllowed", ""),
             }
+            # Extract poplist values for List Items
+            list_elements = item.findall("ListItemElement")
+            if list_elements:
+                i["poplist_values"] = [
+                    {"label": el.attrib.get("Label", ""), "value": el.attrib.get("Value", "")}
+                    for el in list_elements
+                ]
             # Remove empty keys
             i = {k: v for k, v in i.items() if v}
             items.append(i)
@@ -683,16 +744,16 @@ def deep_parse_form(filepath: Path) -> dict:
             "tables": list(set(re.findall(r"FROM\s+(\w+)", query, re.IGNORECASE))),
         })
 
-    # Relations (master-detail)
+    # Relations (master-detail) — use correct Oracle Forms XML attribute names
     relations = []
     for rel in root.findall(".//Relation"):
         relations.append({
             "name": rel.attrib.get("Name", ""),
             "detail_block": rel.attrib.get("DetailBlock", ""),
             "join_condition": rel.attrib.get("JoinCondition", ""),
-            "delete_record": rel.attrib.get("DeleteRecord", ""),
+            "delete_record_behavior": rel.attrib.get("DeleteRecordBehavior", ""),
+            "auto_query": rel.attrib.get("AutoQuery", ""),
             "deferred": rel.attrib.get("Deferred", ""),
-            "automatic_query": rel.attrib.get("AutomaticQuery", ""),
         })
 
     # Canvases
@@ -859,19 +920,38 @@ def deep_parse_schema() -> dict:
     triggers = {}
     for trig_file in sorted(TRIGGERS_DIR.glob("*.sql")):
         content = read_file(trig_file)
-        for m in re.finditer(
+        # Find all trigger definition start positions first
+        trig_header_pattern = re.compile(
             r"CREATE\s+OR\s+REPLACE\s+TRIGGER\s+(?:HRMS\.)?(\w+)\s+"
-            r"(BEFORE|AFTER|INSTEAD\s+OF)\s+(\w+(?:\s+OR\s+\w+)*)\s+ON\s+(HRMS\.)?(\w+)",
-            content, re.IGNORECASE
-        ):
+            r"(BEFORE|AFTER|INSTEAD\s+OF)\s+([\w\s]+?)\s+ON\s+(HRMS\.)?(\w+)",
+            re.IGNORECASE
+        )
+        matches = list(trig_header_pattern.finditer(content))
+        for i, m in enumerate(matches):
             trig_name = m.group(1).upper()
             timing = m.group(2).upper()
-            events = m.group(3).upper()
-
-            # Extract rules per trigger — scope to the trigger body only
-            # Find the trigger body start
-            body_start = content.find("BEGIN", m.end())
-            body = content[body_start:] if body_start != -1 else content[m.end():]
+            events = m.group(3).strip().upper()
+            # Scope body strictly to THIS trigger only — end at next CREATE OR REPLACE TRIGGER
+            body_start = m.end()
+            body_end = matches[i+1].start() if i+1 < len(matches) else len(content)
+            body = content[body_start:body_end]
+            # Also capture RULE/BUSINESS comments immediately before the CREATE statement
+            # Walk BACKWARDS from m.start() but stop at any END <trigname>; or non-comment code line
+            pre_create = content[:m.start()]
+            pre_lines = pre_create.splitlines()
+            header_lines = []
+            for line in reversed(pre_lines):
+                stripped = line.strip()
+                # Stop at trigger END boundary or code lines
+                if re.match(r"END\s+\w+\s*;|^/\s*$|^\s*BEGIN\b", stripped, re.IGNORECASE):
+                    break
+                if stripped.startswith("--") or stripped == "":
+                    if stripped.startswith("--"):
+                        header_lines.append(line)
+                else:
+                    break
+            header_comment = "\n".join(reversed(header_lines))
+            combined = header_comment + "\n" + body
 
             triggers[trig_name] = {
                 "name": trig_name,
@@ -879,9 +959,9 @@ def deep_parse_schema() -> dict:
                 "timing": timing,
                 "events": events,
                 "table": ("HRMS." + m.group(5)).upper(),
-                "business_rules": extract_inline_comments(body, "BUSINESS"),
-                "rules": extract_inline_comments(body, "RULE"),
-                "bugs": extract_inline_comments(body, "BUG"),
+                "business_rules": extract_inline_comments(combined, "BUSINESS"),
+                "rules": extract_inline_comments(combined, "RULE"),
+                "bugs": extract_inline_comments(combined, "BUG"),
                 "pkg_calls": list(set(re.findall(r"(PKG_\w+\.\w+)", body, re.IGNORECASE))),
                 "pragma_autonomous": bool(re.search(r"PRAGMA\s+AUTONOMOUS_TRANSACTION", body, re.IGNORECASE)),
                 "uses_sys_context": bool(re.search(r"SYS_CONTEXT\s*\(", body, re.IGNORECASE)),

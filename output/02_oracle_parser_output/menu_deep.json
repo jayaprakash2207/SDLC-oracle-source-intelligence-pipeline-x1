@@ -139,12 +139,12 @@
       }
     ],
     "open_forms": [
-      "HRMS_PERFORMANCE",
-      "HRMS_LEAVE",
       "HRMS_PAYROLL",
+      "HRMS_ADMIN",
+      "HRMS_LEAVE",
+      "HRMS_PERFORMANCE",
       "HRMS_EMPLOYEE",
-      "HRMS_REPORTS",
-      "HRMS_ADMIN"
+      "HRMS_REPORTS"
     ],
     "show_windows": [
       "WIN_CHANGE_PWD"

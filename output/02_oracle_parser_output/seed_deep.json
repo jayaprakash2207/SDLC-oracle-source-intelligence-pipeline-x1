@@ -1100,7 +1100,9 @@
         ]
       }
     },
-    "total_rows": 86
+    "updates": [],
+    "total_rows": 86,
+    "total_updates": 0
   },
   {
     "file": "02_employee_data.sql",
@@ -1977,6 +1979,44 @@
         ]
       }
     },
-    "total_rows": 47
+    "updates": [
+      {
+        "table": "DEPARTMENTS",
+        "set": "MANAGER_EMP_ID = 10",
+        "where": "DEPT_ID = 10"
+      },
+      {
+        "table": "DEPARTMENTS",
+        "set": "MANAGER_EMP_ID = 2",
+        "where": "DEPT_ID = 20"
+      },
+      {
+        "table": "DEPARTMENTS",
+        "set": "MANAGER_EMP_ID = 3",
+        "where": "DEPT_ID = 30"
+      },
+      {
+        "table": "DEPARTMENTS",
+        "set": "MANAGER_EMP_ID = 30",
+        "where": "DEPT_ID = 30"
+      },
+      {
+        "table": "DEPARTMENTS",
+        "set": "MANAGER_EMP_ID = 31",
+        "where": "DEPT_ID = 31"
+      },
+      {
+        "table": "DEPARTMENTS",
+        "set": "MANAGER_EMP_ID = 40",
+        "where": "DEPT_ID = 40"
+      },
+      {
+        "table": "DEPARTMENTS",
+        "set": "MANAGER_EMP_ID = 1",
+        "where": "DEPT_ID = 1"
+      }
+    ],
+    "total_rows": 47,
+    "total_updates": 7
   }
 ]
