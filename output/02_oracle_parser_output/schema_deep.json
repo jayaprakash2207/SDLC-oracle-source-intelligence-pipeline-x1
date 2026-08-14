@@ -18,23 +18,15 @@
         },
         {
           "name": "PARENT_DEPT_ID",
-          "type": "NUMBER(10),"
-        },
-        {
-          "name": "COST_CENTER",
-          "type": "VARCHAR2(20),"
+          "type": "NUMBER(10),\n    COST_CENTER"
         },
         {
           "name": "MANAGER_EMP_ID",
-          "type": "NUMBER(10),"
-        },
-        {
-          "name": "LOCATION_CODE",
-          "type": "VARCHAR2(10),"
+          "type": "NUMBER(10),\n    LOCATION_CODE"
         },
         {
           "name": "ACTIVE_FLAG",
-          "type": "CHAR(1)"
+          "type": "CHAR(1)         DEFAULT"
         },
         {
           "name": "CREATED_BY",
@@ -42,15 +34,11 @@
         },
         {
           "name": "CREATED_DATE",
-          "type": "DATE"
+          "type": "DATE            DEFAULT"
         },
         {
           "name": "MODIFIED_BY",
-          "type": "VARCHAR2(30),"
-        },
-        {
-          "name": "MODIFIED_DATE",
-          "type": "DATE,"
+          "type": "VARCHAR2(30),\n    MODIFIED_DATE"
         }
       ],
       "primary_keys": [
@@ -75,39 +63,23 @@
         },
         {
           "name": "ADDRESS_LINE1",
-          "type": "VARCHAR2(200),"
-        },
-        {
-          "name": "ADDRESS_LINE2",
-          "type": "VARCHAR2(200),"
+          "type": "VARCHAR2(200),\n    ADDRESS_LINE2"
         },
         {
           "name": "CITY",
-          "type": "VARCHAR2(100),"
-        },
-        {
-          "name": "STATE_PROVINCE",
-          "type": "VARCHAR2(100),"
+          "type": "VARCHAR2(100),\n    STATE_PROVINCE"
         },
         {
           "name": "POSTAL_CODE",
-          "type": "VARCHAR2(20),"
-        },
-        {
-          "name": "COUNTRY_CODE",
-          "type": "VARCHAR2(3),"
+          "type": "VARCHAR2(20),\n    COUNTRY_CODE"
         },
         {
           "name": "PHONE_NUMBER",
-          "type": "VARCHAR2(30),"
-        },
-        {
-          "name": "TIMEZONE",
-          "type": "VARCHAR2(50)"
+          "type": "VARCHAR2(30),\n    TIMEZONE"
         },
         {
           "name": "ACTIVE_FLAG",
-          "type": "CHAR(1)"
+          "type": "CHAR(1)         DEFAULT"
         },
         {
           "name": "CREATED_BY",
@@ -115,15 +87,11 @@
         },
         {
           "name": "CREATED_DATE",
-          "type": "DATE"
+          "type": "DATE            DEFAULT"
         },
         {
           "name": "MODIFIED_BY",
-          "type": "VARCHAR2(30),"
-        },
-        {
-          "name": "MODIFIED_DATE",
-          "type": "DATE,"
+          "type": "VARCHAR2(30),\n    MODIFIED_DATE"
         }
       ],
       "primary_keys": [
@@ -158,11 +126,11 @@
         },
         {
           "name": "OVERTIME_ELIGIBLE",
-          "type": "CHAR(1)"
+          "type": "CHAR(1)         DEFAULT"
         },
         {
           "name": "ACTIVE_FLAG",
-          "type": "CHAR(1)"
+          "type": "CHAR(1)         DEFAULT"
         },
         {
           "name": "CREATED_BY",
@@ -170,15 +138,11 @@
         },
         {
           "name": "CREATED_DATE",
-          "type": "DATE"
+          "type": "DATE            DEFAULT"
         },
         {
           "name": "MODIFIED_BY",
-          "type": "VARCHAR2(30),"
-        },
-        {
-          "name": "MODIFIED_DATE",
-          "type": "DATE,"
+          "type": "VARCHAR2(30),\n    MODIFIED_DATE"
         }
       ],
       "primary_keys": [
@@ -207,23 +171,15 @@
         },
         {
           "name": "JOB_FAMILY",
-          "type": "VARCHAR2(50),"
-        },
-        {
-          "name": "GRADE_ID",
-          "type": "NUMBER(5)       NOT"
+          "type": "VARCHAR2(50),\n    GRADE_ID"
         },
         {
           "name": "EEO_CATEGORY",
-          "type": "VARCHAR2(10),"
-        },
-        {
-          "name": "FLSA_STATUS",
-          "type": "VARCHAR2(10)"
+          "type": "VARCHAR2(10),\n    FLSA_STATUS"
         },
         {
           "name": "ACTIVE_FLAG",
-          "type": "CHAR(1)"
+          "type": "CHAR(1)         DEFAULT"
         },
         {
           "name": "CREATED_BY",
@@ -231,15 +187,11 @@
         },
         {
           "name": "CREATED_DATE",
-          "type": "DATE"
+          "type": "DATE            DEFAULT"
         },
         {
           "name": "MODIFIED_BY",
-          "type": "VARCHAR2(30),"
-        },
-        {
-          "name": "MODIFIED_DATE",
-          "type": "DATE,"
+          "type": "VARCHAR2(30),\n    MODIFIED_DATE"
         }
       ],
       "primary_keys": [
@@ -273,67 +225,35 @@
         },
         {
           "name": "MIDDLE_NAME",
-          "type": "VARCHAR2(50),"
-        },
-        {
-          "name": "LAST_NAME",
-          "type": "VARCHAR2(50)    NOT"
+          "type": "VARCHAR2(50),\n    LAST_NAME"
         },
         {
           "name": "DATE_OF_BIRTH",
-          "type": "DATE,"
-        },
-        {
-          "name": "GENDER",
-          "type": "CHAR(1),"
+          "type": "DATE,\n    GENDER"
         },
         {
           "name": "MARITAL_STATUS",
-          "type": "VARCHAR2(10),"
-        },
-        {
-          "name": "NATIONALITY",
-          "type": "VARCHAR2(50),"
+          "type": "VARCHAR2(10),\n    NATIONALITY"
         },
         {
           "name": "SSN_ENCRYPTED",
-          "type": "VARCHAR2(200),"
-        },
-        {
-          "name": "EMAIL",
-          "type": "VARCHAR2(100),"
+          "type": "VARCHAR2(200),\n    EMAIL"
         },
         {
           "name": "PHONE_WORK",
-          "type": "VARCHAR2(30),"
-        },
-        {
-          "name": "PHONE_MOBILE",
-          "type": "VARCHAR2(30),"
+          "type": "VARCHAR2(30),\n    PHONE_MOBILE"
         },
         {
           "name": "ADDRESS_LINE1",
-          "type": "VARCHAR2(200),"
-        },
-        {
-          "name": "ADDRESS_LINE2",
-          "type": "VARCHAR2(200),"
+          "type": "VARCHAR2(200),\n    ADDRESS_LINE2"
         },
         {
           "name": "CITY",
-          "type": "VARCHAR2(100),"
-        },
-        {
-          "name": "STATE_PROVINCE",
-          "type": "VARCHAR2(100),"
+          "type": "VARCHAR2(100),\n    STATE_PROVINCE"
         },
         {
           "name": "POSTAL_CODE",
-          "type": "VARCHAR2(20),"
-        },
-        {
-          "name": "COUNTRY_CODE",
-          "type": "VARCHAR2(3),"
+          "type": "VARCHAR2(20),\n    COUNTRY_CODE"
         },
         {
           "name": "HIRE_DATE",
@@ -341,11 +261,7 @@
         },
         {
           "name": "TERMINATION_DATE",
-          "type": "DATE,"
-        },
-        {
-          "name": "TERMINATION_REASON",
-          "type": "VARCHAR2(50),"
+          "type": "DATE,\n    TERMINATION_REASON"
         },
         {
           "name": "DEPT_ID",
@@ -357,31 +273,23 @@
         },
         {
           "name": "MANAGER_EMP_ID",
-          "type": "NUMBER(10),"
-        },
-        {
-          "name": "LOCATION_CODE",
-          "type": "VARCHAR2(10),"
+          "type": "NUMBER(10),\n    LOCATION_CODE"
         },
         {
           "name": "EMPLOYMENT_TYPE",
-          "type": "VARCHAR2(20)"
+          "type": "VARCHAR2(20)    DEFAULT"
         },
         {
           "name": "EMPLOYMENT_STATUS",
-          "type": "VARCHAR2(20)"
+          "type": "VARCHAR2(20)    DEFAULT"
         },
         {
           "name": "PHOTO_BLOB",
-          "type": "BLOB,"
-        },
-        {
-          "name": "NOTES",
-          "type": "CLOB,"
+          "type": "BLOB,\n    NOTES"
         },
         {
           "name": "ACTIVE_FLAG",
-          "type": "CHAR(1)"
+          "type": "CHAR(1)         DEFAULT"
         },
         {
           "name": "CREATED_BY",
@@ -389,15 +297,11 @@
         },
         {
           "name": "CREATED_DATE",
-          "type": "DATE"
+          "type": "DATE            DEFAULT"
         },
         {
           "name": "MODIFIED_BY",
-          "type": "VARCHAR2(30),"
-        },
-        {
-          "name": "MODIFIED_DATE",
-          "type": "DATE,"
+          "type": "VARCHAR2(30),\n    MODIFIED_DATE"
         }
       ],
       "primary_keys": [
@@ -457,51 +361,27 @@
         },
         {
           "name": "OLD_DEPT_ID",
-          "type": "NUMBER(10),"
-        },
-        {
-          "name": "NEW_DEPT_ID",
-          "type": "NUMBER(10),"
+          "type": "NUMBER(10),\n    NEW_DEPT_ID"
         },
         {
           "name": "OLD_JOB_ID",
-          "type": "NUMBER(10),"
-        },
-        {
-          "name": "NEW_JOB_ID",
-          "type": "NUMBER(10),"
+          "type": "NUMBER(10),\n    NEW_JOB_ID"
         },
         {
           "name": "OLD_MANAGER_ID",
-          "type": "NUMBER(10),"
-        },
-        {
-          "name": "NEW_MANAGER_ID",
-          "type": "NUMBER(10),"
+          "type": "NUMBER(10),\n    NEW_MANAGER_ID"
         },
         {
           "name": "OLD_SALARY",
-          "type": "NUMBER(12,2),"
-        },
-        {
-          "name": "NEW_SALARY",
-          "type": "NUMBER(12,2),"
+          "type": "NUMBER(12,2),\n    NEW_SALARY"
         },
         {
           "name": "OLD_LOCATION",
-          "type": "VARCHAR2(10),"
-        },
-        {
-          "name": "NEW_LOCATION",
-          "type": "VARCHAR2(10),"
+          "type": "VARCHAR2(10),\n    NEW_LOCATION"
         },
         {
           "name": "REASON_CODE",
-          "type": "VARCHAR2(30),"
-        },
-        {
-          "name": "COMMENTS",
-          "type": "VARCHAR2(4000),"
+          "type": "VARCHAR2(30),\n    COMMENTS"
         },
         {
           "name": "CREATED_BY",
@@ -509,7 +389,7 @@
         },
         {
           "name": "CREATED_DATE",
-          "type": "DATE"
+          "type": "DATE            DEFAULT"
         }
       ],
       "primary_keys": [
@@ -553,19 +433,15 @@
         },
         {
           "name": "DATE_OF_BIRTH",
-          "type": "DATE,"
-        },
-        {
-          "name": "SSN_ENCRYPTED",
-          "type": "VARCHAR2(200),"
+          "type": "DATE,\n    SSN_ENCRYPTED"
         },
         {
           "name": "BENEFITS_ENROLLED",
-          "type": "CHAR(1)"
+          "type": "CHAR(1)         DEFAULT"
         },
         {
           "name": "ACTIVE_FLAG",
-          "type": "CHAR(1)"
+          "type": "CHAR(1)         DEFAULT"
         },
         {
           "name": "CREATED_BY",
@@ -573,15 +449,11 @@
         },
         {
           "name": "CREATED_DATE",
-          "type": "DATE"
+          "type": "DATE            DEFAULT"
         },
         {
           "name": "MODIFIED_BY",
-          "type": "VARCHAR2(30),"
-        },
-        {
-          "name": "MODIFIED_DATE",
-          "type": "DATE,"
+          "type": "VARCHAR2(30),\n    MODIFIED_DATE"
         }
       ],
       "primary_keys": [
@@ -617,27 +489,19 @@
         },
         {
           "name": "RELATIONSHIP",
-          "type": "VARCHAR2(30),"
-        },
-        {
-          "name": "PHONE_PRIMARY",
-          "type": "VARCHAR2(30)    NOT"
+          "type": "VARCHAR2(30),\n    PHONE_PRIMARY"
         },
         {
           "name": "PHONE_SECONDARY",
-          "type": "VARCHAR2(30),"
-        },
-        {
-          "name": "EMAIL",
-          "type": "VARCHAR2(100),"
+          "type": "VARCHAR2(30),\n    EMAIL"
         },
         {
           "name": "PRIORITY_ORDER",
-          "type": "NUMBER(2)"
+          "type": "NUMBER(2)       DEFAULT"
         },
         {
           "name": "ACTIVE_FLAG",
-          "type": "CHAR(1)"
+          "type": "CHAR(1)         DEFAULT"
         },
         {
           "name": "CREATED_BY",
@@ -645,15 +509,11 @@
         },
         {
           "name": "CREATED_DATE",
-          "type": "DATE"
+          "type": "DATE            DEFAULT"
         },
         {
           "name": "MODIFIED_BY",
-          "type": "VARCHAR2(30),"
-        },
-        {
-          "name": "MODIFIED_DATE",
-          "type": "DATE,"
+          "type": "VARCHAR2(30),\n    MODIFIED_DATE"
         }
       ],
       "primary_keys": [
@@ -687,43 +547,31 @@
         },
         {
           "name": "END_DATE",
-          "type": "DATE,"
-        },
-        {
-          "name": "BASE_SALARY",
-          "type": "NUMBER(12,2)    NOT"
+          "type": "DATE,\n    BASE_SALARY"
         },
         {
           "name": "CURRENCY_CODE",
-          "type": "VARCHAR2(3)"
+          "type": "VARCHAR2(3)     DEFAULT"
         },
         {
           "name": "PAY_FREQUENCY",
-          "type": "VARCHAR2(20)"
+          "type": "VARCHAR2(20)    DEFAULT"
         },
         {
           "name": "SALARY_BASIS",
-          "type": "VARCHAR2(20)"
+          "type": "VARCHAR2(20)    DEFAULT"
         },
         {
           "name": "CHANGE_REASON",
-          "type": "VARCHAR2(50),"
-        },
-        {
-          "name": "CHANGE_PCT",
-          "type": "NUMBER(5,2),"
+          "type": "VARCHAR2(50),\n    CHANGE_PCT"
         },
         {
           "name": "APPROVED_BY",
-          "type": "NUMBER(10),"
-        },
-        {
-          "name": "APPROVAL_DATE",
-          "type": "DATE,"
+          "type": "NUMBER(10),\n    APPROVAL_DATE"
         },
         {
           "name": "ACTIVE_FLAG",
-          "type": "CHAR(1)"
+          "type": "CHAR(1)         DEFAULT"
         },
         {
           "name": "CREATED_BY",
@@ -731,15 +579,11 @@
         },
         {
           "name": "CREATED_DATE",
-          "type": "DATE"
+          "type": "DATE            DEFAULT"
         },
         {
           "name": "MODIFIED_BY",
-          "type": "VARCHAR2(30),"
-        },
-        {
-          "name": "MODIFIED_DATE",
-          "type": "DATE,"
+          "type": "VARCHAR2(30),\n    MODIFIED_DATE"
         }
       ],
       "primary_keys": [
@@ -784,35 +628,27 @@
         },
         {
           "name": "DEFAULT_AMOUNT",
-          "type": "NUMBER(12,2),"
-        },
-        {
-          "name": "DEFAULT_PERCENTAGE",
-          "type": "NUMBER(5,2),"
+          "type": "NUMBER(12,2),\n    DEFAULT_PERCENTAGE"
         },
         {
           "name": "TAXABLE_FLAG",
-          "type": "CHAR(1)"
+          "type": "CHAR(1)         DEFAULT"
         },
         {
           "name": "PRETAX_FLAG",
-          "type": "CHAR(1)"
+          "type": "CHAR(1)         DEFAULT"
         },
         {
           "name": "EMPLOYER_PAID",
-          "type": "CHAR(1)"
+          "type": "CHAR(1)         DEFAULT"
         },
         {
           "name": "GL_ACCOUNT_CODE",
-          "type": "VARCHAR2(30),"
-        },
-        {
-          "name": "PRIORITY_ORDER",
-          "type": "NUMBER(5)"
+          "type": "VARCHAR2(30),\n    PRIORITY_ORDER"
         },
         {
           "name": "ACTIVE_FLAG",
-          "type": "CHAR(1)"
+          "type": "CHAR(1)         DEFAULT"
         },
         {
           "name": "CREATED_BY",
@@ -820,15 +656,11 @@
         },
         {
           "name": "CREATED_DATE",
-          "type": "DATE"
+          "type": "DATE            DEFAULT"
         },
         {
           "name": "MODIFIED_BY",
-          "type": "VARCHAR2(30),"
-        },
-        {
-          "name": "MODIFIED_DATE",
-          "type": "DATE,"
+          "type": "VARCHAR2(30),\n    MODIFIED_DATE"
         }
       ],
       "primary_keys": [
@@ -862,23 +694,15 @@
         },
         {
           "name": "END_DATE",
-          "type": "DATE,"
-        },
-        {
-          "name": "AMOUNT",
-          "type": "NUMBER(12,2),"
+          "type": "DATE,\n    AMOUNT"
         },
         {
           "name": "PERCENTAGE",
-          "type": "NUMBER(5,2),"
-        },
-        {
-          "name": "OVERRIDE_AMOUNT",
-          "type": "NUMBER(12,2),"
+          "type": "NUMBER(5,2),\n    OVERRIDE_AMOUNT"
         },
         {
           "name": "ACTIVE_FLAG",
-          "type": "CHAR(1)"
+          "type": "CHAR(1)         DEFAULT"
         },
         {
           "name": "CREATED_BY",
@@ -886,15 +710,11 @@
         },
         {
           "name": "CREATED_DATE",
-          "type": "DATE"
+          "type": "DATE            DEFAULT"
         },
         {
           "name": "MODIFIED_BY",
-          "type": "VARCHAR2(30),"
-        },
-        {
-          "name": "MODIFIED_DATE",
-          "type": "DATE,"
+          "type": "VARCHAR2(30),\n    MODIFIED_DATE"
         }
       ],
       "primary_keys": [
@@ -946,15 +766,11 @@
         },
         {
           "name": "STATUS",
-          "type": "VARCHAR2(20)"
+          "type": "VARCHAR2(20)    DEFAULT"
         },
         {
           "name": "CLOSED_BY",
-          "type": "VARCHAR2(30),"
-        },
-        {
-          "name": "CLOSED_DATE",
-          "type": "DATE,"
+          "type": "VARCHAR2(30),\n    CLOSED_DATE"
         },
         {
           "name": "CREATED_BY",
@@ -962,15 +778,11 @@
         },
         {
           "name": "CREATED_DATE",
-          "type": "DATE"
+          "type": "DATE            DEFAULT"
         },
         {
           "name": "MODIFIED_BY",
-          "type": "VARCHAR2(30),"
-        },
-        {
-          "name": "MODIFIED_DATE",
-          "type": "DATE,"
+          "type": "VARCHAR2(30),\n    MODIFIED_DATE"
         }
       ],
       "primary_keys": [
@@ -995,7 +807,7 @@
         },
         {
           "name": "RUN_TYPE",
-          "type": "VARCHAR2(20)"
+          "type": "VARCHAR2(20)    DEFAULT"
         },
         {
           "name": "RUN_DATE",
@@ -1003,47 +815,27 @@
         },
         {
           "name": "STATUS",
-          "type": "VARCHAR2(20)"
+          "type": "VARCHAR2(20)    DEFAULT"
         },
         {
           "name": "TOTAL_GROSS",
-          "type": "NUMBER(15,2),"
-        },
-        {
-          "name": "TOTAL_DEDUCTIONS",
-          "type": "NUMBER(15,2),"
+          "type": "NUMBER(15,2),\n    TOTAL_DEDUCTIONS"
         },
         {
           "name": "TOTAL_NET",
-          "type": "NUMBER(15,2),"
-        },
-        {
-          "name": "TOTAL_EMPLOYER_COST",
-          "type": "NUMBER(15,2),"
+          "type": "NUMBER(15,2),\n    TOTAL_EMPLOYER_COST"
         },
         {
           "name": "EMPLOYEE_COUNT",
-          "type": "NUMBER(10),"
-        },
-        {
-          "name": "ERROR_COUNT",
-          "type": "NUMBER(10)"
+          "type": "NUMBER(10),\n    ERROR_COUNT"
         },
         {
           "name": "SUBMITTED_BY",
-          "type": "VARCHAR2(30),"
-        },
-        {
-          "name": "SUBMITTED_DATE",
-          "type": "DATE,"
+          "type": "VARCHAR2(30),\n    SUBMITTED_DATE"
         },
         {
           "name": "APPROVED_BY",
-          "type": "VARCHAR2(30),"
-        },
-        {
-          "name": "APPROVED_DATE",
-          "type": "DATE,"
+          "type": "VARCHAR2(30),\n    APPROVED_DATE"
         },
         {
           "name": "CREATED_BY",
@@ -1051,15 +843,11 @@
         },
         {
           "name": "CREATED_DATE",
-          "type": "DATE"
+          "type": "DATE            DEFAULT"
         },
         {
           "name": "MODIFIED_BY",
-          "type": "VARCHAR2(30),"
-        },
-        {
-          "name": "MODIFIED_DATE",
-          "type": "DATE,"
+          "type": "VARCHAR2(30),\n    MODIFIED_DATE"
         }
       ],
       "primary_keys": [
@@ -1104,11 +892,7 @@
         },
         {
           "name": "HOURS_WORKED",
-          "type": "NUMBER(6,2),"
-        },
-        {
-          "name": "RATE",
-          "type": "NUMBER(12,4),"
+          "type": "NUMBER(6,2),\n    RATE"
         },
         {
           "name": "AMOUNT",
@@ -1116,23 +900,15 @@
         },
         {
           "name": "YTD_AMOUNT",
-          "type": "NUMBER(15,2),"
-        },
-        {
-          "name": "STATUS",
-          "type": "VARCHAR2(20)"
+          "type": "NUMBER(15,2),\n    STATUS"
         },
         {
           "name": "ERROR_MESSAGE",
-          "type": "VARCHAR2(4000),"
-        },
-        {
-          "name": "CREATED_BY",
-          "type": "VARCHAR2(30)    NOT"
+          "type": "VARCHAR2(4000),\n    CREATED_BY"
         },
         {
           "name": "CREATED_DATE",
-          "type": "DATE"
+          "type": "DATE            DEFAULT"
         }
       ],
       "primary_keys": [
@@ -1182,23 +958,15 @@
         },
         {
           "name": "BRACKET_MAX",
-          "type": "NUMBER(12,2),"
-        },
-        {
-          "name": "TAX_RATE",
-          "type": "NUMBER(5,4)     NOT"
+          "type": "NUMBER(12,2),\n    TAX_RATE"
         },
         {
           "name": "BASE_TAX",
-          "type": "NUMBER(12,2)"
+          "type": "NUMBER(12,2)    DEFAULT"
         },
         {
           "name": "STATE_CODE",
-          "type": "VARCHAR2(3),"
-        },
-        {
-          "name": "ACTIVE_FLAG",
-          "type": "CHAR(1)"
+          "type": "VARCHAR2(3),\n    ACTIVE_FLAG"
         },
         {
           "name": "CREATED_BY",
@@ -1206,7 +974,7 @@
         },
         {
           "name": "CREATED_DATE",
-          "type": "DATE"
+          "type": "DATE            DEFAULT"
         }
       ],
       "primary_keys": [
@@ -1239,35 +1007,31 @@
         },
         {
           "name": "FEDERAL_ALLOWANCES",
-          "type": "NUMBER(3)"
+          "type": "NUMBER(3)       DEFAULT"
         },
         {
           "name": "STATE_ALLOWANCES",
-          "type": "NUMBER(3)"
+          "type": "NUMBER(3)       DEFAULT"
         },
         {
           "name": "ADDITIONAL_FED_WH",
-          "type": "NUMBER(12,2)"
+          "type": "NUMBER(12,2)    DEFAULT"
         },
         {
           "name": "ADDITIONAL_STATE_WH",
-          "type": "NUMBER(12,2)"
+          "type": "NUMBER(12,2)    DEFAULT"
         },
         {
           "name": "EXEMPT_FLAG",
-          "type": "CHAR(1)"
+          "type": "CHAR(1)         DEFAULT"
         },
         {
           "name": "STATE_CODE",
-          "type": "VARCHAR2(3),"
-        },
-        {
-          "name": "W4_RECEIVED_DATE",
-          "type": "DATE,"
+          "type": "VARCHAR2(3),\n    W4_RECEIVED_DATE"
         },
         {
           "name": "ACTIVE_FLAG",
-          "type": "CHAR(1)"
+          "type": "CHAR(1)         DEFAULT"
         },
         {
           "name": "CREATED_BY",
@@ -1275,15 +1039,11 @@
         },
         {
           "name": "CREATED_DATE",
-          "type": "DATE"
+          "type": "DATE            DEFAULT"
         },
         {
           "name": "MODIFIED_BY",
-          "type": "VARCHAR2(30),"
-        },
-        {
-          "name": "MODIFIED_DATE",
-          "type": "DATE,"
+          "type": "VARCHAR2(30),\n    MODIFIED_DATE"
         }
       ],
       "primary_keys": [
@@ -1313,11 +1073,7 @@
         },
         {
           "name": "BANK_NAME",
-          "type": "VARCHAR2(100),"
-        },
-        {
-          "name": "ROUTING_NUMBER",
-          "type": "VARCHAR2(20)    NOT"
+          "type": "VARCHAR2(100),\n    ROUTING_NUMBER"
         },
         {
           "name": "ACCOUNT_NUMBER_ENC",
@@ -1325,35 +1081,27 @@
         },
         {
           "name": "ACCOUNT_TYPE",
-          "type": "VARCHAR2(20)"
+          "type": "VARCHAR2(20)    DEFAULT"
         },
         {
           "name": "DEPOSIT_TYPE",
-          "type": "VARCHAR2(20)"
+          "type": "VARCHAR2(20)    DEFAULT"
         },
         {
           "name": "DEPOSIT_AMOUNT",
-          "type": "NUMBER(12,2),"
-        },
-        {
-          "name": "DEPOSIT_PERCENTAGE",
-          "type": "NUMBER(5,2),"
+          "type": "NUMBER(12,2),\n    DEPOSIT_PERCENTAGE"
         },
         {
           "name": "PRIORITY_ORDER",
-          "type": "NUMBER(2)"
+          "type": "NUMBER(2)       DEFAULT"
         },
         {
           "name": "PRENOTE_SENT",
-          "type": "CHAR(1)"
+          "type": "CHAR(1)         DEFAULT"
         },
         {
           "name": "PRENOTE_DATE",
-          "type": "DATE,"
-        },
-        {
-          "name": "ACTIVE_FLAG",
-          "type": "CHAR(1)"
+          "type": "DATE,\n    ACTIVE_FLAG"
         },
         {
           "name": "CREATED_BY",
@@ -1361,15 +1109,11 @@
         },
         {
           "name": "CREATED_DATE",
-          "type": "DATE"
+          "type": "DATE            DEFAULT"
         },
         {
           "name": "MODIFIED_BY",
-          "type": "VARCHAR2(30),"
-        },
-        {
-          "name": "MODIFIED_DATE",
-          "type": "DATE,"
+          "type": "VARCHAR2(30),\n    MODIFIED_DATE"
         }
       ],
       "primary_keys": [
@@ -1406,47 +1150,35 @@
         },
         {
           "name": "PAID_FLAG",
-          "type": "CHAR(1)"
+          "type": "CHAR(1)         DEFAULT"
         },
         {
           "name": "ACCRUAL_FLAG",
-          "type": "CHAR(1)"
+          "type": "CHAR(1)         DEFAULT"
         },
         {
           "name": "ACCRUAL_RATE",
-          "type": "NUMBER(6,2),"
-        },
-        {
-          "name": "ACCRUAL_FREQUENCY",
-          "type": "VARCHAR2(20),"
+          "type": "NUMBER(6,2),\n    ACCRUAL_FREQUENCY"
         },
         {
           "name": "MAX_BALANCE",
-          "type": "NUMBER(6,2),"
-        },
-        {
-          "name": "CARRYOVER_MAX",
-          "type": "NUMBER(6,2),"
+          "type": "NUMBER(6,2),\n    CARRYOVER_MAX"
         },
         {
           "name": "CARRYOVER_EXPIRY",
-          "type": "NUMBER(3),"
-        },
-        {
-          "name": "MIN_TENURE_DAYS",
-          "type": "NUMBER(5)"
+          "type": "NUMBER(3),\n    MIN_TENURE_DAYS"
         },
         {
           "name": "REQUIRES_APPROVAL",
-          "type": "CHAR(1)"
+          "type": "CHAR(1)         DEFAULT"
         },
         {
           "name": "REQUIRES_DOCUMENT",
-          "type": "CHAR(1)"
+          "type": "CHAR(1)         DEFAULT"
         },
         {
           "name": "ACTIVE_FLAG",
-          "type": "CHAR(1)"
+          "type": "CHAR(1)         DEFAULT"
         },
         {
           "name": "CREATED_BY",
@@ -1454,15 +1186,11 @@
         },
         {
           "name": "CREATED_DATE",
-          "type": "DATE"
+          "type": "DATE            DEFAULT"
         },
         {
           "name": "MODIFIED_BY",
-          "type": "VARCHAR2(30),"
-        },
-        {
-          "name": "MODIFIED_DATE",
-          "type": "DATE,"
+          "type": "VARCHAR2(30),\n    MODIFIED_DATE"
         }
       ],
       "primary_keys": [
@@ -1495,47 +1223,43 @@
         },
         {
           "name": "OPENING_BALANCE",
-          "type": "NUMBER(6,2)"
+          "type": "NUMBER(6,2)     DEFAULT"
         },
         {
           "name": "ACCRUED",
-          "type": "NUMBER(6,2)"
+          "type": "NUMBER(6,2)     DEFAULT"
         },
         {
           "name": "USED",
-          "type": "NUMBER(6,2)"
+          "type": "NUMBER(6,2)     DEFAULT"
         },
         {
           "name": "ADJUSTMENT",
-          "type": "NUMBER(6,2)"
+          "type": "NUMBER(6,2)     DEFAULT"
         },
         {
           "name": "PENDING",
-          "type": "NUMBER(6,2)"
+          "type": "NUMBER(6,2)     DEFAULT"
+        },
+        {
+          "name": "AVAILABLE",
+          "type": "NUMBER(6,2)     GENERATED"
         },
         {
           "name": "CARRYOVER_FROM_PREV",
-          "type": "NUMBER(6,2)"
+          "type": "NUMBER(6,2)     DEFAULT"
         },
         {
           "name": "CARRYOVER_EXPIRY_DT",
-          "type": "DATE,"
-        },
-        {
-          "name": "CREATED_BY",
-          "type": "VARCHAR2(30)    NOT"
+          "type": "DATE,\n    CREATED_BY"
         },
         {
           "name": "CREATED_DATE",
-          "type": "DATE"
+          "type": "DATE            DEFAULT"
         },
         {
           "name": "MODIFIED_BY",
-          "type": "VARCHAR2(30),"
-        },
-        {
-          "name": "MODIFIED_DATE",
-          "type": "DATE,"
+          "type": "VARCHAR2(30),\n    MODIFIED_DATE"
         }
       ],
       "primary_keys": [
@@ -1587,59 +1311,35 @@
         },
         {
           "name": "HALF_DAY_FLAG",
-          "type": "CHAR(1)"
+          "type": "CHAR(1)         DEFAULT"
         },
         {
           "name": "HALF_DAY_PERIOD",
-          "type": "VARCHAR2(10),"
-        },
-        {
-          "name": "STATUS",
-          "type": "VARCHAR2(20)"
+          "type": "VARCHAR2(10),\n    STATUS"
         },
         {
           "name": "REASON",
-          "type": "VARCHAR2(4000),"
-        },
-        {
-          "name": "SUPPORTING_DOC_PATH",
-          "type": "VARCHAR2(500),"
+          "type": "VARCHAR2(4000),\n    SUPPORTING_DOC_PATH"
         },
         {
           "name": "APPROVER_EMP_ID",
-          "type": "NUMBER(10),"
-        },
-        {
-          "name": "APPROVAL_DATE",
-          "type": "DATE,"
+          "type": "NUMBER(10),\n    APPROVAL_DATE"
         },
         {
           "name": "APPROVAL_COMMENTS",
-          "type": "VARCHAR2(4000),"
-        },
-        {
-          "name": "CANCEL_REASON",
-          "type": "VARCHAR2(4000),"
+          "type": "VARCHAR2(4000),\n    CANCEL_REASON"
         },
         {
           "name": "CANCELLED_DATE",
-          "type": "DATE,"
-        },
-        {
-          "name": "CREATED_BY",
-          "type": "VARCHAR2(30)    NOT"
+          "type": "DATE,\n    CREATED_BY"
         },
         {
           "name": "CREATED_DATE",
-          "type": "DATE"
+          "type": "DATE            DEFAULT"
         },
         {
           "name": "MODIFIED_BY",
-          "type": "VARCHAR2(30),"
-        },
-        {
-          "name": "MODIFIED_DATE",
-          "type": "DATE,"
+          "type": "VARCHAR2(30),\n    MODIFIED_DATE"
         }
       ],
       "primary_keys": [
@@ -1697,11 +1397,7 @@
         },
         {
           "name": "BALANCE_AFTER",
-          "type": "NUMBER(6,2),"
-        },
-        {
-          "name": "RUN_ID",
-          "type": "NUMBER(10),"
+          "type": "NUMBER(6,2),\n    RUN_ID"
         },
         {
           "name": "CREATED_BY",
@@ -1709,7 +1405,7 @@
         },
         {
           "name": "CREATED_DATE",
-          "type": "DATE"
+          "type": "DATE            DEFAULT"
         }
       ],
       "primary_keys": [
@@ -1749,15 +1445,11 @@
         },
         {
           "name": "LOCATION_CODE",
-          "type": "VARCHAR2(10),"
-        },
-        {
-          "name": "FLOATING_FLAG",
-          "type": "CHAR(1)"
+          "type": "VARCHAR2(10),\n    FLOATING_FLAG"
         },
         {
           "name": "ACTIVE_FLAG",
-          "type": "CHAR(1)"
+          "type": "CHAR(1)         DEFAULT"
         },
         {
           "name": "CREATED_BY",
@@ -1765,7 +1457,7 @@
         },
         {
           "name": "CREATED_DATE",
-          "type": "DATE"
+          "type": "DATE            DEFAULT"
         }
       ],
       "primary_keys": [
@@ -1800,19 +1492,11 @@
         },
         {
           "name": "SELF_REVIEW_DUE",
-          "type": "DATE,"
-        },
-        {
-          "name": "MANAGER_REVIEW_DUE",
-          "type": "DATE,"
+          "type": "DATE,\n    MANAGER_REVIEW_DUE"
         },
         {
           "name": "CALIBRATION_DUE",
-          "type": "DATE,"
-        },
-        {
-          "name": "STATUS",
-          "type": "VARCHAR2(20)"
+          "type": "DATE,\n    STATUS"
         },
         {
           "name": "CREATED_BY",
@@ -1820,15 +1504,11 @@
         },
         {
           "name": "CREATED_DATE",
-          "type": "DATE"
+          "type": "DATE            DEFAULT"
         },
         {
           "name": "MODIFIED_BY",
-          "type": "VARCHAR2(30),"
-        },
-        {
-          "name": "MODIFIED_DATE",
-          "type": "DATE,"
+          "type": "VARCHAR2(30),\n    MODIFIED_DATE"
         }
       ],
       "primary_keys": [
@@ -1861,71 +1541,43 @@
         },
         {
           "name": "REVIEW_TYPE",
-          "type": "VARCHAR2(20)"
+          "type": "VARCHAR2(20)    DEFAULT"
         },
         {
           "name": "STATUS",
-          "type": "VARCHAR2(20)"
+          "type": "VARCHAR2(20)    DEFAULT"
         },
         {
           "name": "OVERALL_RATING",
-          "type": "NUMBER(2,1),"
-        },
-        {
-          "name": "RATING_LABEL",
-          "type": "VARCHAR2(50),"
+          "type": "NUMBER(2,1),\n    RATING_LABEL"
         },
         {
           "name": "SELF_ASSESSMENT",
-          "type": "CLOB,"
-        },
-        {
-          "name": "MANAGER_ASSESSMENT",
-          "type": "CLOB,"
+          "type": "CLOB,\n    MANAGER_ASSESSMENT"
         },
         {
           "name": "STRENGTHS",
-          "type": "CLOB,"
-        },
-        {
-          "name": "AREAS_FOR_IMPROVEMENT",
-          "type": "CLOB,"
+          "type": "CLOB,\n    AREAS_FOR_IMPROVEMENT"
         },
         {
           "name": "DEVELOPMENT_PLAN",
-          "type": "CLOB,"
-        },
-        {
-          "name": "EMPLOYEE_COMMENTS",
-          "type": "CLOB,"
+          "type": "CLOB,\n    EMPLOYEE_COMMENTS"
         },
         {
           "name": "EMPLOYEE_ACK_DATE",
-          "type": "DATE,"
-        },
-        {
-          "name": "CALIBRATED_RATING",
-          "type": "NUMBER(2,1),"
+          "type": "DATE,\n    CALIBRATED_RATING"
         },
         {
           "name": "CALIBRATION_NOTES",
-          "type": "VARCHAR2(4000),"
-        },
-        {
-          "name": "CREATED_BY",
-          "type": "VARCHAR2(30)    NOT"
+          "type": "VARCHAR2(4000),\n    CREATED_BY"
         },
         {
           "name": "CREATED_DATE",
-          "type": "DATE"
+          "type": "DATE            DEFAULT"
         },
         {
           "name": "MODIFIED_BY",
-          "type": "VARCHAR2(30),"
-        },
-        {
-          "name": "MODIFIED_DATE",
-          "type": "DATE,"
+          "type": "VARCHAR2(30),\n    MODIFIED_DATE"
         }
       ],
       "primary_keys": [
@@ -1978,55 +1630,35 @@
         },
         {
           "name": "GOAL_DESCRIPTION",
-          "type": "CLOB,"
-        },
-        {
-          "name": "GOAL_CATEGORY",
-          "type": "VARCHAR2(30),"
+          "type": "CLOB,\n    GOAL_CATEGORY"
         },
         {
           "name": "WEIGHT_PCT",
-          "type": "NUMBER(5,2)"
+          "type": "NUMBER(5,2)     DEFAULT"
         },
         {
           "name": "TARGET_DATE",
-          "type": "DATE,"
-        },
-        {
-          "name": "STATUS",
-          "type": "VARCHAR2(20)"
+          "type": "DATE,\n    STATUS"
         },
         {
           "name": "PROGRESS_PCT",
-          "type": "NUMBER(5,2)"
+          "type": "NUMBER(5,2)     DEFAULT"
         },
         {
           "name": "SELF_RATING",
-          "type": "NUMBER(2,1),"
-        },
-        {
-          "name": "MANAGER_RATING",
-          "type": "NUMBER(2,1),"
+          "type": "NUMBER(2,1),\n    MANAGER_RATING"
         },
         {
           "name": "COMMENTS",
-          "type": "CLOB,"
-        },
-        {
-          "name": "CREATED_BY",
-          "type": "VARCHAR2(30)    NOT"
+          "type": "CLOB,\n    CREATED_BY"
         },
         {
           "name": "CREATED_DATE",
-          "type": "DATE"
+          "type": "DATE            DEFAULT"
         },
         {
           "name": "MODIFIED_BY",
-          "type": "VARCHAR2(30),"
-        },
-        {
-          "name": "MODIFIED_DATE",
-          "type": "DATE,"
+          "type": "VARCHAR2(30),\n    MODIFIED_DATE"
         }
       ],
       "primary_keys": [
@@ -2073,11 +1705,7 @@
         },
         {
           "name": "OLD_VALUES",
-          "type": "CLOB,"
-        },
-        {
-          "name": "NEW_VALUES",
-          "type": "CLOB,"
+          "type": "CLOB,\n    NEW_VALUES"
         },
         {
           "name": "CHANGED_BY",
@@ -2085,15 +1713,11 @@
         },
         {
           "name": "CHANGED_DATE",
-          "type": "DATE"
+          "type": "DATE            DEFAULT"
         },
         {
           "name": "IP_ADDRESS",
-          "type": "VARCHAR2(50),"
-        },
-        {
-          "name": "SESSION_ID",
-          "type": "VARCHAR2(100),"
+          "type": "VARCHAR2(50),\n    SESSION_ID"
         }
       ],
       "primary_keys": [
@@ -2126,15 +1750,11 @@
         },
         {
           "name": "PARAM_DESCRIPTION",
-          "type": "VARCHAR2(200),"
-        },
-        {
-          "name": "DATA_TYPE",
-          "type": "VARCHAR2(20)"
+          "type": "VARCHAR2(200),\n    DATA_TYPE"
         },
         {
           "name": "EDITABLE_FLAG",
-          "type": "CHAR(1)"
+          "type": "CHAR(1)         DEFAULT"
         },
         {
           "name": "CREATED_BY",
@@ -2142,15 +1762,11 @@
         },
         {
           "name": "CREATED_DATE",
-          "type": "DATE"
+          "type": "DATE            DEFAULT"
         },
         {
           "name": "MODIFIED_BY",
-          "type": "VARCHAR2(30),"
-        },
-        {
-          "name": "MODIFIED_DATE",
-          "type": "DATE,"
+          "type": "VARCHAR2(30),\n    MODIFIED_DATE"
         }
       ],
       "primary_keys": [
@@ -2169,11 +1785,7 @@
         },
         {
           "name": "RECIPIENT_EMP_ID",
-          "type": "NUMBER(10),"
-        },
-        {
-          "name": "RECIPIENT_EMAIL",
-          "type": "VARCHAR2(100),"
+          "type": "NUMBER(10),\n    RECIPIENT_EMAIL"
         },
         {
           "name": "NOTIFICATION_TYPE",
@@ -2189,31 +1801,23 @@
         },
         {
           "name": "STATUS",
-          "type": "VARCHAR2(20)"
+          "type": "VARCHAR2(20)    DEFAULT"
         },
         {
           "name": "PRIORITY",
-          "type": "NUMBER(2)"
+          "type": "NUMBER(2)       DEFAULT"
         },
         {
           "name": "SENT_DATE",
-          "type": "DATE,"
-        },
-        {
-          "name": "ERROR_MESSAGE",
-          "type": "VARCHAR2(4000),"
+          "type": "DATE,\n    ERROR_MESSAGE"
         },
         {
           "name": "RETRY_COUNT",
-          "type": "NUMBER(3)"
+          "type": "NUMBER(3)       DEFAULT"
         },
         {
           "name": "REFERENCE_TABLE",
-          "type": "VARCHAR2(60),"
-        },
-        {
-          "name": "REFERENCE_ID",
-          "type": "NUMBER(15),"
+          "type": "VARCHAR2(60),\n    REFERENCE_ID"
         },
         {
           "name": "CREATED_BY",
@@ -2221,7 +1825,7 @@
         },
         {
           "name": "CREATED_DATE",
-          "type": "DATE"
+          "type": "DATE            DEFAULT"
         }
       ],
       "primary_keys": [
@@ -2255,23 +1859,15 @@
         },
         {
           "name": "LOGOUT_TIME",
-          "type": "DATE,"
-        },
-        {
-          "name": "IP_ADDRESS",
-          "type": "VARCHAR2(50),"
+          "type": "DATE,\n    IP_ADDRESS"
         },
         {
           "name": "FORMS_MODULE",
-          "type": "VARCHAR2(100),"
-        },
-        {
-          "name": "SESSION_STATUS",
-          "type": "VARCHAR2(20)"
+          "type": "VARCHAR2(100),\n    SESSION_STATUS"
         },
         {
           "name": "CREATED_DATE",
-          "type": "DATE"
+          "type": "DATE            DEFAULT"
         }
       ],
       "primary_keys": [
@@ -2309,15 +1905,11 @@
         },
         {
           "name": "DISPLAY_ORDER",
-          "type": "NUMBER(5)"
+          "type": "NUMBER(5)       DEFAULT"
         },
         {
           "name": "PARENT_LOOKUP_ID",
-          "type": "NUMBER(10),"
-        },
-        {
-          "name": "ACTIVE_FLAG",
-          "type": "CHAR(1)"
+          "type": "NUMBER(10),\n    ACTIVE_FLAG"
         },
         {
           "name": "CREATED_BY",
@@ -2325,7 +1917,7 @@
         },
         {
           "name": "CREATED_DATE",
-          "type": "DATE"
+          "type": "DATE            DEFAULT"
         }
       ],
       "primary_keys": [
@@ -2342,12 +1934,12 @@
         "EMPLOYEES"
       ],
       "joins": [
-        "JOB_TITLES",
-        "LOCATIONS",
-        "EMPLOYEES",
         "JOB_GRADES",
-        "SALARY_RECORDS",
-        "DEPARTMENTS"
+        "DEPARTMENTS",
+        "EMPLOYEES",
+        "LOCATIONS",
+        "JOB_TITLES",
+        "SALARY_RECORDS"
       ],
       "query_snippet": "SELECT e.EMP_ID, e.EMP_NUMBER, e.FIRST_NAME, e.LAST_NAME,\n       e.FIRST_NAME || ' ' || e.LAST_NAME AS FULL_NAME,\n       e.EMAIL, e.PHONE_WORK, e.PHONE_MOBILE,\n       e.HIRE_DATE,\n       TRUNC(MONTHS_BETWEEN(SYSDATE, e.HIRE_DATE) / 12, 1) AS TENURE_YEARS,\n       e.EMPLOYMENT_TYPE, e.EMPLOYMENT_STATU"
     },
@@ -2365,9 +1957,9 @@
         "EMPLOYEES"
       ],
       "joins": [
-        "JOB_GRADES",
-        "SALARY_RECORDS",
         "JOB_TITLES",
+        "SALARY_RECORDS",
+        "JOB_GRADES",
         "DEPARTMENTS"
       ],
       "query_snippet": "SELECT e.EMP_ID, e.EMP_NUMBER,\n       e.FIRST_NAME || ' ' || e.LAST_NAME AS EMP_NAME,\n       d.DEPT_NAME, j.JOB_TITLE, g.GRADE_NAME,\n       sr.BASE_SALARY,\n       g.MIN_SALARY AS GRADE_MIN,\n       g.MAX_SALARY AS GRADE_MAX,\n       (g.MIN_SALARY + g.MAX_SALARY) / 2 AS GRADE_MIDPOINT,\n       ROUND(sr."
@@ -2379,8 +1971,8 @@
         "LEAVE_BALANCES"
       ],
       "joins": [
-        "LEAVE_TYPES",
         "EMPLOYEES",
+        "LEAVE_TYPES",
         "DEPARTMENTS"
       ],
       "query_snippet": "SELECT e.EMP_ID, e.EMP_NUMBER,\n       e.FIRST_NAME || ' ' || e.LAST_NAME AS EMP_NAME,\n       d.DEPT_NAME,\n       lt.LEAVE_TYPE_NAME,\n       lb.OPENING_BALANCE,\n       lb.ACCRUED,\n       lb.USED,\n       lb.ADJUSTMENT,\n       lb.PENDING,\n       lb.OPENING_BALANCE + lb.ACCRUED - lb.USED + lb.ADJUSTMENT"
@@ -2388,13 +1980,13 @@
     "HRMS.VW_PAYROLL_LATEST": {
       "name": "HRMS.VW_PAYROLL_LATEST",
       "tables_used": [
-        "PAYROLL_DETAILS",
-        "PAYROLL_RUNS"
+        "PAYROLL_RUNS",
+        "PAYROLL_DETAILS"
       ],
       "joins": [
-        "PAYROLL_RUNS",
         "PAY_PERIODS",
-        "EMPLOYEES"
+        "EMPLOYEES",
+        "PAYROLL_RUNS"
       ],
       "query_snippet": "SELECT pd.EMP_ID, e.EMP_NUMBER,\n       e.FIRST_NAME || ' ' || e.LAST_NAME AS EMP_NAME,\n       pp.PERIOD_NAME,\n       SUM(CASE WHEN pd.ELEMENT_TYPE = 'EARNING' THEN pd.AMOUNT ELSE 0 END) AS GROSS_PAY,\n       SUM(CASE WHEN pd.ELEMENT_TYPE = 'TAX' THEN ABS(pd.AMOUNT) ELSE 0 END) AS TOTAL_TAXES,\n       "
     },
@@ -2421,9 +2013,12 @@
         "Every structural change to a department record (creation, modification, or removal) must be captured in the audit log to support organisational governance and accountability",
         "For department changes, the database session user (USER) is always recorded as the actor; there is no application-supplied MODIFIED_BY column on this table"
       ],
+      "bugs": [],
       "pkg_calls": [
         "PKG_AUDIT.log_action"
-      ]
+      ],
+      "pragma_autonomous": false,
+      "uses_sys_context": false
     },
     "TRG_DEPARTMENT_AUDIT": {
       "name": "TRG_DEPARTMENT_AUDIT",
@@ -2433,16 +2028,15 @@
       "table": "HRMS.DEPARTMENTS",
       "business_rules": [],
       "rules": [
-        "When a new salary record is inserted, the audit log must capture employee ID, base salary, and effective date to establish the initial compensation record",
-        "When a salary record is updated, both the previous and new base salary and active status must be preserved in the audit trail to support compensation change reviews",
-        "When a salary record is deleted, the employee identity and last known salary must be preserved in the audit log to maintain a complete compensation history",
-        "Only STATUS column changes on leave requests are subject to audit tracking; updates to other fields (e.g. comments, dates) do not generate an audit record",
         "Every structural change to a department record (creation, modification, or removal) must be captured in the audit log to support organisational governance and accountability",
         "For department changes, the database session user (USER) is always recorded as the actor; there is no application-supplied MODIFIED_BY column on this table"
       ],
+      "bugs": [],
       "pkg_calls": [
         "PKG_AUDIT.log_action"
-      ]
+      ],
+      "pragma_autonomous": false,
+      "uses_sys_context": false
     },
     "TRG_EMP_BEFORE_INSERT": {
       "name": "TRG_EMP_BEFORE_INSERT",
@@ -2469,9 +2063,14 @@
         "Every change to an employee's job assignment (JOB_ID) must be recorded in the EMPLOYEE_HISTORY audit table as a JOB_CHANGE event; NULL job is treated as a distinct value to catch assignments to or from an unassigned state",
         "Physical deletion of employee records is never permitted; callers must deactivate a record by setting ACTIVE_FLAG to 'N' or by running the formal termination process"
       ],
+      "bugs": [
+        "This actually prevents deletion, but Forms expects DELETE to succeed."
+      ],
       "pkg_calls": [
         "PKG_EMPLOYEE.rehire_employee"
-      ]
+      ],
+      "pragma_autonomous": false,
+      "uses_sys_context": false
     },
     "TRG_EMP_BEFORE_UPDATE": {
       "name": "TRG_EMP_BEFORE_UPDATE",
@@ -2479,18 +2078,8 @@
       "timing": "BEFORE",
       "events": "UPDATE",
       "table": "HRMS.EMPLOYEES",
-      "business_rules": [
-        "Only active employees (ACTIVE_FLAG = 'Y') are considered when checking email uniqueness; inactive or terminated employee records do not block reuse of an email address"
-      ],
+      "business_rules": [],
       "rules": [
-        "CREATED_BY must be populated; defaults to the current database session user if not supplied by the caller",
-        "CREATED_DATE must be populated; defaults to the current system timestamp if not supplied by the caller",
-        "A new employee record is considered active by default unless ACTIVE_FLAG is explicitly set to a different value",
-        "A new employee record defaults to ACTIVE employment status unless an alternative status is explicitly provided on insert",
-        "Hire date cannot be more than 180 days in the future, preventing erroneous or speculative pre-dated hires beyond a 6-month planning horizon",
-        "Inserting an employee with a hire date more than 180 days in the future is not permitted",
-        "An email address already assigned to an active employee cannot be reused for a new employee record",
-        "Inserting an employee whose email is already in use by an active employee record is not permitted",
         "A terminated employee cannot be directly reactivated by changing EMPLOYMENT_STATUS from TERMINATED to ACTIVE via a plain UPDATE; the formal rehire process (PKG_EMPLOYEE.rehire_employee) must be used instead",
         "Bypassing the rehire process to reactivate a terminated employee is not permitted",
         "Every change to an employee's EMPLOYMENT_STATUS must be recorded in the EMPLOYEE_HISTORY audit table with the old and new status values",
@@ -2498,9 +2087,14 @@
         "Every change to an employee's job assignment (JOB_ID) must be recorded in the EMPLOYEE_HISTORY audit table as a JOB_CHANGE event; NULL job is treated as a distinct value to catch assignments to or from an unassigned state",
         "Physical deletion of employee records is never permitted; callers must deactivate a record by setting ACTIVE_FLAG to 'N' or by running the formal termination process"
       ],
+      "bugs": [
+        "This actually prevents deletion, but Forms expects DELETE to succeed."
+      ],
       "pkg_calls": [
         "PKG_EMPLOYEE.rehire_employee"
-      ]
+      ],
+      "pragma_autonomous": false,
+      "uses_sys_context": false
     },
     "TRG_EMP_INSTEAD_OF_DELETE": {
       "name": "TRG_EMP_INSTEAD_OF_DELETE",
@@ -2508,28 +2102,223 @@
       "timing": "BEFORE",
       "events": "DELETE",
       "table": "HRMS.EMPLOYEES",
-      "business_rules": [
-        "Only active employees (ACTIVE_FLAG = 'Y') are considered when checking email uniqueness; inactive or terminated employee records do not block reuse of an email address"
-      ],
+      "business_rules": [],
       "rules": [
-        "CREATED_BY must be populated; defaults to the current database session user if not supplied by the caller",
-        "CREATED_DATE must be populated; defaults to the current system timestamp if not supplied by the caller",
-        "A new employee record is considered active by default unless ACTIVE_FLAG is explicitly set to a different value",
-        "A new employee record defaults to ACTIVE employment status unless an alternative status is explicitly provided on insert",
-        "Hire date cannot be more than 180 days in the future, preventing erroneous or speculative pre-dated hires beyond a 6-month planning horizon",
-        "Inserting an employee with a hire date more than 180 days in the future is not permitted",
-        "An email address already assigned to an active employee cannot be reused for a new employee record",
-        "Inserting an employee whose email is already in use by an active employee record is not permitted",
-        "A terminated employee cannot be directly reactivated by changing EMPLOYMENT_STATUS from TERMINATED to ACTIVE via a plain UPDATE; the formal rehire process (PKG_EMPLOYEE.rehire_employee) must be used instead",
-        "Bypassing the rehire process to reactivate a terminated employee is not permitted",
-        "Every change to an employee's EMPLOYMENT_STATUS must be recorded in the EMPLOYEE_HISTORY audit table with the old and new status values",
-        "Every change to an employee's department assignment (DEPT_ID) must be recorded in the EMPLOYEE_HISTORY audit table as a DEPARTMENT_CHANGE event; NULL department is treated as a distinct value to catch assignments to or from an unassigned state",
-        "Every change to an employee's job assignment (JOB_ID) must be recorded in the EMPLOYEE_HISTORY audit table as a JOB_CHANGE event; NULL job is treated as a distinct value to catch assignments to or from an unassigned state",
         "Physical deletion of employee records is never permitted; callers must deactivate a record by setting ACTIVE_FLAG to 'N' or by running the formal termination process"
       ],
-      "pkg_calls": [
-        "PKG_EMPLOYEE.rehire_employee"
-      ]
+      "bugs": [
+        "This actually prevents deletion, but Forms expects DELETE to succeed."
+      ],
+      "pkg_calls": [],
+      "pragma_autonomous": false,
+      "uses_sys_context": false
     }
-  }
+  },
+  "sequences": [
+    {
+      "name": "HRMS.SEQ_DEPARTMENT",
+      "start_with": 100,
+      "increment_by": 1,
+      "cache": "NOCACHE",
+      "notes": []
+    },
+    {
+      "name": "HRMS.SEQ_LOCATION",
+      "start_with": 100,
+      "increment_by": 1,
+      "cache": "NOCACHE",
+      "notes": []
+    },
+    {
+      "name": "HRMS.SEQ_JOB_GRADE",
+      "start_with": 100,
+      "increment_by": 1,
+      "cache": "NOCACHE",
+      "notes": []
+    },
+    {
+      "name": "HRMS.SEQ_JOB_TITLE",
+      "start_with": 100,
+      "increment_by": 1,
+      "cache": "NOCACHE",
+      "notes": []
+    },
+    {
+      "name": "HRMS.SEQ_EMPLOYEE",
+      "start_with": 10000,
+      "increment_by": 1,
+      "cache": "NOCACHE",
+      "notes": []
+    },
+    {
+      "name": "HRMS.SEQ_EMP_HISTORY",
+      "start_with": 1,
+      "increment_by": 1,
+      "cache": "NOCACHE",
+      "notes": []
+    },
+    {
+      "name": "HRMS.SEQ_DEPENDENT",
+      "start_with": 1,
+      "increment_by": 1,
+      "cache": "NOCACHE",
+      "notes": []
+    },
+    {
+      "name": "HRMS.SEQ_EMERGENCY_CONTACT",
+      "start_with": 1,
+      "increment_by": 1,
+      "cache": "NOCACHE",
+      "notes": []
+    },
+    {
+      "name": "HRMS.SEQ_EMP_NUMBER",
+      "start_with": 1000,
+      "increment_by": 1,
+      "cache": "NOCACHE",
+      "notes": [
+        "BUG: NOCACHE means gaps in sequence, but generate_emp_number in"
+      ]
+    },
+    {
+      "name": "HRMS.SEQ_SALARY",
+      "start_with": 1,
+      "increment_by": 1,
+      "cache": "NOCACHE",
+      "notes": []
+    },
+    {
+      "name": "HRMS.SEQ_PAY_ELEMENT",
+      "start_with": 1,
+      "increment_by": 1,
+      "cache": "NOCACHE",
+      "notes": []
+    },
+    {
+      "name": "HRMS.SEQ_EMP_PAY_ELEMENT",
+      "start_with": 1,
+      "increment_by": 1,
+      "cache": "NOCACHE",
+      "notes": []
+    },
+    {
+      "name": "HRMS.SEQ_PAY_PERIOD",
+      "start_with": 1,
+      "increment_by": 1,
+      "cache": "NOCACHE",
+      "notes": []
+    },
+    {
+      "name": "HRMS.SEQ_PAYROLL_RUN",
+      "start_with": 1,
+      "increment_by": 1,
+      "cache": "NOCACHE",
+      "notes": []
+    },
+    {
+      "name": "HRMS.SEQ_PAYROLL_DETAIL",
+      "start_with": 1,
+      "increment_by": 1,
+      "cache": "NOCACHE",
+      "notes": []
+    },
+    {
+      "name": "HRMS.SEQ_TAX_BRACKET",
+      "start_with": 1,
+      "increment_by": 1,
+      "cache": "NOCACHE",
+      "notes": []
+    },
+    {
+      "name": "HRMS.SEQ_LEAVE_TYPE",
+      "start_with": 1,
+      "increment_by": 1,
+      "cache": "NOCACHE",
+      "notes": []
+    },
+    {
+      "name": "HRMS.SEQ_LEAVE_BALANCE",
+      "start_with": 1,
+      "increment_by": 1,
+      "cache": "NOCACHE",
+      "notes": []
+    },
+    {
+      "name": "HRMS.SEQ_LEAVE_REQUEST",
+      "start_with": 1,
+      "increment_by": 1,
+      "cache": "NOCACHE",
+      "notes": []
+    },
+    {
+      "name": "HRMS.SEQ_LEAVE_ACCRUAL",
+      "start_with": 1,
+      "increment_by": 1,
+      "cache": "NOCACHE",
+      "notes": []
+    },
+    {
+      "name": "HRMS.SEQ_HOLIDAY",
+      "start_with": 1,
+      "increment_by": 1,
+      "cache": "NOCACHE",
+      "notes": []
+    },
+    {
+      "name": "HRMS.SEQ_REVIEW_CYCLE",
+      "start_with": 1,
+      "increment_by": 1,
+      "cache": "NOCACHE",
+      "notes": []
+    },
+    {
+      "name": "HRMS.SEQ_PERF_REVIEW",
+      "start_with": 1,
+      "increment_by": 1,
+      "cache": "NOCACHE",
+      "notes": []
+    },
+    {
+      "name": "HRMS.SEQ_PERF_GOAL",
+      "start_with": 1,
+      "increment_by": 1,
+      "cache": "NOCACHE",
+      "notes": []
+    },
+    {
+      "name": "HRMS.SEQ_AUDIT",
+      "start_with": 1,
+      "increment_by": 1,
+      "cache": "CACHE 100",
+      "notes": []
+    },
+    {
+      "name": "HRMS.SEQ_NOTIFICATION",
+      "start_with": 1,
+      "increment_by": 1,
+      "cache": "NOCACHE",
+      "notes": []
+    },
+    {
+      "name": "HRMS.SEQ_USER_SESSION",
+      "start_with": 1,
+      "increment_by": 1,
+      "cache": "NOCACHE",
+      "notes": []
+    },
+    {
+      "name": "HRMS.SEQ_SYSTEM_PARAM",
+      "start_with": 1,
+      "increment_by": 1,
+      "cache": "NOCACHE",
+      "notes": []
+    },
+    {
+      "name": "HRMS.SEQ_LOOKUP",
+      "start_with": 1,
+      "increment_by": 1,
+      "cache": "NOCACHE",
+      "notes": []
+    }
+  ]
 }

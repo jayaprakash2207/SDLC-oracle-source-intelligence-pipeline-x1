@@ -1,0 +1,164 @@
+[
+  {
+    "name": "HRMS_MENU",
+    "file": "HRMS_MENU.mmb.sql",
+    "menu_bar": "MAIN_MENUBAR",
+    "menus": [
+      "File",
+      "Edit",
+      "Query",
+      "Navigate",
+      "Modules",
+      "Admin"
+    ],
+    "total_items": 31,
+    "items": [
+      {
+        "label": "Save",
+        "action": "COMMIT_FORM"
+      },
+      {
+        "label": "Save & Exit",
+        "action": "COMMIT_FORM; EXIT_FORM"
+      },
+      {
+        "label": "Print",
+        "action": "RUN_PRODUCT"
+      },
+      {
+        "label": "Exit",
+        "action": "EXIT_FORM"
+      },
+      {
+        "label": "Clear Record",
+        "action": "CLEAR_RECORD"
+      },
+      {
+        "label": "Duplicate Record",
+        "action": "DUPLICATE_RECORD"
+      },
+      {
+        "label": "Delete Record",
+        "action": "DELETE_RECORD"
+      },
+      {
+        "label": "Insert Record",
+        "action": "CREATE_RECORD"
+      },
+      {
+        "label": "Enter Query",
+        "action": "ENTER_QUERY"
+      },
+      {
+        "label": "Execute Query",
+        "action": "EXECUTE_QUERY"
+      },
+      {
+        "label": "Cancel Query",
+        "action": "EXIT_FORM"
+      },
+      {
+        "label": "Count Matching",
+        "action": "COUNT_QUERY"
+      },
+      {
+        "label": "Fetch Next Set",
+        "action": "SCROLL_DOWN"
+      },
+      {
+        "label": "First Record",
+        "action": "FIRST_RECORD"
+      },
+      {
+        "label": "Previous Record",
+        "action": "PREVIOUS_RECORD"
+      },
+      {
+        "label": "Next Record",
+        "action": "NEXT_RECORD"
+      },
+      {
+        "label": "Last Record",
+        "action": "LAST_RECORD"
+      },
+      {
+        "label": "Previous Block",
+        "action": "PREVIOUS_BLOCK"
+      },
+      {
+        "label": "Next Block",
+        "action": "NEXT_BLOCK"
+      },
+      {
+        "label": "Employee Management",
+        "action": "OPEN_FORM('HRMS_EMPLOYEE'"
+      },
+      {
+        "label": "Payroll Processing",
+        "action": "OPEN_FORM('HRMS_PAYROLL'"
+      },
+      {
+        "label": "Leave Management",
+        "action": "OPEN_FORM('HRMS_LEAVE'"
+      },
+      {
+        "label": "Performance Reviews",
+        "action": "OPEN_FORM('HRMS_PERFORMANCE'"
+      },
+      {
+        "label": "Reports & Analytics",
+        "action": "OPEN_FORM('HRMS_REPORTS'"
+      },
+      {
+        "label": "System Admin",
+        "action": "OPEN_FORM('HRMS_ADMIN'"
+      },
+      {
+        "label": "Change Password",
+        "action": "SHOW_WINDOW('WIN_CHANGE_PWD'"
+      },
+      {
+        "label": "System Parameters",
+        "action": "requires ADMIN permission"
+      },
+      {
+        "label": "User Management",
+        "action": "requires ADMIN permission"
+      },
+      {
+        "label": "Contents",
+        "action": "WEB.SHOW_DOCUMENT"
+      },
+      {
+        "label": "About HRMS",
+        "action": "SHOW_ALERT('ALT_ABOUT'"
+      },
+      {
+        "label": "Support",
+        "action": "WEB.SHOW_DOCUMENT"
+      }
+    ],
+    "open_forms": [
+      "HRMS_PERFORMANCE",
+      "HRMS_PAYROLL",
+      "HRMS_EMPLOYEE",
+      "HRMS_REPORTS",
+      "HRMS_LEAVE",
+      "HRMS_ADMIN"
+    ],
+    "show_windows": [
+      "WIN_CHANGE_PWD"
+    ],
+    "permission_requirements": [
+      "ADMIN",
+      "ADMIN"
+    ],
+    "security_calls": [
+      "PKG_SECURITY.has_permission"
+    ],
+    "notes": [
+      "Menu items are enabled/disabled at runtime based on PKG_SECURITY.has_permission() checks in WHEN-NEW-FORM-INSTANCE",
+      "Compiled binary: HRMS_MENU.mmb \u2014 this file is the source representation"
+    ]
+  }
+]

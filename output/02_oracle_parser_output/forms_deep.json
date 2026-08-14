@@ -47,254 +47,323 @@
         "table": "HRMS.EMPLOYEES",
         "default_where": "",
         "order_by": "",
+        "insert_allowed": "Yes",
+        "update_allowed": "Yes",
+        "delete_allowed": "Yes",
+        "query_allowed": "Yes",
         "items": [
           {
             "name": "EMP_ID",
             "type": "Text Field",
             "data_type": "Number",
             "max_length": "10",
-            "required": "",
-            "column": ""
+            "visible": "No",
+            "database_item": "Yes",
+            "primary_key": "Yes",
+            "insert_allowed": "No",
+            "update_allowed": "No",
+            "query_allowed": "Yes"
           },
           {
             "name": "EMP_NUMBER",
             "type": "Text Field",
             "data_type": "Char",
             "max_length": "20",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_PERSONAL",
+            "tab_page": "TP_PERSONAL",
+            "visible": "Yes",
+            "database_item": "Yes",
+            "insert_allowed": "No",
+            "update_allowed": "No",
+            "query_allowed": "Yes"
           },
           {
             "name": "FIRST_NAME",
             "type": "Text Field",
             "data_type": "Char",
             "max_length": "50",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_PERSONAL",
+            "tab_page": "TP_PERSONAL",
+            "visible": "Yes",
+            "database_item": "Yes"
           },
           {
             "name": "LAST_NAME",
             "type": "Text Field",
             "data_type": "Char",
             "max_length": "50",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_PERSONAL",
+            "tab_page": "TP_PERSONAL",
+            "visible": "Yes",
+            "database_item": "Yes"
           },
           {
             "name": "DATE_OF_BIRTH",
             "type": "Text Field",
             "data_type": "Date",
             "max_length": "11",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_PERSONAL",
+            "tab_page": "TP_PERSONAL",
+            "visible": "Yes",
+            "database_item": "Yes"
           },
           {
             "name": "GENDER",
             "type": "List Item",
             "data_type": "Char",
             "max_length": "1",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_PERSONAL",
+            "tab_page": "TP_PERSONAL",
+            "visible": "Yes",
+            "database_item": "Yes"
           },
           {
             "name": "MARITAL_STATUS",
             "type": "List Item",
             "data_type": "Char",
             "max_length": "10",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_PERSONAL",
+            "tab_page": "TP_PERSONAL",
+            "visible": "Yes",
+            "database_item": "Yes"
           },
           {
             "name": "EMAIL",
             "type": "Text Field",
             "data_type": "Char",
             "max_length": "100",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_PERSONAL",
+            "tab_page": "TP_PERSONAL",
+            "visible": "Yes",
+            "database_item": "Yes"
           },
           {
             "name": "PHONE_WORK",
             "type": "Text Field",
             "data_type": "Char",
             "max_length": "30",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_PERSONAL",
+            "tab_page": "TP_PERSONAL",
+            "visible": "Yes",
+            "database_item": "Yes"
           },
           {
             "name": "PHONE_MOBILE",
             "type": "Text Field",
             "data_type": "Char",
             "max_length": "30",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_PERSONAL",
+            "tab_page": "TP_PERSONAL",
+            "visible": "Yes",
+            "database_item": "Yes"
           },
           {
             "name": "ADDRESS_LINE1",
             "type": "Text Field",
             "data_type": "Char",
             "max_length": "200",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_PERSONAL",
+            "tab_page": "TP_PERSONAL",
+            "visible": "Yes",
+            "database_item": "Yes"
           },
           {
             "name": "ADDRESS_LINE2",
             "type": "Text Field",
             "data_type": "Char",
             "max_length": "200",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_PERSONAL",
+            "tab_page": "TP_PERSONAL",
+            "visible": "Yes",
+            "database_item": "Yes"
           },
           {
             "name": "CITY",
             "type": "Text Field",
             "data_type": "Char",
             "max_length": "100",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_PERSONAL",
+            "tab_page": "TP_PERSONAL",
+            "visible": "Yes",
+            "database_item": "Yes"
           },
           {
             "name": "STATE_PROVINCE",
             "type": "Text Field",
             "data_type": "Char",
             "max_length": "100",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_PERSONAL",
+            "tab_page": "TP_PERSONAL",
+            "visible": "Yes",
+            "database_item": "Yes"
           },
           {
             "name": "POSTAL_CODE",
             "type": "Text Field",
             "data_type": "Char",
             "max_length": "20",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_PERSONAL",
+            "tab_page": "TP_PERSONAL",
+            "visible": "Yes",
+            "database_item": "Yes"
           },
           {
             "name": "HIRE_DATE",
             "type": "Text Field",
             "data_type": "Date",
             "max_length": "11",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_JOB",
+            "tab_page": "TP_JOB",
+            "visible": "Yes",
+            "database_item": "Yes"
           },
           {
             "name": "DEPT_ID",
             "type": "Text Field",
             "data_type": "Number",
             "max_length": "10",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_JOB",
+            "tab_page": "TP_JOB",
+            "visible": "Yes",
+            "database_item": "Yes",
+            "lov": "LOV_DEPARTMENTS"
           },
           {
             "name": "DEPT_NAME_DISP",
             "type": "Display Item",
             "data_type": "Char",
             "max_length": "100",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_JOB",
+            "tab_page": "TP_JOB",
+            "visible": "Yes",
+            "database_item": "No"
           },
           {
             "name": "JOB_ID",
             "type": "Text Field",
             "data_type": "Number",
             "max_length": "10",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_JOB",
+            "tab_page": "TP_JOB",
+            "visible": "Yes",
+            "database_item": "Yes",
+            "lov": "LOV_JOB_TITLES"
           },
           {
             "name": "JOB_TITLE_DISP",
             "type": "Display Item",
             "data_type": "Char",
             "max_length": "100",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_JOB",
+            "tab_page": "TP_JOB",
+            "visible": "Yes",
+            "database_item": "No"
           },
           {
             "name": "MANAGER_EMP_ID",
             "type": "Text Field",
             "data_type": "Number",
             "max_length": "10",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_JOB",
+            "tab_page": "TP_JOB",
+            "visible": "Yes",
+            "database_item": "Yes",
+            "lov": "LOV_MANAGERS"
           },
           {
             "name": "MANAGER_NAME_DISP",
             "type": "Display Item",
             "data_type": "Char",
             "max_length": "101",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_JOB",
+            "tab_page": "TP_JOB",
+            "visible": "Yes",
+            "database_item": "No"
           },
           {
             "name": "LOCATION_CODE",
             "type": "Text Field",
             "data_type": "Char",
             "max_length": "10",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_JOB",
+            "tab_page": "TP_JOB",
+            "visible": "Yes",
+            "database_item": "Yes",
+            "lov": "LOV_LOCATIONS"
           },
           {
             "name": "EMPLOYMENT_TYPE",
             "type": "List Item",
             "data_type": "Char",
             "max_length": "20",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_JOB",
+            "tab_page": "TP_JOB",
+            "visible": "Yes",
+            "database_item": "Yes"
           },
           {
             "name": "EMPLOYMENT_STATUS",
             "type": "List Item",
             "data_type": "Char",
             "max_length": "20",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_JOB",
+            "tab_page": "TP_JOB",
+            "visible": "Yes",
+            "database_item": "Yes",
+            "update_allowed": "No"
           },
           {
             "name": "TERMINATION_DATE",
             "type": "Text Field",
             "data_type": "Date",
             "max_length": "11",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_JOB",
+            "tab_page": "TP_JOB",
+            "visible": "Yes",
+            "database_item": "Yes",
+            "update_allowed": "No"
           },
           {
             "name": "ACTIVE_FLAG",
             "type": "Text Field",
             "data_type": "Char",
             "max_length": "1",
-            "required": "",
-            "column": ""
+            "visible": "No",
+            "database_item": "Yes"
           },
           {
             "name": "CREATED_BY",
             "type": "Text Field",
             "data_type": "Char",
             "max_length": "30",
-            "required": "",
-            "column": ""
+            "visible": "No",
+            "database_item": "Yes",
+            "insert_allowed": "Yes",
+            "update_allowed": "No"
           },
           {
             "name": "CREATED_DATE",
             "type": "Text Field",
             "data_type": "Date",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "visible": "No",
+            "database_item": "Yes",
+            "insert_allowed": "Yes",
+            "update_allowed": "No"
           },
           {
             "name": "MODIFIED_BY",
             "type": "Text Field",
             "data_type": "Char",
             "max_length": "30",
-            "required": "",
-            "column": ""
+            "visible": "No",
+            "database_item": "Yes"
           },
           {
             "name": "MODIFIED_DATE",
             "type": "Text Field",
             "data_type": "Date",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "visible": "No",
+            "database_item": "Yes"
           }
         ],
         "triggers": [
@@ -305,6 +374,7 @@
               "PKG_EMPLOYEE.generate_emp_number"
             ],
             "business_rules": [],
+            "rules": [],
             "raise_errors": []
           },
           {
@@ -312,6 +382,7 @@
             "body": "BEGIN\n    :EMPLOYEE.MODIFIED_BY := :GLOBAL.current_user;\n    :EMPLOYEE.MODIFIED_DATE := SYSDATE;\nEND;",
             "pkg_calls": [],
             "business_rules": [],
+            "rules": [],
             "raise_errors": []
           },
           {
@@ -319,6 +390,7 @@
             "body": "BEGIN\n    -- Populate display items\n    BEGIN\n        SELECT DEPT_NAME INTO :EMPLOYEE.DEPT_NAME_DISP\n        FROM DEPARTMENTS WHERE DEPT_ID = :EMPLOYEE.DEPT_ID;\n    EXCEPTION WHEN NO_DATA_FOUND THEN :EMPLOYEE.DEPT_NAME_DISP := NULL;\n    END;\n\n    BEGIN\n        SELECT JOB_TITLE INTO :EMPLOYEE.JOB_TITLE_DISP\n        FROM JOB_TITLES WHERE JOB_ID = :EMPLOYEE.JOB_ID;\n    EXCEPTION WHEN NO_DATA_FOUND THEN :EMPLOYEE.JOB_TITLE_DISP := NULL;\n    END;\n\n    BEGIN\n        SELECT FIRST_NAME || ' ' || LAST_NAME INTO :EMPLOYEE.MANAGER_NAME_DISP\n        FROM EMPLOYEES WHERE EMP_ID = :EMPLOYEE.MANAGER_EMP_ID;\n    EXCEPTION WHEN NO_DATA_FOUND THEN :EMPLOYEE.MANAGER_NAME_DISP := NULL;\n    END;\nEND;",
             "pkg_calls": [],
             "business_rules": [],
+            "rules": [],
             "raise_errors": []
           },
           {
@@ -328,71 +400,62 @@
               "PKG_VALIDATION.validate_email_format"
             ],
             "business_rules": [],
+            "rules": [],
             "raise_errors": []
           }
         ]
       },
       {
         "name": "SALARY",
-        "table": "",
+        "table": "HRMS.SALARY_RECORDS",
         "default_where": "",
         "order_by": "",
+        "insert_allowed": "No",
+        "update_allowed": "No",
+        "delete_allowed": "No",
+        "query_allowed": "",
         "items": [
           {
             "name": "SALARY_ID",
-            "type": "",
-            "data_type": "",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "visible": "No",
+            "database_item": "Yes",
+            "primary_key": "Yes"
           },
           {
             "name": "EMP_ID",
-            "type": "",
-            "data_type": "",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "visible": "No",
+            "database_item": "Yes"
           },
           {
             "name": "EFFECTIVE_DATE",
             "type": "Text Field",
             "data_type": "Date",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "Yes",
+            "update_allowed": "No"
           },
           {
             "name": "END_DATE",
             "type": "Text Field",
             "data_type": "Date",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "Yes"
           },
           {
             "name": "BASE_SALARY",
             "type": "Text Field",
             "data_type": "Number",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "Yes"
           },
           {
             "name": "CHANGE_REASON",
             "type": "Text Field",
             "data_type": "Char",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "Yes"
           },
           {
             "name": "CHANGE_PCT",
             "type": "Text Field",
             "data_type": "Number",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "Yes"
           }
         ],
         "triggers": []
@@ -401,51 +464,151 @@
     "lovs": [
       {
         "name": "LOV_DEPARTMENTS",
-        "record_group": ""
+        "title": "Select Department",
+        "record_group": "",
+        "column_mappings": [
+          {
+            "lov_column": "DEPT_ID",
+            "return_item": "EMPLOYEE.DEPT_ID"
+          },
+          {
+            "lov_column": "DEPT_NAME",
+            "return_item": "EMPLOYEE.DEPT_NAME_DISP"
+          }
+        ]
       },
       {
         "name": "LOV_JOB_TITLES",
-        "record_group": ""
+        "title": "Select Job Title",
+        "record_group": "",
+        "column_mappings": [
+          {
+            "lov_column": "JOB_ID",
+            "return_item": "EMPLOYEE.JOB_ID"
+          },
+          {
+            "lov_column": "JOB_TITLE",
+            "return_item": "EMPLOYEE.JOB_TITLE_DISP"
+          }
+        ]
       },
       {
         "name": "LOV_MANAGERS",
-        "record_group": ""
+        "title": "Select Manager",
+        "record_group": "",
+        "column_mappings": [
+          {
+            "lov_column": "EMP_ID",
+            "return_item": "EMPLOYEE.MANAGER_EMP_ID"
+          },
+          {
+            "lov_column": "MANAGER_NAME",
+            "return_item": "EMPLOYEE.MANAGER_NAME_DISP"
+          }
+        ]
       },
       {
         "name": "LOV_LOCATIONS",
-        "record_group": ""
+        "title": "Select Location",
+        "record_group": "",
+        "column_mappings": [
+          {
+            "lov_column": "LOCATION_CODE",
+            "return_item": "EMPLOYEE.LOCATION_CODE"
+          }
+        ]
       }
     ],
     "record_groups": [
       {
         "name": "RG_DEPARTMENTS",
-        "query": "",
-        "tables": []
+        "query": "SELECT DEPT_ID, DEPT_CODE, DEPT_NAME, COST_CENTER FROM HRMS.DEPARTMENTS WHERE ACTIVE_FLAG = 'Y' ORDER BY DEPT_NAME",
+        "tables": [
+          "HRMS"
+        ]
       },
       {
         "name": "RG_JOB_TITLES",
-        "query": "",
-        "tables": []
+        "query": "SELECT j.JOB_ID, j.JOB_CODE, j.JOB_TITLE, g.GRADE_NAME FROM HRMS.JOB_TITLES j JOIN HRMS.JOB_GRADES g ON j.GRADE_ID = g.GRADE_ID WHERE j.ACTIVE_FLAG = 'Y' ORDER BY j.JOB_TITLE",
+        "tables": [
+          "HRMS"
+        ]
       },
       {
         "name": "RG_MANAGERS",
-        "query": "",
-        "tables": []
+        "query": "SELECT EMP_ID, EMP_NUMBER, FIRST_NAME || ' ' || LAST_NAME AS MANAGER_NAME FROM HRMS.EMPLOYEES WHERE EMPLOYMENT_STATUS = 'ACTIVE' ORDER BY LAST_NAME",
+        "tables": [
+          "HRMS"
+        ]
       },
       {
         "name": "RG_LOCATIONS",
-        "query": "",
-        "tables": []
+        "query": "SELECT LOCATION_CODE, LOCATION_NAME, CITY, STATE_PROVINCE FROM HRMS.LOCATIONS WHERE ACTIVE_FLAG = 'Y' ORDER BY LOCATION_NAME",
+        "tables": [
+          "HRMS"
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "name": "EMP_SALARY_REL",
+        "detail_block": "SALARY",
+        "join_condition": "SALARY.EMP_ID = EMPLOYEE.EMP_ID",
+        "delete_record": "",
+        "deferred": "",
+        "automatic_query": ""
+      }
+    ],
+    "canvases": [
+      {
+        "name": "CVS_MAIN",
+        "type": "Tab",
+        "width": "700",
+        "height": "500"
+      },
+      {
+        "name": "CVS_TOOLBAR",
+        "type": "Horizontal Toolbar",
+        "width": "700",
+        "height": "38"
+      }
+    ],
+    "windows": [
+      {
+        "name": "WIN_EMPLOYEE",
+        "title": "Employee Maintenance",
+        "width": "720",
+        "height": "550"
+      }
+    ],
+    "alerts": [
+      {
+        "name": "ALT_CONFIRM_EXIT",
+        "title": "Caution",
+        "message": "You have unsaved changes. Save before exiting?"
+      },
+      {
+        "name": "ALT_CONFIRM_DELETE",
+        "title": "Stop",
+        "message": "Are you sure you want to delete this employee record?"
       }
     ],
     "all_package_calls": [
+      "PKG_EMPLOYEE.generate_emp_number",
       "PKG_SECURITY.has_permission",
       "PKG_VALIDATION.validate_email_format",
-      "PKG_EMPLOYEE.generate_emp_number",
       "PKG_SECURITY.is_session_valid"
     ],
     "all_business_rules": [],
-    "all_rules": []
+    "all_rules": [
+      "WHEN-NEW-FORM-INSTANCE: Session must be valid before form operations are permitted",
+      "WHEN-NEW-FORM-INSTANCE: Requires EDIT permission on EMPLOYEE",
+      "WHEN-NEW-FORM-INSTANCE: Insert operations may be disabled based on user permissions",
+      "WHEN-NEW-FORM-INSTANCE: Update operations may be disabled based on user permissions",
+      "WHEN-NEW-FORM-INSTANCE: Delete operations may be disabled based on user permissions",
+      "KEY-EXIT: Manages transaction commit/rollback",
+      "EMPLOYEE.WHEN-VALIDATE-ITEM: Calls PKG_VALIDATION.validate_email_format for server-side validation"
+    ]
   },
   {
     "name": "HRMS_LEAVE",
@@ -472,81 +635,64 @@
     "blocks": [
       {
         "name": "LEAVE_REQUEST",
-        "table": "",
+        "table": "HRMS.LEAVE_REQUESTS",
         "default_where": "",
         "order_by": "",
+        "insert_allowed": "No",
+        "update_allowed": "No",
+        "delete_allowed": "No",
+        "query_allowed": "",
         "items": [
           {
             "name": "REQUEST_ID",
-            "type": "",
-            "data_type": "",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "visible": "No",
+            "database_item": "Yes",
+            "primary_key": "Yes"
           },
           {
             "name": "EMP_ID",
-            "type": "",
-            "data_type": "",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "visible": "No",
+            "database_item": "Yes"
           },
           {
             "name": "LEAVE_TYPE_NAME_DISP",
             "type": "Display Item",
             "data_type": "Char",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "No"
           },
           {
             "name": "START_DATE",
             "type": "Text Field",
             "data_type": "Date",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "Yes"
           },
           {
             "name": "END_DATE",
             "type": "Text Field",
             "data_type": "Date",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "Yes"
           },
           {
             "name": "TOTAL_DAYS",
             "type": "Text Field",
             "data_type": "Number",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "Yes"
           },
           {
             "name": "STATUS",
             "type": "Text Field",
             "data_type": "Char",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "Yes"
           },
           {
             "name": "REASON",
             "type": "Text Field",
             "data_type": "Char",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "Yes"
           },
           {
             "name": "BTN_CANCEL_REQUEST",
-            "type": "Push Button",
-            "data_type": "",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "type": "Push Button"
           }
         ],
         "triggers": [
@@ -557,6 +703,7 @@
               "PKG_LEAVE.cancel_leave_request"
             ],
             "business_rules": [],
+            "rules": [],
             "raise_errors": []
           },
           {
@@ -564,6 +711,7 @@
             "body": "BEGIN\n    SELECT lt.LEAVE_TYPE_NAME INTO :LEAVE_REQUEST.LEAVE_TYPE_NAME_DISP\n    FROM LEAVE_TYPES lt\n    JOIN LEAVE_REQUESTS lr ON lt.LEAVE_TYPE_ID = lr.LEAVE_TYPE_ID\n    WHERE lr.REQUEST_ID = :LEAVE_REQUEST.REQUEST_ID;\nEXCEPTION\n    WHEN NO_DATA_FOUND THEN\n        :LEAVE_REQUEST.LEAVE_TYPE_NAME_DISP := 'Unknown';\nEND;",
             "pkg_calls": [],
             "business_rules": [],
+            "rules": [],
             "raise_errors": []
           }
         ]
@@ -573,78 +721,56 @@
         "table": "",
         "default_where": "",
         "order_by": "",
+        "insert_allowed": "Yes",
+        "update_allowed": "No",
+        "delete_allowed": "No",
+        "query_allowed": "",
         "items": [
           {
             "name": "NR_LEAVE_TYPE_ID",
             "type": "Text Field",
             "data_type": "Number",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "lov": "LOV_LEAVE_TYPES"
           },
           {
             "name": "NR_LEAVE_TYPE_DISP",
             "type": "Display Item",
-            "data_type": "Char",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "data_type": "Char"
           },
           {
             "name": "NR_START_DATE",
             "type": "Text Field",
-            "data_type": "Date",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "data_type": "Date"
           },
           {
             "name": "NR_END_DATE",
             "type": "Text Field",
-            "data_type": "Date",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "data_type": "Date"
           },
           {
             "name": "NR_HALF_DAY",
             "type": "Check Box",
-            "data_type": "Char",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "data_type": "Char"
           },
           {
             "name": "NR_REASON",
             "type": "Text Field",
             "data_type": "Char",
-            "max_length": "500",
-            "required": "",
-            "column": ""
+            "max_length": "500"
           },
           {
             "name": "NR_CALC_DAYS",
             "type": "Display Item",
-            "data_type": "Number",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "data_type": "Number"
           },
           {
             "name": "NR_BALANCE_DISP",
             "type": "Display Item",
-            "data_type": "Number",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "data_type": "Number"
           },
           {
             "name": "BTN_SUBMIT",
-            "type": "Push Button",
-            "data_type": "",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "type": "Push Button"
           }
         ],
         "triggers": [
@@ -655,63 +781,49 @@
               "PKG_LEAVE.submit_leave_request"
             ],
             "business_rules": [],
+            "rules": [],
             "raise_errors": []
           }
         ]
       },
       {
         "name": "LEAVE_BALANCE",
-        "table": "",
+        "table": "HRMS.LEAVE_BALANCES",
         "default_where": "",
         "order_by": "",
+        "insert_allowed": "No",
+        "update_allowed": "No",
+        "delete_allowed": "No",
+        "query_allowed": "",
         "items": [
           {
             "name": "LEAVE_TYPE_NAME_DISP",
-            "type": "Display Item",
-            "data_type": "",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "type": "Display Item"
           },
           {
             "name": "OPENING_BALANCE",
             "type": "Display Item",
-            "data_type": "Number",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "data_type": "Number"
           },
           {
             "name": "ACCRUED",
             "type": "Display Item",
-            "data_type": "Number",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "data_type": "Number"
           },
           {
             "name": "USED",
             "type": "Display Item",
-            "data_type": "Number",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "data_type": "Number"
           },
           {
             "name": "PENDING",
             "type": "Display Item",
-            "data_type": "Number",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "data_type": "Number"
           },
           {
             "name": "AVAILABLE",
             "type": "Display Item",
-            "data_type": "Number",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "data_type": "Number"
           }
         ],
         "triggers": []
@@ -720,23 +832,62 @@
     "lovs": [
       {
         "name": "LOV_LEAVE_TYPES",
-        "record_group": ""
+        "title": "Select Leave Type",
+        "record_group": "",
+        "column_mappings": [
+          {
+            "lov_column": "LEAVE_TYPE_ID",
+            "return_item": "NEW_REQUEST.NR_LEAVE_TYPE_ID"
+          },
+          {
+            "lov_column": "LEAVE_TYPE_NAME",
+            "return_item": "NEW_REQUEST.NR_LEAVE_TYPE_DISP"
+          }
+        ]
       }
     ],
     "record_groups": [
       {
         "name": "RG_LEAVE_TYPES",
-        "query": "",
-        "tables": []
+        "query": "SELECT LEAVE_TYPE_ID, LEAVE_TYPE_CODE, LEAVE_TYPE_NAME FROM HRMS.LEAVE_TYPES WHERE ACTIVE_FLAG = 'Y' ORDER BY LEAVE_TYPE_NAME",
+        "tables": [
+          "HRMS"
+        ]
+      }
+    ],
+    "relations": [],
+    "canvases": [
+      {
+        "name": "CVS_MAIN",
+        "type": "Tab",
+        "width": "700",
+        "height": "480"
+      }
+    ],
+    "windows": [
+      {
+        "name": "WIN_LEAVE",
+        "title": "Leave Management",
+        "width": "720",
+        "height": "520"
+      }
+    ],
+    "alerts": [
+      {
+        "name": "ALT_CONFIRM_CANCEL",
+        "title": "Caution",
+        "message": "Are you sure you want to cancel this leave request?"
       }
     ],
     "all_package_calls": [
       "PKG_LEAVE.submit_leave_request",
-      "PKG_LEAVE.cancel_leave_request",
-      "PKG_SECURITY.is_session_valid"
+      "PKG_SECURITY.is_session_valid",
+      "PKG_LEAVE.cancel_leave_request"
     ],
     "all_business_rules": [],
-    "all_rules": []
+    "all_rules": [
+      "WHEN-NEW-FORM-INSTANCE: Session must be valid before form operations are permitted"
+    ]
   },
   {
     "name": "HRMS_LOGIN",
@@ -762,46 +913,42 @@
         "table": "",
         "default_where": "",
         "order_by": "",
+        "insert_allowed": "No",
+        "update_allowed": "No",
+        "delete_allowed": "No",
+        "query_allowed": "",
         "items": [
           {
             "name": "COMPANY_LOGO",
             "type": "Image",
             "data_type": "Char",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_LOGIN"
           },
           {
             "name": "USERNAME",
             "type": "Text Field",
             "data_type": "Char",
             "max_length": "100",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_LOGIN"
           },
           {
             "name": "PASSWORD",
             "type": "Text Field",
             "data_type": "Char",
             "max_length": "100",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_LOGIN"
           },
           {
             "name": "ERROR_MSG",
             "type": "Display Item",
             "data_type": "Char",
             "max_length": "200",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_LOGIN"
           },
           {
             "name": "BTN_LOGIN",
             "type": "Push Button",
-            "data_type": "",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_LOGIN"
           }
         ],
         "triggers": [
@@ -812,6 +959,7 @@
               "PKG_SECURITY.authenticate"
             ],
             "business_rules": [],
+            "rules": [],
             "raise_errors": []
           },
           {
@@ -819,6 +967,7 @@
             "body": "BEGIN\n    IF :SYSTEM.CURSOR_ITEM = 'LOGIN.PASSWORD' THEN\n        DO_KEY('WHEN-BUTTON-PRESSED');\n    ELSE\n        NEXT_ITEM;\n    END IF;\nEND;",
             "pkg_calls": [],
             "business_rules": [],
+            "rules": [],
             "raise_errors": []
           }
         ]
@@ -826,6 +975,24 @@
     ],
     "lovs": [],
     "record_groups": [],
+    "relations": [],
+    "canvases": [
+      {
+        "name": "CVS_LOGIN",
+        "type": "Content",
+        "width": "700",
+        "height": "300"
+      }
+    ],
+    "windows": [
+      {
+        "name": "WIN_LOGIN",
+        "title": "HRMS Login",
+        "width": "700",
+        "height": "320"
+      }
+    ],
+    "alerts": [],
     "all_package_calls": [
       "PKG_SECURITY.authenticate"
     ],
@@ -860,70 +1027,52 @@
         "table": "",
         "default_where": "",
         "order_by": "",
+        "insert_allowed": "No",
+        "update_allowed": "No",
+        "delete_allowed": "No",
+        "query_allowed": "",
         "items": [
           {
             "name": "WELCOME_TEXT",
             "type": "Display Item",
             "data_type": "Char",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_MAIN"
           },
           {
             "name": "USER_INFO",
             "type": "Display Item",
             "data_type": "Char",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_MAIN"
           },
           {
             "name": "BTN_EMPLOYEES",
             "type": "Push Button",
-            "data_type": "",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_MAIN"
           },
           {
             "name": "BTN_PAYROLL",
             "type": "Push Button",
-            "data_type": "",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_MAIN"
           },
           {
             "name": "BTN_LEAVE",
             "type": "Push Button",
-            "data_type": "",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_MAIN"
           },
           {
             "name": "BTN_PERFORMANCE",
             "type": "Push Button",
-            "data_type": "",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_MAIN"
           },
           {
             "name": "BTN_REPORTS",
             "type": "Push Button",
-            "data_type": "",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_MAIN"
           },
           {
             "name": "BTN_LOGOUT",
             "type": "Push Button",
-            "data_type": "",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_MAIN"
           }
         ],
         "triggers": [
@@ -932,6 +1081,7 @@
             "body": "BEGIN\n    OPEN_FORM('HRMS_EMPLOYEE', ACTIVATE, SESSION);\nEND;",
             "pkg_calls": [],
             "business_rules": [],
+            "rules": [],
             "raise_errors": []
           },
           {
@@ -941,6 +1091,7 @@
               "PKG_SECURITY.has_permission"
             ],
             "business_rules": [],
+            "rules": [],
             "raise_errors": []
           },
           {
@@ -948,6 +1099,7 @@
             "body": "BEGIN\n    OPEN_FORM('HRMS_LEAVE', ACTIVATE, SESSION);\nEND;",
             "pkg_calls": [],
             "business_rules": [],
+            "rules": [],
             "raise_errors": []
           },
           {
@@ -955,6 +1107,7 @@
             "body": "BEGIN\n    OPEN_FORM('HRMS_PERFORMANCE', ACTIVATE, SESSION);\nEND;",
             "pkg_calls": [],
             "business_rules": [],
+            "rules": [],
             "raise_errors": []
           },
           {
@@ -964,6 +1117,7 @@
               "PKG_SECURITY.has_permission"
             ],
             "business_rules": [],
+            "rules": [],
             "raise_errors": []
           },
           {
@@ -973,6 +1127,7 @@
               "PKG_SECURITY.logout"
             ],
             "business_rules": [],
+            "rules": [],
             "raise_errors": []
           }
         ]
@@ -980,12 +1135,36 @@
     ],
     "lovs": [],
     "record_groups": [],
+    "relations": [],
+    "canvases": [
+      {
+        "name": "CVS_MAIN",
+        "type": "Content",
+        "width": "740",
+        "height": "400"
+      }
+    ],
+    "windows": [
+      {
+        "name": "WIN_MAIN",
+        "title": "HRMS Main Menu",
+        "width": "760",
+        "height": "420"
+      }
+    ],
+    "alerts": [],
     "all_package_calls": [
       "PKG_SECURITY.has_permission",
       "PKG_SECURITY.logout"
     ],
     "all_business_rules": [],
-    "all_rules": []
+    "all_rules": [
+      "WHEN-NEW-FORM-INSTANCE: Requires VIEW permission on PAYROLL",
+      "WHEN-NEW-FORM-INSTANCE: Requires VIEW permission on ADMIN",
+      "WHEN-NEW-FORM-INSTANCE: Requires VIEW permission on REPORTS",
+      "MENU_CONTROL.WHEN-BUTTON-PRESSED: Requires VIEW permission on PAYROLL",
+      "MENU_CONTROL.WHEN-BUTTON-PRESSED: Requires VIEW permission on REPORTS"
+    ]
   },
   {
     "name": "HRMS_PAYROLL",
@@ -1013,154 +1192,127 @@
     "blocks": [
       {
         "name": "PAY_PERIOD",
-        "table": "",
+        "table": "HRMS.PAY_PERIODS",
         "default_where": "",
         "order_by": "",
+        "insert_allowed": "No",
+        "update_allowed": "No",
+        "delete_allowed": "No",
+        "query_allowed": "",
         "items": [
           {
             "name": "PERIOD_ID",
-            "type": "",
-            "data_type": "",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "visible": "No",
+            "database_item": "Yes",
+            "primary_key": "Yes"
           },
           {
             "name": "PERIOD_NAME",
             "type": "Text Field",
             "data_type": "Char",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "Yes"
           },
           {
             "name": "PERIOD_START_DATE",
             "type": "Text Field",
             "data_type": "Date",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "Yes"
           },
           {
             "name": "PERIOD_END_DATE",
             "type": "Text Field",
             "data_type": "Date",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "Yes"
           },
           {
             "name": "PAY_DATE",
             "type": "Text Field",
             "data_type": "Date",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "Yes"
           },
           {
             "name": "STATUS",
             "type": "Text Field",
             "data_type": "Char",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "Yes"
           }
         ],
         "triggers": []
       },
       {
         "name": "PAYROLL_RUN",
-        "table": "",
+        "table": "HRMS.PAYROLL_RUNS",
         "default_where": "",
         "order_by": "",
+        "insert_allowed": "No",
+        "update_allowed": "No",
+        "delete_allowed": "No",
+        "query_allowed": "",
         "items": [
           {
             "name": "RUN_ID",
-            "type": "",
-            "data_type": "",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "visible": "No",
+            "database_item": "Yes",
+            "primary_key": "Yes"
           },
           {
             "name": "PERIOD_ID",
-            "type": "",
-            "data_type": "",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "visible": "No",
+            "database_item": "Yes"
           },
           {
             "name": "RUN_TYPE",
             "type": "Text Field",
             "data_type": "Char",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "Yes"
           },
           {
             "name": "RUN_DATE",
             "type": "Text Field",
             "data_type": "Date",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "Yes"
           },
           {
             "name": "STATUS",
             "type": "Text Field",
             "data_type": "Char",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "Yes"
           },
           {
             "name": "EMPLOYEE_COUNT",
             "type": "Text Field",
             "data_type": "Number",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "Yes"
           },
           {
             "name": "TOTAL_GROSS",
             "type": "Text Field",
             "data_type": "Number",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "Yes"
           },
           {
             "name": "TOTAL_NET",
             "type": "Text Field",
             "data_type": "Number",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "Yes"
           },
           {
             "name": "BTN_CREATE_RUN",
             "type": "Push Button",
-            "data_type": "",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_RUNS",
+            "tab_page": "TP_RUNS"
           },
           {
             "name": "BTN_CALCULATE",
             "type": "Push Button",
-            "data_type": "",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_RUNS",
+            "tab_page": "TP_RUNS"
           },
           {
             "name": "BTN_APPROVE",
             "type": "Push Button",
-            "data_type": "",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "canvas": "CVS_RUNS",
+            "tab_page": "TP_RUNS"
           }
         ],
         "triggers": [
@@ -1171,6 +1323,7 @@
               "PKG_PAYROLL.create_payroll_run"
             ],
             "business_rules": [],
+            "rules": [],
             "raise_errors": []
           },
           {
@@ -1180,6 +1333,7 @@
               "PKG_PAYROLL.calculate_payroll"
             ],
             "business_rules": [],
+            "rules": [],
             "raise_errors": []
           },
           {
@@ -1190,6 +1344,7 @@
               "PKG_PAYROLL.approve_payroll"
             ],
             "business_rules": [],
+            "rules": [],
             "raise_errors": []
           }
         ]
@@ -1197,15 +1352,46 @@
     ],
     "lovs": [],
     "record_groups": [],
+    "relations": [
+      {
+        "name": "PERIOD_RUN_REL",
+        "detail_block": "PAYROLL_RUN",
+        "join_condition": "PAYROLL_RUN.PERIOD_ID = PAY_PERIOD.PERIOD_ID",
+        "delete_record": "",
+        "deferred": "",
+        "automatic_query": ""
+      }
+    ],
+    "canvases": [
+      {
+        "name": "CVS_MAIN",
+        "type": "Tab",
+        "width": "750",
+        "height": "520"
+      }
+    ],
+    "windows": [
+      {
+        "name": "WIN_PAYROLL",
+        "title": "Payroll Processing",
+        "width": "770",
+        "height": "560"
+      }
+    ],
+    "alerts": [],
     "all_package_calls": [
-      "PKG_PAYROLL.calculate_payroll",
       "PKG_SECURITY.has_permission",
-      "PKG_PAYROLL.approve_payroll",
       "PKG_PAYROLL.create_payroll_run",
-      "PKG_SECURITY.is_session_valid"
+      "PKG_SECURITY.is_session_valid",
+      "PKG_PAYROLL.calculate_payroll",
+      "PKG_PAYROLL.approve_payroll"
     ],
     "all_business_rules": [],
-    "all_rules": []
+    "all_rules": [
+      "WHEN-NEW-FORM-INSTANCE: Session must be valid before form operations are permitted",
+      "WHEN-NEW-FORM-INSTANCE: Requires VIEW permission on PAYROLL",
+      "PAYROLL_RUN.WHEN-BUTTON-PRESSED: Requires APPROVE permission on PAYROLL"
+    ]
   },
   {
     "name": "HRMS_PERFORMANCE",
@@ -1232,138 +1418,114 @@
     "blocks": [
       {
         "name": "REVIEW_CYCLE",
-        "table": "",
+        "table": "HRMS.REVIEW_CYCLES",
         "default_where": "",
         "order_by": "",
+        "insert_allowed": "No",
+        "update_allowed": "No",
+        "delete_allowed": "No",
+        "query_allowed": "",
         "items": [
           {
             "name": "CYCLE_ID",
-            "type": "",
-            "data_type": "",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "visible": "No",
+            "database_item": "Yes",
+            "primary_key": "Yes"
           },
           {
             "name": "CYCLE_NAME",
             "type": "Text Field",
             "data_type": "Char",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "Yes"
           },
           {
             "name": "CYCLE_YEAR",
             "type": "Text Field",
             "data_type": "Number",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "Yes"
           },
           {
             "name": "START_DATE",
             "type": "Text Field",
             "data_type": "Date",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "Yes"
           },
           {
             "name": "END_DATE",
             "type": "Text Field",
             "data_type": "Date",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "Yes"
           },
           {
             "name": "STATUS",
             "type": "Text Field",
             "data_type": "Char",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "Yes"
           }
         ],
         "triggers": []
       },
       {
         "name": "PERFORMANCE_REVIEW",
-        "table": "",
+        "table": "HRMS.PERFORMANCE_REVIEWS",
         "default_where": "",
         "order_by": "",
+        "insert_allowed": "No",
+        "update_allowed": "Yes",
+        "delete_allowed": "No",
+        "query_allowed": "",
         "items": [
           {
             "name": "REVIEW_ID",
-            "type": "",
-            "data_type": "",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "visible": "No",
+            "database_item": "Yes",
+            "primary_key": "Yes"
           },
           {
             "name": "CYCLE_ID",
-            "type": "",
-            "data_type": "",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "visible": "No",
+            "database_item": "Yes"
           },
           {
             "name": "EMP_ID",
-            "type": "",
-            "data_type": "",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "visible": "No",
+            "database_item": "Yes"
           },
           {
             "name": "EMP_NAME_DISP",
             "type": "Display Item",
-            "data_type": "Char",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "data_type": "Char"
           },
           {
             "name": "STATUS",
             "type": "Text Field",
             "data_type": "Char",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "Yes",
+            "update_allowed": "No"
           },
           {
             "name": "OVERALL_RATING",
             "type": "Text Field",
             "data_type": "Number",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "Yes"
           },
           {
             "name": "RATING_LABEL",
             "type": "Display Item",
             "data_type": "Char",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "Yes"
           },
           {
             "name": "SELF_ASSESSMENT",
             "type": "Text Field",
             "data_type": "Char",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "Yes"
           },
           {
             "name": "MANAGER_ASSESSMENT",
             "type": "Text Field",
             "data_type": "Char",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "Yes"
           }
         ],
         "triggers": [
@@ -1372,71 +1534,61 @@
             "body": "BEGIN\n    SELECT FIRST_NAME || ' ' || LAST_NAME INTO :PERFORMANCE_REVIEW.EMP_NAME_DISP\n    FROM EMPLOYEES WHERE EMP_ID = :PERFORMANCE_REVIEW.EMP_ID;\nEXCEPTION\n    WHEN NO_DATA_FOUND THEN :PERFORMANCE_REVIEW.EMP_NAME_DISP := 'Unknown';\nEND;",
             "pkg_calls": [],
             "business_rules": [],
+            "rules": [],
             "raise_errors": []
           }
         ]
       },
       {
         "name": "PERFORMANCE_GOAL",
-        "table": "",
+        "table": "HRMS.PERFORMANCE_GOALS",
         "default_where": "",
         "order_by": "",
+        "insert_allowed": "Yes",
+        "update_allowed": "Yes",
+        "delete_allowed": "No",
+        "query_allowed": "",
         "items": [
           {
             "name": "GOAL_ID",
-            "type": "",
-            "data_type": "",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "visible": "No",
+            "database_item": "Yes",
+            "primary_key": "Yes"
           },
           {
             "name": "REVIEW_ID",
-            "type": "",
-            "data_type": "",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "visible": "No",
+            "database_item": "Yes"
           },
           {
             "name": "GOAL_TITLE",
             "type": "Text Field",
             "data_type": "Char",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "Yes"
           },
           {
             "name": "GOAL_CATEGORY",
             "type": "List Item",
             "data_type": "Char",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "Yes"
           },
           {
             "name": "WEIGHT_PCT",
             "type": "Text Field",
             "data_type": "Number",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "Yes"
           },
           {
             "name": "PROGRESS_PCT",
             "type": "Text Field",
             "data_type": "Number",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "Yes"
           },
           {
             "name": "STATUS",
             "type": "Text Field",
             "data_type": "Char",
-            "max_length": "",
-            "required": "",
-            "column": ""
+            "database_item": "Yes"
           }
         ],
         "triggers": []
@@ -1444,10 +1596,47 @@
     ],
     "lovs": [],
     "record_groups": [],
+    "relations": [
+      {
+        "name": "CYCLE_REVIEW_REL",
+        "detail_block": "PERFORMANCE_REVIEW",
+        "join_condition": "PERFORMANCE_REVIEW.CYCLE_ID = REVIEW_CYCLE.CYCLE_ID",
+        "delete_record": "",
+        "deferred": "",
+        "automatic_query": ""
+      },
+      {
+        "name": "REVIEW_GOAL_REL",
+        "detail_block": "PERFORMANCE_GOAL",
+        "join_condition": "PERFORMANCE_GOAL.REVIEW_ID = PERFORMANCE_REVIEW.REVIEW_ID",
+        "delete_record": "",
+        "deferred": "",
+        "automatic_query": ""
+      }
+    ],
+    "canvases": [
+      {
+        "name": "CVS_MAIN",
+        "type": "Tab",
+        "width": "750",
+        "height": "520"
+      }
+    ],
+    "windows": [
+      {
+        "name": "WIN_PERFORMANCE",
+        "title": "Performance Management",
+        "width": "770",
+        "height": "560"
+      }
+    ],
+    "alerts": [],
     "all_package_calls": [
       "PKG_SECURITY.is_session_valid"
     ],
     "all_business_rules": [],
-    "all_rules": []
+    "all_rules": [
+      "WHEN-NEW-FORM-INSTANCE: Session must be valid before form operations are permitted"
+    ]
   }
 ]

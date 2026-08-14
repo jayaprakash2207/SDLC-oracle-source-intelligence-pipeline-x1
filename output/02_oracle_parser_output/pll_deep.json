@@ -1,0 +1,181 @@
+[
+  {
+    "name": "HRMS_COMMON_LIB",
+    "file": "HRMS_COMMON_LIB.pll.sql",
+    "dependencies": [
+      "None (standalone library)"
+    ],
+    "attached_by": "All HRMS forms via ATTACH_LIBRARY",
+    "procedures": [
+      {
+        "name": "handle_error",
+        "params": [
+          "p_module",
+          "p_location"
+        ],
+        "business_rules": [],
+        "rules": [],
+        "bugs": [],
+        "pkg_calls": [
+          "PKG_COMMON.log_error"
+        ]
+      },
+      {
+        "name": "refresh_lov",
+        "params": [
+          "p_lov_name"
+        ],
+        "business_rules": [],
+        "rules": [
+          "A record group is only refreshed if it already exists in the form \u2014 attempting to populate a non-existent group would raise a runtime error"
+        ],
+        "bugs": [],
+        "pkg_calls": []
+      }
+    ],
+    "functions": [
+      {
+        "name": "format_date",
+        "params": [
+          "p_date"
+        ],
+        "returns": "VARCHAR2",
+        "business_rules": [],
+        "rules": [],
+        "bugs": [],
+        "pkg_calls": []
+      },
+      {
+        "name": "format_datetime",
+        "params": [
+          "p_date"
+        ],
+        "returns": "VARCHAR2",
+        "business_rules": [],
+        "rules": [],
+        "bugs": [],
+        "pkg_calls": []
+      }
+    ],
+    "all_business_rules": [],
+    "all_rules": [
+      "Toolbar Query button behaviour depends on current form mode \u2014 pressing it once opens query mode ('NORMAL'), pressing it again while already in query-entry mode ('ENTER-QUERY') executes the query",
+      "A valid HRMS session ID must exist in the global context before any form operation is permitted \u2014 absence of a session ID means the user has not logged in",
+      "Abort form processing when no session exists; the user must authenticate before continuing",
+      "Even when a session ID is present, it must pass the PKG_SECURITY validity check \u2014 an ID that fails this check is treated as an expired session, blocking further use of the form",
+      "Abort form processing when the session has expired; the user must re-authenticate",
+      "A record group is only refreshed if it already exists in the form \u2014 attempting to populate a non-existent group would raise a runtime error"
+    ],
+    "all_bugs": [],
+    "pkg_calls": [
+      "PKG_COMMON.log_error",
+      "PKG_SECURITY.is_session_valid"
+    ]
+  },
+  {
+    "name": "HRMS_VALIDATION_LIB",
+    "file": "HRMS_VALIDATION_LIB.pll.sql",
+    "dependencies": [],
+    "attached_by": "",
+    "procedures": [],
+    "functions": [
+      {
+        "name": "validate_email",
+        "params": [
+          "p_email"
+        ],
+        "returns": "BOOLEAN",
+        "business_rules": [],
+        "rules": [
+          "Email address is not a required field; NULL is treated as valid and bypasses all format checks",
+          "Email must contain exactly one '@' symbol, which must not appear as the first or last character (both local-part and domain must be non-empty)",
+          "The domain portion of an email must contain at least one dot, it must not immediately follow '@', and it must not be the final character (a valid TLD must follow)"
+        ],
+        "bugs": [
+          "Only checks for one dot after @, rejects valid subdomains"
+        ],
+        "pkg_calls": []
+      },
+      {
+        "name": "validate_phone",
+        "params": [
+          "p_phone"
+        ],
+        "returns": "BOOLEAN",
+        "business_rules": [],
+        "rules": [
+          "Phone number is not a required field; NULL is treated as valid"
+        ],
+        "bugs": [],
+        "pkg_calls": []
+      },
+      {
+        "name": "validate_ssn",
+        "params": [
+          "p_ssn"
+        ],
+        "returns": "BOOLEAN",
+        "business_rules": [],
+        "rules": [
+          "SSN is not a required field; NULL is treated as valid",
+          "Each of the three SSN segments must contain at least one non-zero digit: the area number (digits 1-3), the group number (digits 4-5), and the serial number (digits 6-9) must never be all zeros, in accordance with SSA issuance rules"
+        ],
+        "bugs": [],
+        "pkg_calls": []
+      },
+      {
+        "name": "validate_date_not_future",
+        "params": [
+          "p_date"
+        ],
+        "returns": "BOOLEAN",
+        "business_rules": [],
+        "rules": [
+          "A date value must not be in the future; only today's date or any prior date is accepted; NULL bypasses the check"
+        ],
+        "bugs": [
+          "Uses a hard-coded cache that's populated at form startup"
+        ],
+        "pkg_calls": []
+      },
+      {
+        "name": "validate_salary_range",
+        "params": [
+          "p_salary",
+          "p_grade_id"
+        ],
+        "returns": "VARCHAR2",
+        "business_rules": [
+          "Salary boundaries are determined by the employee's assigned job grade; the allowable minimum and maximum pay are read from the JOB_GRADES reference table for the given grade"
+        ],
+        "rules": [
+          "Salary range validation is skipped when either the salary amount or the job grade identifier is absent; both values must be present for the range check to execute",
+          "An employee's salary must not fall below the minimum pay threshold defined for their job grade",
+          "An employee's salary must not exceed the maximum pay threshold defined for their job grade"
+        ],
+        "bugs": [],
+        "pkg_calls": []
+      }
+    ],
+    "all_business_rules": [
+      "Salary boundaries are determined by the employee's assigned job grade; the allowable minimum and maximum pay are read from the JOB_GRADES reference table for the given grade"
+    ],
+    "all_rules": [
+      "Email address is not a required field; NULL is treated as valid and bypasses all format checks",
+      "Email must contain exactly one '@' symbol, which must not appear as the first or last character (both local-part and domain must be non-empty)",
+      "The domain portion of an email must contain at least one dot, it must not immediately follow '@', and it must not be the final character (a valid TLD must follow)",
+      "Phone number is not a required field; NULL is treated as valid",
+      "SSN is not a required field; NULL is treated as valid",
+      "Each of the three SSN segments must contain at least one non-zero digit: the area number (digits 1-3), the group number (digits 4-5), and the serial number (digits 6-9) must never be all zeros, in accordance with SSA issuance rules",
+      "A date value must not be in the future; only today's date or any prior date is accepted; NULL bypasses the check",
+      "Salary range validation is skipped when either the salary amount or the job grade identifier is absent; both values must be present for the range check to execute",
+      "An employee's salary must not fall below the minimum pay threshold defined for their job grade",
+      "An employee's salary must not exceed the maximum pay threshold defined for their job grade"
+    ],
+    "all_bugs": [
+      "Only checks for one dot after @, rejects valid subdomains",
+      "Uses a hard-coded cache that's populated at form startup"
+    ],
+    "pkg_calls": []
+  }
+]

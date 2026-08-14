@@ -108,7 +108,10 @@
       "package_calls": [],
       "sequences_used": [
         "SEQ_AUDIT"
-      ]
+      ],
+      "pragma_autonomous": true,
+      "uses_sys_context": true,
+      "utl_packages_used": []
     }
   },
   "HRMS.PKG_COMMON": {
@@ -636,7 +639,10 @@
       "package_calls": [],
       "sequences_used": [
         "SEQ_AUDIT"
-      ]
+      ],
+      "pragma_autonomous": true,
+      "uses_sys_context": false,
+      "utl_packages_used": []
     }
   },
   "HRMS.PKG_EMPLOYEE": {
@@ -817,6 +823,22 @@
         {
           "name": "e_employee_not_found",
           "code": "-20001"
+        },
+        {
+          "name": "e_duplicate_emp_number",
+          "code": "-20002"
+        },
+        {
+          "name": "e_invalid_department",
+          "code": "-20003"
+        },
+        {
+          "name": "e_invalid_manager",
+          "code": "-20004"
+        },
+        {
+          "name": "e_termination_error",
+          "code": "-20005"
         }
       ],
       "types": [
@@ -1146,11 +1168,11 @@
             "deletes_from": []
           },
           "package_calls": [
-            "PKG_AUDIT",
+            "PKG_NOTIFICATION",
             "PKG_PAYROLL",
             "PKG_EMPLOYEE",
-            "PKG_NOTIFICATION",
-            "PKG_COMMON"
+            "PKG_COMMON",
+            "PKG_AUDIT"
           ],
           "if_conditions": [
             "p_first_name IS NULL OR p_last_name IS NULL",
@@ -1311,8 +1333,8 @@
             "deletes_from": []
           },
           "package_calls": [
-            "PKG_AUDIT",
-            "PKG_COMMON"
+            "PKG_COMMON",
+            "PKG_AUDIT"
           ],
           "if_conditions": [
             "v_old_rec.EMPLOYMENT_STATUS != 'ACTIVE'",
@@ -1382,10 +1404,10 @@
             "deletes_from": []
           },
           "package_calls": [
-            "PKG_PAYROLL",
-            "PKG_AUDIT",
             "PKG_NOTIFICATION",
-            "PKG_COMMON"
+            "PKG_PAYROLL",
+            "PKG_COMMON",
+            "PKG_AUDIT"
           ],
           "if_conditions": [
             "v_emp.EMPLOYMENT_STATUS = 'TERMINATED'",
@@ -1541,16 +1563,19 @@
         }
       ],
       "package_calls": [
-        "PKG_AUDIT",
+        "PKG_NOTIFICATION",
         "PKG_PAYROLL",
         "PKG_EMPLOYEE",
-        "PKG_NOTIFICATION",
-        "PKG_COMMON"
+        "PKG_COMMON",
+        "PKG_AUDIT"
       ],
       "sequences_used": [
-        "SEQ_EMP_HISTORY",
-        "SEQ_EMPLOYEE"
-      ]
+        "SEQ_EMPLOYEE",
+        "SEQ_EMP_HISTORY"
+      ],
+      "pragma_autonomous": true,
+      "uses_sys_context": false,
+      "utl_packages_used": []
     }
   },
   "HRMS.PKG_INTEGRATION": {
@@ -1768,7 +1793,12 @@
       "package_calls": [
         "PKG_COMMON"
       ],
-      "sequences_used": []
+      "sequences_used": [],
+      "pragma_autonomous": false,
+      "uses_sys_context": false,
+      "utl_packages_used": [
+        "UTL_FILE"
+      ]
     }
   },
   "HRMS.PKG_LEAVE": {
@@ -1896,6 +1926,18 @@
         {
           "name": "e_insufficient_balance",
           "code": "-20201"
+        },
+        {
+          "name": "e_overlapping_leave",
+          "code": "-20202"
+        },
+        {
+          "name": "e_invalid_leave_type",
+          "code": "-20203"
+        },
+        {
+          "name": "e_approval_error",
+          "code": "-20204"
         }
       ],
       "types": [
@@ -2173,8 +2215,8 @@
             "deletes_from": []
           },
           "package_calls": [
-            "PKG_AUDIT",
-            "PKG_NOTIFICATION"
+            "PKG_NOTIFICATION",
+            "PKG_AUDIT"
           ],
           "if_conditions": [
             "v_leave_type.MIN_TENURE_DAYS > 0",
@@ -2218,8 +2260,8 @@
             "deletes_from": []
           },
           "package_calls": [
-            "PKG_AUDIT",
-            "PKG_NOTIFICATION"
+            "PKG_NOTIFICATION",
+            "PKG_AUDIT"
           ],
           "if_conditions": [
             "v_request.STATUS != 'PENDING'"
@@ -2252,8 +2294,8 @@
             "deletes_from": []
           },
           "package_calls": [
-            "PKG_AUDIT",
-            "PKG_NOTIFICATION"
+            "PKG_NOTIFICATION",
+            "PKG_AUDIT"
           ],
           "if_conditions": [
             "v_request.STATUS != 'PENDING'"
@@ -2481,14 +2523,17 @@
         }
       ],
       "package_calls": [
-        "PKG_AUDIT",
-        "PKG_NOTIFICATION"
+        "PKG_NOTIFICATION",
+        "PKG_AUDIT"
       ],
       "sequences_used": [
+        "SEQ_LEAVE_ACCRUAL",
         "SEQ_LEAVE_REQUEST",
-        "SEQ_LEAVE_BALANCE",
-        "SEQ_LEAVE_ACCRUAL"
-      ]
+        "SEQ_LEAVE_BALANCE"
+      ],
+      "pragma_autonomous": false,
+      "uses_sys_context": false,
+      "utl_packages_used": []
     }
   },
   "HRMS.PKG_NOTIFICATION": {
@@ -2686,6 +2731,12 @@
       ],
       "sequences_used": [
         "SEQ_NOTIFICATION"
+      ],
+      "pragma_autonomous": true,
+      "uses_sys_context": false,
+      "utl_packages_used": [
+        "UTL_TCP",
+        "UTL_SMTP"
       ]
     }
   },
@@ -2837,6 +2888,18 @@
         {
           "name": "e_invalid_salary",
           "code": "-20101"
+        },
+        {
+          "name": "e_period_closed",
+          "code": "-20102"
+        },
+        {
+          "name": "e_run_already_paid",
+          "code": "-20103"
+        },
+        {
+          "name": "e_calculation_error",
+          "code": "-20104"
         }
       ],
       "types": [
@@ -3512,14 +3575,19 @@
         }
       ],
       "package_calls": [
-        "PKG_AUDIT",
-        "PKG_COMMON"
+        "PKG_COMMON",
+        "PKG_AUDIT"
       ],
       "sequences_used": [
         "SEQ_PAY_PERIOD",
         "SEQ_PAYROLL_RUN",
         "SEQ_PAYROLL_DETAIL",
         "SEQ_SALARY"
+      ],
+      "pragma_autonomous": false,
+      "uses_sys_context": false,
+      "utl_packages_used": [
+        "UTL_FILE"
       ]
     }
   },
@@ -3970,14 +4038,17 @@
         }
       ],
       "package_calls": [
-        "PKG_AUDIT",
-        "PKG_NOTIFICATION"
+        "PKG_NOTIFICATION",
+        "PKG_AUDIT"
       ],
       "sequences_used": [
-        "SEQ_PERF_GOAL",
         "SEQ_REVIEW_CYCLE",
-        "SEQ_PERF_REVIEW"
-      ]
+        "SEQ_PERF_REVIEW",
+        "SEQ_PERF_GOAL"
+      ],
+      "pragma_autonomous": false,
+      "uses_sys_context": false,
+      "utl_packages_used": []
     }
   },
   "HRMS.PKG_REPORTING": {
@@ -4282,7 +4353,10 @@
       "package_calls": [
         "PKG_COMMON"
       ],
-      "sequences_used": []
+      "sequences_used": [],
+      "pragma_autonomous": false,
+      "uses_sys_context": false,
+      "utl_packages_used": []
     }
   },
   "HRMS.PKG_SECURITY": {
@@ -4357,6 +4431,18 @@
         {
           "name": "e_invalid_credentials",
           "code": "-20301"
+        },
+        {
+          "name": "e_account_locked",
+          "code": "-20302"
+        },
+        {
+          "name": "e_session_expired",
+          "code": "-20303"
+        },
+        {
+          "name": "e_insufficient_priv",
+          "code": "-20304"
         }
       ],
       "types": [],
@@ -4488,8 +4574,8 @@
             "deletes_from": []
           },
           "package_calls": [
-            "PKG_AUDIT",
-            "PKG_EMPLOYEE"
+            "PKG_EMPLOYEE",
+            "PKG_AUDIT"
           ],
           "if_conditions": []
         },
@@ -4638,11 +4724,16 @@
         }
       ],
       "package_calls": [
-        "PKG_AUDIT",
-        "PKG_EMPLOYEE"
+        "PKG_EMPLOYEE",
+        "PKG_AUDIT"
       ],
       "sequences_used": [
         "SEQ_USER_SESSION"
+      ],
+      "pragma_autonomous": false,
+      "uses_sys_context": false,
+      "utl_packages_used": [
+        "UTL_RAW"
       ]
     }
   },
@@ -4932,7 +5023,10 @@
       "package_calls": [
         "PKG_COMMON"
       ],
-      "sequences_used": []
+      "sequences_used": [],
+      "pragma_autonomous": false,
+      "uses_sys_context": false,
+      "utl_packages_used": []
     }
   }
 }

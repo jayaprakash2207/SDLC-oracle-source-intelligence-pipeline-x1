@@ -3466,604 +3466,786 @@
   },
   {
     "id": "BR-0496",
-    "source": "TRG_SALARY_AUDIT",
-    "source_type": "db_trigger",
+    "source": "HRMS_EMPLOYEE",
+    "source_type": "oracle_form",
     "category": "validation_rule",
-    "rule": "When a new salary record is inserted, the audit log must capture employee ID, base salary, and effective date to establish the initial compensation record"
+    "rule": "WHEN-NEW-FORM-INSTANCE: Session must be valid before form operations are permitted"
   },
   {
     "id": "BR-0497",
-    "source": "TRG_SALARY_AUDIT",
-    "source_type": "db_trigger",
+    "source": "HRMS_EMPLOYEE",
+    "source_type": "oracle_form",
     "category": "validation_rule",
-    "rule": "When a salary record is updated, both the previous and new base salary and active status must be preserved in the audit trail to support compensation change reviews"
+    "rule": "WHEN-NEW-FORM-INSTANCE: Requires EDIT permission on EMPLOYEE"
   },
   {
     "id": "BR-0498",
-    "source": "TRG_SALARY_AUDIT",
-    "source_type": "db_trigger",
+    "source": "HRMS_EMPLOYEE",
+    "source_type": "oracle_form",
     "category": "validation_rule",
-    "rule": "When a salary record is deleted, the employee identity and last known salary must be preserved in the audit log to maintain a complete compensation history"
+    "rule": "WHEN-NEW-FORM-INSTANCE: Insert operations may be disabled based on user permissions"
   },
   {
     "id": "BR-0499",
-    "source": "TRG_SALARY_AUDIT",
-    "source_type": "db_trigger",
+    "source": "HRMS_EMPLOYEE",
+    "source_type": "oracle_form",
     "category": "validation_rule",
-    "rule": "Only STATUS column changes on leave requests are subject to audit tracking; updates to other fields (e.g. comments, dates) do not generate an audit record"
+    "rule": "WHEN-NEW-FORM-INSTANCE: Update operations may be disabled based on user permissions"
   },
   {
     "id": "BR-0500",
-    "source": "TRG_SALARY_AUDIT",
-    "source_type": "db_trigger",
+    "source": "HRMS_EMPLOYEE",
+    "source_type": "oracle_form",
     "category": "validation_rule",
-    "rule": "Every structural change to a department record (creation, modification, or removal) must be captured in the audit log to support organisational governance and accountability"
+    "rule": "WHEN-NEW-FORM-INSTANCE: Delete operations may be disabled based on user permissions"
   },
   {
     "id": "BR-0501",
-    "source": "TRG_SALARY_AUDIT",
-    "source_type": "db_trigger",
+    "source": "HRMS_EMPLOYEE",
+    "source_type": "oracle_form",
     "category": "validation_rule",
-    "rule": "For department changes, the database session user (USER) is always recorded as the actor; there is no application-supplied MODIFIED_BY column on this table"
+    "rule": "KEY-EXIT: Manages transaction commit/rollback"
   },
   {
     "id": "BR-0502",
-    "source": "TRG_DEPARTMENT_AUDIT",
+    "source": "HRMS_EMPLOYEE",
+    "source_type": "oracle_form",
+    "category": "validation_rule",
+    "rule": "EMPLOYEE.WHEN-VALIDATE-ITEM: Calls PKG_VALIDATION.validate_email_format for server-side validation"
+  },
+  {
+    "id": "BR-0503",
+    "source": "HRMS_LEAVE",
+    "source_type": "oracle_form",
+    "category": "validation_rule",
+    "rule": "WHEN-NEW-FORM-INSTANCE: Session must be valid before form operations are permitted"
+  },
+  {
+    "id": "BR-0504",
+    "source": "HRMS_MENU",
+    "source_type": "oracle_form",
+    "category": "validation_rule",
+    "rule": "WHEN-NEW-FORM-INSTANCE: Requires VIEW permission on PAYROLL"
+  },
+  {
+    "id": "BR-0505",
+    "source": "HRMS_MENU",
+    "source_type": "oracle_form",
+    "category": "validation_rule",
+    "rule": "WHEN-NEW-FORM-INSTANCE: Requires VIEW permission on ADMIN"
+  },
+  {
+    "id": "BR-0506",
+    "source": "HRMS_MENU",
+    "source_type": "oracle_form",
+    "category": "validation_rule",
+    "rule": "WHEN-NEW-FORM-INSTANCE: Requires VIEW permission on REPORTS"
+  },
+  {
+    "id": "BR-0507",
+    "source": "HRMS_MENU",
+    "source_type": "oracle_form",
+    "category": "validation_rule",
+    "rule": "MENU_CONTROL.WHEN-BUTTON-PRESSED: Requires VIEW permission on PAYROLL"
+  },
+  {
+    "id": "BR-0508",
+    "source": "HRMS_MENU",
+    "source_type": "oracle_form",
+    "category": "validation_rule",
+    "rule": "MENU_CONTROL.WHEN-BUTTON-PRESSED: Requires VIEW permission on REPORTS"
+  },
+  {
+    "id": "BR-0509",
+    "source": "HRMS_PAYROLL",
+    "source_type": "oracle_form",
+    "category": "validation_rule",
+    "rule": "WHEN-NEW-FORM-INSTANCE: Session must be valid before form operations are permitted"
+  },
+  {
+    "id": "BR-0510",
+    "source": "HRMS_PAYROLL",
+    "source_type": "oracle_form",
+    "category": "validation_rule",
+    "rule": "WHEN-NEW-FORM-INSTANCE: Requires VIEW permission on PAYROLL"
+  },
+  {
+    "id": "BR-0511",
+    "source": "HRMS_PAYROLL",
+    "source_type": "oracle_form",
+    "category": "validation_rule",
+    "rule": "PAYROLL_RUN.WHEN-BUTTON-PRESSED: Requires APPROVE permission on PAYROLL"
+  },
+  {
+    "id": "BR-0512",
+    "source": "HRMS_PERFORMANCE",
+    "source_type": "oracle_form",
+    "category": "validation_rule",
+    "rule": "WHEN-NEW-FORM-INSTANCE: Session must be valid before form operations are permitted"
+  },
+  {
+    "id": "BR-0513",
+    "source": "HRMS_COMMON_LIB",
+    "source_type": "pll_library",
+    "category": "validation_rule",
+    "rule": "Toolbar Query button behaviour depends on current form mode \u2014 pressing it once opens query mode ('NORMAL'), pressing it again while already in query-entry mode ('ENTER-QUERY') executes the query"
+  },
+  {
+    "id": "BR-0514",
+    "source": "HRMS_COMMON_LIB",
+    "source_type": "pll_library",
+    "category": "validation_rule",
+    "rule": "A valid HRMS session ID must exist in the global context before any form operation is permitted \u2014 absence of a session ID means the user has not logged in"
+  },
+  {
+    "id": "BR-0515",
+    "source": "HRMS_COMMON_LIB",
+    "source_type": "pll_library",
+    "category": "validation_rule",
+    "rule": "Abort form processing when no session exists; the user must authenticate before continuing"
+  },
+  {
+    "id": "BR-0516",
+    "source": "HRMS_COMMON_LIB",
+    "source_type": "pll_library",
+    "category": "validation_rule",
+    "rule": "Even when a session ID is present, it must pass the PKG_SECURITY validity check \u2014 an ID that fails this check is treated as an expired session, blocking further use of the form"
+  },
+  {
+    "id": "BR-0517",
+    "source": "HRMS_COMMON_LIB",
+    "source_type": "pll_library",
+    "category": "validation_rule",
+    "rule": "Abort form processing when the session has expired; the user must re-authenticate"
+  },
+  {
+    "id": "BR-0518",
+    "source": "HRMS_COMMON_LIB",
+    "source_type": "pll_library",
+    "category": "validation_rule",
+    "rule": "A record group is only refreshed if it already exists in the form \u2014 attempting to populate a non-existent group would raise a runtime error"
+  },
+  {
+    "id": "BR-0519",
+    "source": "HRMS_COMMON_LIB.refresh_lov",
+    "source_type": "pll_procedure",
+    "category": "validation_rule",
+    "rule": "A record group is only refreshed if it already exists in the form \u2014 attempting to populate a non-existent group would raise a runtime error"
+  },
+  {
+    "id": "BR-0520",
+    "source": "HRMS_VALIDATION_LIB",
+    "source_type": "pll_library",
+    "category": "business_rule",
+    "rule": "Salary boundaries are determined by the employee's assigned job grade; the allowable minimum and maximum pay are read from the JOB_GRADES reference table for the given grade"
+  },
+  {
+    "id": "BR-0521",
+    "source": "HRMS_VALIDATION_LIB",
+    "source_type": "pll_library",
+    "category": "validation_rule",
+    "rule": "Email address is not a required field; NULL is treated as valid and bypasses all format checks"
+  },
+  {
+    "id": "BR-0522",
+    "source": "HRMS_VALIDATION_LIB",
+    "source_type": "pll_library",
+    "category": "validation_rule",
+    "rule": "Email must contain exactly one '@' symbol, which must not appear as the first or last character (both local-part and domain must be non-empty)"
+  },
+  {
+    "id": "BR-0523",
+    "source": "HRMS_VALIDATION_LIB",
+    "source_type": "pll_library",
+    "category": "validation_rule",
+    "rule": "The domain portion of an email must contain at least one dot, it must not immediately follow '@', and it must not be the final character (a valid TLD must follow)"
+  },
+  {
+    "id": "BR-0524",
+    "source": "HRMS_VALIDATION_LIB",
+    "source_type": "pll_library",
+    "category": "validation_rule",
+    "rule": "Phone number is not a required field; NULL is treated as valid"
+  },
+  {
+    "id": "BR-0525",
+    "source": "HRMS_VALIDATION_LIB",
+    "source_type": "pll_library",
+    "category": "validation_rule",
+    "rule": "SSN is not a required field; NULL is treated as valid"
+  },
+  {
+    "id": "BR-0526",
+    "source": "HRMS_VALIDATION_LIB",
+    "source_type": "pll_library",
+    "category": "validation_rule",
+    "rule": "Each of the three SSN segments must contain at least one non-zero digit: the area number (digits 1-3), the group number (digits 4-5), and the serial number (digits 6-9) must never be all zeros, in accordance with SSA issuance rules"
+  },
+  {
+    "id": "BR-0527",
+    "source": "HRMS_VALIDATION_LIB",
+    "source_type": "pll_library",
+    "category": "validation_rule",
+    "rule": "A date value must not be in the future; only today's date or any prior date is accepted; NULL bypasses the check"
+  },
+  {
+    "id": "BR-0528",
+    "source": "HRMS_VALIDATION_LIB",
+    "source_type": "pll_library",
+    "category": "validation_rule",
+    "rule": "Salary range validation is skipped when either the salary amount or the job grade identifier is absent; both values must be present for the range check to execute"
+  },
+  {
+    "id": "BR-0529",
+    "source": "HRMS_VALIDATION_LIB",
+    "source_type": "pll_library",
+    "category": "validation_rule",
+    "rule": "An employee's salary must not fall below the minimum pay threshold defined for their job grade"
+  },
+  {
+    "id": "BR-0530",
+    "source": "HRMS_VALIDATION_LIB",
+    "source_type": "pll_library",
+    "category": "validation_rule",
+    "rule": "An employee's salary must not exceed the maximum pay threshold defined for their job grade"
+  },
+  {
+    "id": "BR-0531",
+    "source": "HRMS_VALIDATION_LIB",
+    "source_type": "pll_library",
+    "category": "known_bug",
+    "rule": "Only checks for one dot after @, rejects valid subdomains"
+  },
+  {
+    "id": "BR-0532",
+    "source": "HRMS_VALIDATION_LIB",
+    "source_type": "pll_library",
+    "category": "known_bug",
+    "rule": "Uses a hard-coded cache that's populated at form startup"
+  },
+  {
+    "id": "BR-0533",
+    "source": "HRMS_VALIDATION_LIB.validate_email",
+    "source_type": "pll_procedure",
+    "category": "validation_rule",
+    "rule": "Email address is not a required field; NULL is treated as valid and bypasses all format checks"
+  },
+  {
+    "id": "BR-0534",
+    "source": "HRMS_VALIDATION_LIB.validate_email",
+    "source_type": "pll_procedure",
+    "category": "validation_rule",
+    "rule": "Email must contain exactly one '@' symbol, which must not appear as the first or last character (both local-part and domain must be non-empty)"
+  },
+  {
+    "id": "BR-0535",
+    "source": "HRMS_VALIDATION_LIB.validate_email",
+    "source_type": "pll_procedure",
+    "category": "validation_rule",
+    "rule": "The domain portion of an email must contain at least one dot, it must not immediately follow '@', and it must not be the final character (a valid TLD must follow)"
+  },
+  {
+    "id": "BR-0536",
+    "source": "HRMS_VALIDATION_LIB.validate_email",
+    "source_type": "pll_procedure",
+    "category": "known_bug",
+    "rule": "Only checks for one dot after @, rejects valid subdomains"
+  },
+  {
+    "id": "BR-0537",
+    "source": "HRMS_VALIDATION_LIB.validate_phone",
+    "source_type": "pll_procedure",
+    "category": "validation_rule",
+    "rule": "Phone number is not a required field; NULL is treated as valid"
+  },
+  {
+    "id": "BR-0538",
+    "source": "HRMS_VALIDATION_LIB.validate_ssn",
+    "source_type": "pll_procedure",
+    "category": "validation_rule",
+    "rule": "SSN is not a required field; NULL is treated as valid"
+  },
+  {
+    "id": "BR-0539",
+    "source": "HRMS_VALIDATION_LIB.validate_ssn",
+    "source_type": "pll_procedure",
+    "category": "validation_rule",
+    "rule": "Each of the three SSN segments must contain at least one non-zero digit: the area number (digits 1-3), the group number (digits 4-5), and the serial number (digits 6-9) must never be all zeros, in accordance with SSA issuance rules"
+  },
+  {
+    "id": "BR-0540",
+    "source": "HRMS_VALIDATION_LIB.validate_date_not_future",
+    "source_type": "pll_procedure",
+    "category": "validation_rule",
+    "rule": "A date value must not be in the future; only today's date or any prior date is accepted; NULL bypasses the check"
+  },
+  {
+    "id": "BR-0541",
+    "source": "HRMS_VALIDATION_LIB.validate_date_not_future",
+    "source_type": "pll_procedure",
+    "category": "known_bug",
+    "rule": "Uses a hard-coded cache that's populated at form startup"
+  },
+  {
+    "id": "BR-0542",
+    "source": "HRMS_VALIDATION_LIB.validate_salary_range",
+    "source_type": "pll_procedure",
+    "category": "validation_rule",
+    "rule": "Salary range validation is skipped when either the salary amount or the job grade identifier is absent; both values must be present for the range check to execute"
+  },
+  {
+    "id": "BR-0543",
+    "source": "HRMS_VALIDATION_LIB.validate_salary_range",
+    "source_type": "pll_procedure",
+    "category": "validation_rule",
+    "rule": "An employee's salary must not fall below the minimum pay threshold defined for their job grade"
+  },
+  {
+    "id": "BR-0544",
+    "source": "HRMS_VALIDATION_LIB.validate_salary_range",
+    "source_type": "pll_procedure",
+    "category": "validation_rule",
+    "rule": "An employee's salary must not exceed the maximum pay threshold defined for their job grade"
+  },
+  {
+    "id": "BR-0545",
+    "source": "TRG_SALARY_AUDIT",
     "source_type": "db_trigger",
     "category": "validation_rule",
     "rule": "When a new salary record is inserted, the audit log must capture employee ID, base salary, and effective date to establish the initial compensation record"
   },
   {
-    "id": "BR-0503",
-    "source": "TRG_DEPARTMENT_AUDIT",
+    "id": "BR-0546",
+    "source": "TRG_SALARY_AUDIT",
     "source_type": "db_trigger",
     "category": "validation_rule",
     "rule": "When a salary record is updated, both the previous and new base salary and active status must be preserved in the audit trail to support compensation change reviews"
   },
   {
-    "id": "BR-0504",
-    "source": "TRG_DEPARTMENT_AUDIT",
+    "id": "BR-0547",
+    "source": "TRG_SALARY_AUDIT",
     "source_type": "db_trigger",
     "category": "validation_rule",
     "rule": "When a salary record is deleted, the employee identity and last known salary must be preserved in the audit log to maintain a complete compensation history"
   },
   {
-    "id": "BR-0505",
-    "source": "TRG_DEPARTMENT_AUDIT",
+    "id": "BR-0548",
+    "source": "TRG_SALARY_AUDIT",
     "source_type": "db_trigger",
     "category": "validation_rule",
     "rule": "Only STATUS column changes on leave requests are subject to audit tracking; updates to other fields (e.g. comments, dates) do not generate an audit record"
   },
   {
-    "id": "BR-0506",
+    "id": "BR-0549",
+    "source": "TRG_SALARY_AUDIT",
+    "source_type": "db_trigger",
+    "category": "validation_rule",
+    "rule": "Every structural change to a department record (creation, modification, or removal) must be captured in the audit log to support organisational governance and accountability"
+  },
+  {
+    "id": "BR-0550",
+    "source": "TRG_SALARY_AUDIT",
+    "source_type": "db_trigger",
+    "category": "validation_rule",
+    "rule": "For department changes, the database session user (USER) is always recorded as the actor; there is no application-supplied MODIFIED_BY column on this table"
+  },
+  {
+    "id": "BR-0551",
     "source": "TRG_DEPARTMENT_AUDIT",
     "source_type": "db_trigger",
     "category": "validation_rule",
     "rule": "Every structural change to a department record (creation, modification, or removal) must be captured in the audit log to support organisational governance and accountability"
   },
   {
-    "id": "BR-0507",
+    "id": "BR-0552",
     "source": "TRG_DEPARTMENT_AUDIT",
     "source_type": "db_trigger",
     "category": "validation_rule",
     "rule": "For department changes, the database session user (USER) is always recorded as the actor; there is no application-supplied MODIFIED_BY column on this table"
   },
   {
-    "id": "BR-0508",
-    "source": "TRG_EMP_BEFORE_INSERT",
-    "source_type": "db_trigger",
-    "category": "business_rule",
-    "rule": "Only active employees (ACTIVE_FLAG = 'Y') are considered when checking email uniqueness; inactive or terminated employee records do not block reuse of an email address"
-  },
-  {
-    "id": "BR-0509",
-    "source": "TRG_EMP_BEFORE_INSERT",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "CREATED_BY must be populated; defaults to the current database session user if not supplied by the caller"
-  },
-  {
-    "id": "BR-0510",
-    "source": "TRG_EMP_BEFORE_INSERT",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "CREATED_DATE must be populated; defaults to the current system timestamp if not supplied by the caller"
-  },
-  {
-    "id": "BR-0511",
-    "source": "TRG_EMP_BEFORE_INSERT",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "A new employee record is considered active by default unless ACTIVE_FLAG is explicitly set to a different value"
-  },
-  {
-    "id": "BR-0512",
-    "source": "TRG_EMP_BEFORE_INSERT",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "A new employee record defaults to ACTIVE employment status unless an alternative status is explicitly provided on insert"
-  },
-  {
-    "id": "BR-0513",
-    "source": "TRG_EMP_BEFORE_INSERT",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "Hire date cannot be more than 180 days in the future, preventing erroneous or speculative pre-dated hires beyond a 6-month planning horizon"
-  },
-  {
-    "id": "BR-0514",
-    "source": "TRG_EMP_BEFORE_INSERT",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "Inserting an employee with a hire date more than 180 days in the future is not permitted"
-  },
-  {
-    "id": "BR-0515",
-    "source": "TRG_EMP_BEFORE_INSERT",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "An email address already assigned to an active employee cannot be reused for a new employee record"
-  },
-  {
-    "id": "BR-0516",
-    "source": "TRG_EMP_BEFORE_INSERT",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "Inserting an employee whose email is already in use by an active employee record is not permitted"
-  },
-  {
-    "id": "BR-0517",
-    "source": "TRG_EMP_BEFORE_INSERT",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "A terminated employee cannot be directly reactivated by changing EMPLOYMENT_STATUS from TERMINATED to ACTIVE via a plain UPDATE; the formal rehire process (PKG_EMPLOYEE.rehire_employee) must be used instead"
-  },
-  {
-    "id": "BR-0518",
-    "source": "TRG_EMP_BEFORE_INSERT",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "Bypassing the rehire process to reactivate a terminated employee is not permitted"
-  },
-  {
-    "id": "BR-0519",
-    "source": "TRG_EMP_BEFORE_INSERT",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "Every change to an employee's EMPLOYMENT_STATUS must be recorded in the EMPLOYEE_HISTORY audit table with the old and new status values"
-  },
-  {
-    "id": "BR-0520",
-    "source": "TRG_EMP_BEFORE_INSERT",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "Every change to an employee's department assignment (DEPT_ID) must be recorded in the EMPLOYEE_HISTORY audit table as a DEPARTMENT_CHANGE event; NULL department is treated as a distinct value to catch assignments to or from an unassigned state"
-  },
-  {
-    "id": "BR-0521",
-    "source": "TRG_EMP_BEFORE_INSERT",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "Every change to an employee's job assignment (JOB_ID) must be recorded in the EMPLOYEE_HISTORY audit table as a JOB_CHANGE event; NULL job is treated as a distinct value to catch assignments to or from an unassigned state"
-  },
-  {
-    "id": "BR-0522",
-    "source": "TRG_EMP_BEFORE_INSERT",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "Physical deletion of employee records is never permitted; callers must deactivate a record by setting ACTIVE_FLAG to 'N' or by running the formal termination process"
-  },
-  {
-    "id": "BR-0523",
-    "source": "TRG_EMP_BEFORE_UPDATE",
-    "source_type": "db_trigger",
-    "category": "business_rule",
-    "rule": "Only active employees (ACTIVE_FLAG = 'Y') are considered when checking email uniqueness; inactive or terminated employee records do not block reuse of an email address"
-  },
-  {
-    "id": "BR-0524",
-    "source": "TRG_EMP_BEFORE_UPDATE",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "CREATED_BY must be populated; defaults to the current database session user if not supplied by the caller"
-  },
-  {
-    "id": "BR-0525",
-    "source": "TRG_EMP_BEFORE_UPDATE",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "CREATED_DATE must be populated; defaults to the current system timestamp if not supplied by the caller"
-  },
-  {
-    "id": "BR-0526",
-    "source": "TRG_EMP_BEFORE_UPDATE",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "A new employee record is considered active by default unless ACTIVE_FLAG is explicitly set to a different value"
-  },
-  {
-    "id": "BR-0527",
-    "source": "TRG_EMP_BEFORE_UPDATE",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "A new employee record defaults to ACTIVE employment status unless an alternative status is explicitly provided on insert"
-  },
-  {
-    "id": "BR-0528",
-    "source": "TRG_EMP_BEFORE_UPDATE",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "Hire date cannot be more than 180 days in the future, preventing erroneous or speculative pre-dated hires beyond a 6-month planning horizon"
-  },
-  {
-    "id": "BR-0529",
-    "source": "TRG_EMP_BEFORE_UPDATE",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "Inserting an employee with a hire date more than 180 days in the future is not permitted"
-  },
-  {
-    "id": "BR-0530",
-    "source": "TRG_EMP_BEFORE_UPDATE",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "An email address already assigned to an active employee cannot be reused for a new employee record"
-  },
-  {
-    "id": "BR-0531",
-    "source": "TRG_EMP_BEFORE_UPDATE",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "Inserting an employee whose email is already in use by an active employee record is not permitted"
-  },
-  {
-    "id": "BR-0532",
-    "source": "TRG_EMP_BEFORE_UPDATE",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "A terminated employee cannot be directly reactivated by changing EMPLOYMENT_STATUS from TERMINATED to ACTIVE via a plain UPDATE; the formal rehire process (PKG_EMPLOYEE.rehire_employee) must be used instead"
-  },
-  {
-    "id": "BR-0533",
-    "source": "TRG_EMP_BEFORE_UPDATE",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "Bypassing the rehire process to reactivate a terminated employee is not permitted"
-  },
-  {
-    "id": "BR-0534",
-    "source": "TRG_EMP_BEFORE_UPDATE",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "Every change to an employee's EMPLOYMENT_STATUS must be recorded in the EMPLOYEE_HISTORY audit table with the old and new status values"
-  },
-  {
-    "id": "BR-0535",
-    "source": "TRG_EMP_BEFORE_UPDATE",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "Every change to an employee's department assignment (DEPT_ID) must be recorded in the EMPLOYEE_HISTORY audit table as a DEPARTMENT_CHANGE event; NULL department is treated as a distinct value to catch assignments to or from an unassigned state"
-  },
-  {
-    "id": "BR-0536",
-    "source": "TRG_EMP_BEFORE_UPDATE",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "Every change to an employee's job assignment (JOB_ID) must be recorded in the EMPLOYEE_HISTORY audit table as a JOB_CHANGE event; NULL job is treated as a distinct value to catch assignments to or from an unassigned state"
-  },
-  {
-    "id": "BR-0537",
-    "source": "TRG_EMP_BEFORE_UPDATE",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "Physical deletion of employee records is never permitted; callers must deactivate a record by setting ACTIVE_FLAG to 'N' or by running the formal termination process"
-  },
-  {
-    "id": "BR-0538",
-    "source": "TRG_EMP_INSTEAD_OF_DELETE",
-    "source_type": "db_trigger",
-    "category": "business_rule",
-    "rule": "Only active employees (ACTIVE_FLAG = 'Y') are considered when checking email uniqueness; inactive or terminated employee records do not block reuse of an email address"
-  },
-  {
-    "id": "BR-0539",
-    "source": "TRG_EMP_INSTEAD_OF_DELETE",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "CREATED_BY must be populated; defaults to the current database session user if not supplied by the caller"
-  },
-  {
-    "id": "BR-0540",
-    "source": "TRG_EMP_INSTEAD_OF_DELETE",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "CREATED_DATE must be populated; defaults to the current system timestamp if not supplied by the caller"
-  },
-  {
-    "id": "BR-0541",
-    "source": "TRG_EMP_INSTEAD_OF_DELETE",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "A new employee record is considered active by default unless ACTIVE_FLAG is explicitly set to a different value"
-  },
-  {
-    "id": "BR-0542",
-    "source": "TRG_EMP_INSTEAD_OF_DELETE",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "A new employee record defaults to ACTIVE employment status unless an alternative status is explicitly provided on insert"
-  },
-  {
-    "id": "BR-0543",
-    "source": "TRG_EMP_INSTEAD_OF_DELETE",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "Hire date cannot be more than 180 days in the future, preventing erroneous or speculative pre-dated hires beyond a 6-month planning horizon"
-  },
-  {
-    "id": "BR-0544",
-    "source": "TRG_EMP_INSTEAD_OF_DELETE",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "Inserting an employee with a hire date more than 180 days in the future is not permitted"
-  },
-  {
-    "id": "BR-0545",
-    "source": "TRG_EMP_INSTEAD_OF_DELETE",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "An email address already assigned to an active employee cannot be reused for a new employee record"
-  },
-  {
-    "id": "BR-0546",
-    "source": "TRG_EMP_INSTEAD_OF_DELETE",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "Inserting an employee whose email is already in use by an active employee record is not permitted"
-  },
-  {
-    "id": "BR-0547",
-    "source": "TRG_EMP_INSTEAD_OF_DELETE",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "A terminated employee cannot be directly reactivated by changing EMPLOYMENT_STATUS from TERMINATED to ACTIVE via a plain UPDATE; the formal rehire process (PKG_EMPLOYEE.rehire_employee) must be used instead"
-  },
-  {
-    "id": "BR-0548",
-    "source": "TRG_EMP_INSTEAD_OF_DELETE",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "Bypassing the rehire process to reactivate a terminated employee is not permitted"
-  },
-  {
-    "id": "BR-0549",
-    "source": "TRG_EMP_INSTEAD_OF_DELETE",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "Every change to an employee's EMPLOYMENT_STATUS must be recorded in the EMPLOYEE_HISTORY audit table with the old and new status values"
-  },
-  {
-    "id": "BR-0550",
-    "source": "TRG_EMP_INSTEAD_OF_DELETE",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "Every change to an employee's department assignment (DEPT_ID) must be recorded in the EMPLOYEE_HISTORY audit table as a DEPARTMENT_CHANGE event; NULL department is treated as a distinct value to catch assignments to or from an unassigned state"
-  },
-  {
-    "id": "BR-0551",
-    "source": "TRG_EMP_INSTEAD_OF_DELETE",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "Every change to an employee's job assignment (JOB_ID) must be recorded in the EMPLOYEE_HISTORY audit table as a JOB_CHANGE event; NULL job is treated as a distinct value to catch assignments to or from an unassigned state"
-  },
-  {
-    "id": "BR-0552",
-    "source": "TRG_EMP_INSTEAD_OF_DELETE",
-    "source_type": "db_trigger",
-    "category": "validation_rule",
-    "rule": "Physical deletion of employee records is never permitted; callers must deactivate a record by setting ACTIVE_FLAG to 'N' or by running the formal termination process"
-  },
-  {
     "id": "BR-0553",
+    "source": "TRG_EMP_BEFORE_INSERT",
+    "source_type": "db_trigger",
+    "category": "business_rule",
+    "rule": "Only active employees (ACTIVE_FLAG = 'Y') are considered when checking email uniqueness; inactive or terminated employee records do not block reuse of an email address"
+  },
+  {
+    "id": "BR-0554",
+    "source": "TRG_EMP_BEFORE_INSERT",
+    "source_type": "db_trigger",
+    "category": "validation_rule",
+    "rule": "CREATED_BY must be populated; defaults to the current database session user if not supplied by the caller"
+  },
+  {
+    "id": "BR-0555",
+    "source": "TRG_EMP_BEFORE_INSERT",
+    "source_type": "db_trigger",
+    "category": "validation_rule",
+    "rule": "CREATED_DATE must be populated; defaults to the current system timestamp if not supplied by the caller"
+  },
+  {
+    "id": "BR-0556",
+    "source": "TRG_EMP_BEFORE_INSERT",
+    "source_type": "db_trigger",
+    "category": "validation_rule",
+    "rule": "A new employee record is considered active by default unless ACTIVE_FLAG is explicitly set to a different value"
+  },
+  {
+    "id": "BR-0557",
+    "source": "TRG_EMP_BEFORE_INSERT",
+    "source_type": "db_trigger",
+    "category": "validation_rule",
+    "rule": "A new employee record defaults to ACTIVE employment status unless an alternative status is explicitly provided on insert"
+  },
+  {
+    "id": "BR-0558",
+    "source": "TRG_EMP_BEFORE_INSERT",
+    "source_type": "db_trigger",
+    "category": "validation_rule",
+    "rule": "Hire date cannot be more than 180 days in the future, preventing erroneous or speculative pre-dated hires beyond a 6-month planning horizon"
+  },
+  {
+    "id": "BR-0559",
+    "source": "TRG_EMP_BEFORE_INSERT",
+    "source_type": "db_trigger",
+    "category": "validation_rule",
+    "rule": "Inserting an employee with a hire date more than 180 days in the future is not permitted"
+  },
+  {
+    "id": "BR-0560",
+    "source": "TRG_EMP_BEFORE_INSERT",
+    "source_type": "db_trigger",
+    "category": "validation_rule",
+    "rule": "An email address already assigned to an active employee cannot be reused for a new employee record"
+  },
+  {
+    "id": "BR-0561",
+    "source": "TRG_EMP_BEFORE_INSERT",
+    "source_type": "db_trigger",
+    "category": "validation_rule",
+    "rule": "Inserting an employee whose email is already in use by an active employee record is not permitted"
+  },
+  {
+    "id": "BR-0562",
+    "source": "TRG_EMP_BEFORE_INSERT",
+    "source_type": "db_trigger",
+    "category": "validation_rule",
+    "rule": "A terminated employee cannot be directly reactivated by changing EMPLOYMENT_STATUS from TERMINATED to ACTIVE via a plain UPDATE; the formal rehire process (PKG_EMPLOYEE.rehire_employee) must be used instead"
+  },
+  {
+    "id": "BR-0563",
+    "source": "TRG_EMP_BEFORE_INSERT",
+    "source_type": "db_trigger",
+    "category": "validation_rule",
+    "rule": "Bypassing the rehire process to reactivate a terminated employee is not permitted"
+  },
+  {
+    "id": "BR-0564",
+    "source": "TRG_EMP_BEFORE_INSERT",
+    "source_type": "db_trigger",
+    "category": "validation_rule",
+    "rule": "Every change to an employee's EMPLOYMENT_STATUS must be recorded in the EMPLOYEE_HISTORY audit table with the old and new status values"
+  },
+  {
+    "id": "BR-0565",
+    "source": "TRG_EMP_BEFORE_INSERT",
+    "source_type": "db_trigger",
+    "category": "validation_rule",
+    "rule": "Every change to an employee's department assignment (DEPT_ID) must be recorded in the EMPLOYEE_HISTORY audit table as a DEPARTMENT_CHANGE event; NULL department is treated as a distinct value to catch assignments to or from an unassigned state"
+  },
+  {
+    "id": "BR-0566",
+    "source": "TRG_EMP_BEFORE_INSERT",
+    "source_type": "db_trigger",
+    "category": "validation_rule",
+    "rule": "Every change to an employee's job assignment (JOB_ID) must be recorded in the EMPLOYEE_HISTORY audit table as a JOB_CHANGE event; NULL job is treated as a distinct value to catch assignments to or from an unassigned state"
+  },
+  {
+    "id": "BR-0567",
+    "source": "TRG_EMP_BEFORE_INSERT",
+    "source_type": "db_trigger",
+    "category": "validation_rule",
+    "rule": "Physical deletion of employee records is never permitted; callers must deactivate a record by setting ACTIVE_FLAG to 'N' or by running the formal termination process"
+  },
+  {
+    "id": "BR-0568",
+    "source": "TRG_EMP_BEFORE_INSERT",
+    "source_type": "db_trigger",
+    "category": "known_bug",
+    "rule": "This actually prevents deletion, but Forms expects DELETE to succeed."
+  },
+  {
+    "id": "BR-0569",
+    "source": "TRG_EMP_BEFORE_UPDATE",
+    "source_type": "db_trigger",
+    "category": "validation_rule",
+    "rule": "A terminated employee cannot be directly reactivated by changing EMPLOYMENT_STATUS from TERMINATED to ACTIVE via a plain UPDATE; the formal rehire process (PKG_EMPLOYEE.rehire_employee) must be used instead"
+  },
+  {
+    "id": "BR-0570",
+    "source": "TRG_EMP_BEFORE_UPDATE",
+    "source_type": "db_trigger",
+    "category": "validation_rule",
+    "rule": "Bypassing the rehire process to reactivate a terminated employee is not permitted"
+  },
+  {
+    "id": "BR-0571",
+    "source": "TRG_EMP_BEFORE_UPDATE",
+    "source_type": "db_trigger",
+    "category": "validation_rule",
+    "rule": "Every change to an employee's EMPLOYMENT_STATUS must be recorded in the EMPLOYEE_HISTORY audit table with the old and new status values"
+  },
+  {
+    "id": "BR-0572",
+    "source": "TRG_EMP_BEFORE_UPDATE",
+    "source_type": "db_trigger",
+    "category": "validation_rule",
+    "rule": "Every change to an employee's department assignment (DEPT_ID) must be recorded in the EMPLOYEE_HISTORY audit table as a DEPARTMENT_CHANGE event; NULL department is treated as a distinct value to catch assignments to or from an unassigned state"
+  },
+  {
+    "id": "BR-0573",
+    "source": "TRG_EMP_BEFORE_UPDATE",
+    "source_type": "db_trigger",
+    "category": "validation_rule",
+    "rule": "Every change to an employee's job assignment (JOB_ID) must be recorded in the EMPLOYEE_HISTORY audit table as a JOB_CHANGE event; NULL job is treated as a distinct value to catch assignments to or from an unassigned state"
+  },
+  {
+    "id": "BR-0574",
+    "source": "TRG_EMP_BEFORE_UPDATE",
+    "source_type": "db_trigger",
+    "category": "validation_rule",
+    "rule": "Physical deletion of employee records is never permitted; callers must deactivate a record by setting ACTIVE_FLAG to 'N' or by running the formal termination process"
+  },
+  {
+    "id": "BR-0575",
+    "source": "TRG_EMP_BEFORE_UPDATE",
+    "source_type": "db_trigger",
+    "category": "known_bug",
+    "rule": "This actually prevents deletion, but Forms expects DELETE to succeed."
+  },
+  {
+    "id": "BR-0576",
+    "source": "TRG_EMP_INSTEAD_OF_DELETE",
+    "source_type": "db_trigger",
+    "category": "validation_rule",
+    "rule": "Physical deletion of employee records is never permitted; callers must deactivate a record by setting ACTIVE_FLAG to 'N' or by running the formal termination process"
+  },
+  {
+    "id": "BR-0577",
+    "source": "TRG_EMP_INSTEAD_OF_DELETE",
+    "source_type": "db_trigger",
+    "category": "known_bug",
+    "rule": "This actually prevents deletion, but Forms expects DELETE to succeed."
+  },
+  {
+    "id": "BR-0578",
     "source": "HRMS.DEPARTMENTS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "ACTIVE_FLAG IN ('Y', 'N'"
   },
   {
-    "id": "BR-0554",
+    "id": "BR-0579",
     "source": "HRMS.JOB_GRADES",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "MAX_SALARY >= MIN_SALARY"
   },
   {
-    "id": "BR-0555",
+    "id": "BR-0580",
     "source": "HRMS.EMPLOYEES",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "EMPLOYMENT_STATUS IN ('ACTIVE', 'ON_LEAVE', 'SUSPENDED', 'TERMINATED'"
   },
   {
-    "id": "BR-0556",
+    "id": "BR-0581",
     "source": "HRMS.EMPLOYEES",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "EMPLOYMENT_TYPE IN ('FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERN'"
   },
   {
-    "id": "BR-0557",
+    "id": "BR-0582",
     "source": "HRMS.EMPLOYEES",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "GENDER IN ('M', 'F', 'O'"
   },
   {
-    "id": "BR-0558",
+    "id": "BR-0583",
     "source": "HRMS.EMPLOYEE_HISTORY",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "CHANGE_TYPE IN (\n        'HIRE', 'TRANSFER', 'PROMOTION', 'DEMOTION', 'SALARY_CHANGE',\n        'TERMINATION', 'REHIRE', 'LEAVE_START', 'LEAVE_END', 'STATUS_CHANGE'\n    "
   },
   {
-    "id": "BR-0559",
+    "id": "BR-0584",
     "source": "HRMS.EMPLOYEE_DEPENDENTS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "RELATIONSHIP IN ('SPOUSE', 'CHILD', 'PARENT', 'DOMESTIC_PARTNER', 'OTHER'"
   },
   {
-    "id": "BR-0560",
+    "id": "BR-0585",
     "source": "HRMS.SALARY_RECORDS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "PAY_FREQUENCY IN ('WEEKLY', 'BIWEEKLY', 'SEMIMONTHLY', 'MONTHLY'"
   },
   {
-    "id": "BR-0561",
+    "id": "BR-0586",
     "source": "HRMS.SALARY_RECORDS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "SALARY_BASIS IN ('ANNUAL', 'HOURLY'"
   },
   {
-    "id": "BR-0562",
+    "id": "BR-0587",
     "source": "HRMS.PAY_ELEMENTS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "ELEMENT_TYPE IN ('EARNING', 'DEDUCTION', 'TAX', 'BENEFIT', 'REIMBURSEMENT'"
   },
   {
-    "id": "BR-0563",
+    "id": "BR-0588",
     "source": "HRMS.PAY_ELEMENTS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "CALCULATION_TYPE IN ('FLAT', 'PERCENTAGE', 'HOURS', 'FORMULA'"
   },
   {
-    "id": "BR-0564",
+    "id": "BR-0589",
     "source": "HRMS.PAY_PERIODS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "STATUS IN ('OPEN', 'PROCESSING', 'CLOSED', 'REVERSED'"
   },
   {
-    "id": "BR-0565",
+    "id": "BR-0590",
     "source": "HRMS.PAYROLL_RUNS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "RUN_TYPE IN ('REGULAR', 'SUPPLEMENTAL', 'BONUS', 'FINAL'"
   },
   {
-    "id": "BR-0566",
+    "id": "BR-0591",
     "source": "HRMS.PAYROLL_RUNS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "STATUS IN ('PENDING', 'CALCULATING', 'CALCULATED', 'APPROVED', 'PAID', 'REVERSED', 'ERROR'"
   },
   {
-    "id": "BR-0567",
+    "id": "BR-0592",
     "source": "HRMS.TAX_BRACKETS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "FILING_STATUS IN ('SINGLE', 'MARRIED_JOINT', 'MARRIED_SEPARATE', 'HEAD_OF_HOUSEHOLD'"
   },
   {
-    "id": "BR-0568",
+    "id": "BR-0593",
     "source": "HRMS.EMPLOYEE_BANK_ACCOUNTS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "ACCOUNT_TYPE IN ('CHECKING', 'SAVINGS'"
   },
   {
-    "id": "BR-0569",
+    "id": "BR-0594",
     "source": "HRMS.EMPLOYEE_BANK_ACCOUNTS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "DEPOSIT_TYPE IN ('FULL', 'PARTIAL_AMOUNT', 'PARTIAL_PERCENT', 'REMAINDER'"
   },
   {
-    "id": "BR-0570",
+    "id": "BR-0595",
     "source": "HRMS.LEAVE_TYPES",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "ACCRUAL_FREQUENCY IN ('MONTHLY', 'BIWEEKLY', 'ANNUAL', NULL"
   },
   {
-    "id": "BR-0571",
+    "id": "BR-0596",
     "source": "HRMS.LEAVE_REQUESTS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "STATUS IN ('PENDING', 'APPROVED', 'REJECTED', 'CANCELLED', 'TAKEN'"
   },
   {
-    "id": "BR-0572",
+    "id": "BR-0597",
     "source": "HRMS.LEAVE_REQUESTS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "END_DATE >= START_DATE"
   },
   {
-    "id": "BR-0573",
+    "id": "BR-0598",
     "source": "HRMS.LEAVE_REQUESTS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "HALF_DAY_PERIOD IN ('AM', 'PM', NULL"
   },
   {
-    "id": "BR-0574",
+    "id": "BR-0599",
     "source": "HRMS.REVIEW_CYCLES",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "STATUS IN ('DRAFT', 'OPEN', 'IN_PROGRESS', 'CALIBRATION', 'CLOSED'"
   },
   {
-    "id": "BR-0575",
+    "id": "BR-0600",
     "source": "HRMS.PERFORMANCE_REVIEWS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "STATUS IN ('NOT_STARTED', 'SELF_REVIEW', 'MANAGER_REVIEW', 'MEETING_SCHEDULED', 'COMPLETED', 'ACKNOWLEDGED'"
   },
   {
-    "id": "BR-0576",
+    "id": "BR-0601",
     "source": "HRMS.PERFORMANCE_REVIEWS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "OVERALL_RATING BETWEEN 1.0 AND 5.0"
   },
   {
-    "id": "BR-0577",
+    "id": "BR-0602",
     "source": "HRMS.PERFORMANCE_GOALS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "STATUS IN ('NOT_STARTED', 'IN_PROGRESS', 'COMPLETED', 'DEFERRED', 'CANCELLED'"
   },
   {
-    "id": "BR-0578",
+    "id": "BR-0603",
     "source": "HRMS.PERFORMANCE_GOALS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "GOAL_CATEGORY IN ('BUSINESS', 'DEVELOPMENT', 'LEADERSHIP', 'INNOVATION', 'COMPLIANCE'"
   },
   {
-    "id": "BR-0579",
+    "id": "BR-0604",
     "source": "HRMS.AUDIT_LOG",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "ACTION_TYPE IN ('INSERT', 'UPDATE', 'DELETE'"
   },
   {
-    "id": "BR-0580",
+    "id": "BR-0605",
     "source": "HRMS.NOTIFICATION_QUEUE",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "STATUS IN ('PENDING', 'SENT', 'FAILED', 'CANCELLED'"
   },
   {
-    "id": "BR-0581",
+    "id": "BR-0606",
     "source": "HRMS.NOTIFICATION_QUEUE",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "NOTIFICATION_TYPE IN ('EMAIL', 'IN_APP', 'SMS'"
+  },
+  {
+    "id": "BR-0607",
+    "source": "HRMS.SEQ_EMP_NUMBER",
+    "source_type": "sequence",
+    "category": "known_bug",
+    "rule": "BUG: NOCACHE means gaps in sequence, but generate_emp_number in"
   }
 ]
