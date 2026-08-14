@@ -51,9 +51,15 @@
       "file": "PKG_AUDIT.pkb",
       "constants": [],
       "business_rules": [],
-      "rules": [],
+      "rules": [
+        "Package uses PRAGMA AUTONOMOUS_TRANSACTION \u2014 audit/notification writes are independent of caller transactions",
+        "Captures client IP address for audit trail via SYS_CONTEXT",
+        "Captures Oracle session ID for audit trail via SYS_CONTEXT"
+      ],
       "constraints": [],
-      "bugs": [],
+      "bugs": [
+        "Exception swallowing: WHEN OTHERS THEN ROLLBACK/NULL \u2014 errors silently suppressed"
+      ],
       "raise_errors": [],
       "sql": {
         "selects_from": [
@@ -71,7 +77,12 @@
         {
           "name": "log_action",
           "business_rules": [],
-          "rules": [],
+          "rules": [
+            "log_action: Runs in autonomous transaction \u2014 changes committed independently of the caller",
+            "log_action: Captures client IP address via SYS_CONTEXT for audit trail",
+            "log_action: Captures Oracle session ID via SYS_CONTEXT for audit trail",
+            "log_action: Silently swallows exceptions \u2014 errors are suppressed to protect calling transaction"
+          ],
           "bugs": [],
           "raise_errors": [],
           "sql": {
@@ -291,7 +302,8 @@
         "A 10-digit number is formatted as a US domestic number in (NXX) NXX-XXXX notation",
         "An 11-digit number starting with '1' is formatted as a US/Canada international number with a +1 prefix; all other lengths or leading digits are returned unmodified",
         "A null SSN or one with fewer than 4 characters cannot be partially unmasked; the entire value is replaced with the full mask '***-**-****' to prevent partial PII exposure",
-        "Format code 'LF' produces \"Last, First\" display order; any other value (including the default 'FL') produces \"First Last\" display order"
+        "Format code 'LF' produces \"Last, First\" display order; any other value (including the default 'FL') produces \"First Last\" display order",
+        "Package uses PRAGMA AUTONOMOUS_TRANSACTION \u2014 audit/notification writes are independent of caller transactions"
       ],
       "constraints": [
         "The fiscal year boundary is month 10 (October); the organisation's fiscal year begins on October 1",
@@ -299,7 +311,9 @@
         "An 11-digit phone number is only recognised as a valid US/Canada international number if it begins with country code '1'",
         "An SSN must have at least 4 characters for the last-four-digit display to be meaningful"
       ],
-      "bugs": [],
+      "bugs": [
+        "Exception swallowing: WHEN OTHERS THEN ROLLBACK/NULL \u2014 errors silently suppressed"
+      ],
       "raise_errors": [
         {
           "code": "-20900",
@@ -326,7 +340,10 @@
         {
           "name": "log_error",
           "business_rules": [],
-          "rules": [],
+          "rules": [
+            "log_error: Runs in autonomous transaction \u2014 changes committed independently of the caller",
+            "log_error: Silently swallows exceptions \u2014 errors are suppressed to protect calling transaction"
+          ],
           "bugs": [],
           "raise_errors": [],
           "sql": {
@@ -343,7 +360,10 @@
         {
           "name": "log_info",
           "business_rules": [],
-          "rules": [],
+          "rules": [
+            "log_info: Runs in autonomous transaction \u2014 changes committed independently of the caller",
+            "log_info: Silently swallows exceptions \u2014 errors are suppressed to protect calling transaction"
+          ],
           "bugs": [],
           "raise_errors": [],
           "sql": {
@@ -939,7 +959,8 @@
         "An employee is considered active if and only if their EMPLOYMENT_STATUS column value equals 'ACTIVE'",
         "An employee record is considered invalid if either the first name or the last name is absent",
         "An employee record is considered invalid if no hire date has been recorded",
-        "An employee record is considered inconsistent if EMPLOYMENT_STATUS is 'ACTIVE' but ACTIVE_FLAG is not 'Y'; both fields must be in agreement for active employees"
+        "An employee record is considered inconsistent if EMPLOYMENT_STATUS is 'ACTIVE' but ACTIVE_FLAG is not 'Y'; both fields must be in agreement for active employees",
+        "Package uses PRAGMA AUTONOMOUS_TRANSACTION \u2014 audit/notification writes are independent of caller transactions"
       ],
       "constraints": [
         "The reporting hierarchy is limited to a maximum depth of 15 levels to prevent unbounded traversal during circular reference detection",
@@ -947,7 +968,8 @@
       ],
       "bugs": [
         "race condition under concurrent inserts - no SELECT FOR UPDATE",
-        "SQL injection possible via p_last_name if called with unvalidated input"
+        "SQL injection possible via p_last_name if called with unvalidated input",
+        "Exception swallowing: WHEN OTHERS THEN ROLLBACK/NULL \u2014 errors silently suppressed"
       ],
       "raise_errors": [
         {
@@ -1108,7 +1130,10 @@
         {
           "name": "log_history",
           "business_rules": [],
-          "rules": [],
+          "rules": [
+            "log_history: Runs in autonomous transaction \u2014 changes committed independently of the caller",
+            "log_history: Silently swallows exceptions \u2014 errors are suppressed to protect calling transaction"
+          ],
           "bugs": [],
           "raise_errors": [],
           "sql": {
@@ -1168,11 +1193,11 @@
             "deletes_from": []
           },
           "package_calls": [
-            "PKG_NOTIFICATION",
-            "PKG_PAYROLL",
             "PKG_EMPLOYEE",
-            "PKG_COMMON",
-            "PKG_AUDIT"
+            "PKG_AUDIT",
+            "PKG_PAYROLL",
+            "PKG_NOTIFICATION",
+            "PKG_COMMON"
           ],
           "if_conditions": [
             "p_first_name IS NULL OR p_last_name IS NULL",
@@ -1282,7 +1307,9 @@
           "business_rules": [
             "When provided, the status filter restricts search results to employees with the specified EMPLOYMENT_STATUS value (e.g., ACTIVE, TERMINATED)"
           ],
-          "rules": [],
+          "rules": [
+            "search_employees: BUG \u2014 uses dynamic SQL concatenation with user input; vulnerable to SQL injection"
+          ],
           "bugs": [],
           "raise_errors": [],
           "sql": {
@@ -1362,8 +1389,8 @@
             "deletes_from": []
           },
           "package_calls": [
-            "PKG_PAYROLL",
-            "PKG_AUDIT"
+            "PKG_AUDIT",
+            "PKG_PAYROLL"
           ],
           "if_conditions": []
         },
@@ -1378,7 +1405,8 @@
             "An employee who is already terminated cannot be terminated again; re-termination is blocked",
             "Attempting to terminate an already-terminated employee raises an application error",
             "All pending leave requests for a terminating employee are automatically cancelled; no manual action is required from the employee or their manager",
-            "A termination notification is sent to the employee's direct manager only when a manager is assigned; top-level employees with no manager do not trigger a manager notification"
+            "A termination notification is sent to the employee's direct manager only when a manager is assigned; top-level employees with no manager do not trigger a manager notification",
+            "terminate_employee: LEGACY/stub \u2014 marked as placeholder or not fully implemented"
           ],
           "bugs": [],
           "raise_errors": [
@@ -1405,9 +1433,9 @@
           },
           "package_calls": [
             "PKG_NOTIFICATION",
-            "PKG_PAYROLL",
             "PKG_COMMON",
-            "PKG_AUDIT"
+            "PKG_AUDIT",
+            "PKG_PAYROLL"
           ],
           "if_conditions": [
             "v_emp.EMPLOYMENT_STATUS = 'TERMINATED'",
@@ -1440,8 +1468,8 @@
             "deletes_from": []
           },
           "package_calls": [
-            "PKG_PAYROLL",
-            "PKG_AUDIT"
+            "PKG_AUDIT",
+            "PKG_PAYROLL"
           ],
           "if_conditions": [
             "SQL%ROWCOUNT = 0"
@@ -1563,15 +1591,15 @@
         }
       ],
       "package_calls": [
-        "PKG_NOTIFICATION",
-        "PKG_PAYROLL",
         "PKG_EMPLOYEE",
-        "PKG_COMMON",
-        "PKG_AUDIT"
+        "PKG_AUDIT",
+        "PKG_PAYROLL",
+        "PKG_NOTIFICATION",
+        "PKG_COMMON"
       ],
       "sequences_used": [
-        "SEQ_EMPLOYEE",
-        "SEQ_EMP_HISTORY"
+        "SEQ_EMP_HISTORY",
+        "SEQ_EMPLOYEE"
       ],
       "pragma_autonomous": true,
       "uses_sys_context": false,
@@ -1671,7 +1699,9 @@
         }
       ],
       "business_rules": [],
-      "rules": [],
+      "rules": [
+        "File I/O uses UTL_FILE with Oracle directory objects"
+      ],
       "constraints": [],
       "bugs": [],
       "raise_errors": [],
@@ -1692,7 +1722,11 @@
         {
           "name": "generate_gl_journal",
           "business_rules": [],
-          "rules": [],
+          "rules": [
+            "generate_gl_journal: Writes output file to Oracle directory object via UTL_FILE",
+            "generate_gl_journal: LEGACY/stub \u2014 marked as placeholder or not fully implemented",
+            "generate_gl_journal: Generates fixed-width format file (vendor-specific format)"
+          ],
           "bugs": [],
           "raise_errors": [],
           "sql": {
@@ -1714,7 +1748,10 @@
         {
           "name": "export_benefits_feed",
           "business_rules": [],
-          "rules": [],
+          "rules": [
+            "export_benefits_feed: Writes output file to Oracle directory object via UTL_FILE",
+            "export_benefits_feed: Generates fixed-width format file (vendor-specific format)"
+          ],
           "bugs": [],
           "raise_errors": [],
           "sql": {
@@ -1736,7 +1773,11 @@
         {
           "name": "import_time_attendance",
           "business_rules": [],
-          "rules": [],
+          "rules": [
+            "import_time_attendance: Writes output file to Oracle directory object via UTL_FILE",
+            "import_time_attendance: Reads input file line-by-line via UTL_FILE",
+            "import_time_attendance: LEGACY/stub \u2014 marked as placeholder or not fully implemented"
+          ],
           "bugs": [],
           "raise_errors": [],
           "sql": {
@@ -1758,7 +1799,9 @@
         {
           "name": "sync_org_structure",
           "business_rules": [],
-          "rules": [],
+          "rules": [
+            "sync_org_structure: LEGACY/stub \u2014 marked as placeholder or not fully implemented"
+          ],
           "bugs": [],
           "raise_errors": [],
           "sql": {
@@ -2527,9 +2570,9 @@
         "PKG_AUDIT"
       ],
       "sequences_used": [
+        "SEQ_LEAVE_BALANCE",
         "SEQ_LEAVE_ACCRUAL",
-        "SEQ_LEAVE_REQUEST",
-        "SEQ_LEAVE_BALANCE"
+        "SEQ_LEAVE_REQUEST"
       ],
       "pragma_autonomous": false,
       "uses_sys_context": false,
@@ -2625,9 +2668,15 @@
         }
       ],
       "business_rules": [],
-      "rules": [],
+      "rules": [
+        "Package uses PRAGMA AUTONOMOUS_TRANSACTION \u2014 audit/notification writes are independent of caller transactions",
+        "Email delivery uses UTL_SMTP (not UTL_MAIL)",
+        "Contains hard-coded configuration values that should be in SYSTEM_PARAMETERS table"
+      ],
       "constraints": [],
-      "bugs": [],
+      "bugs": [
+        "Exception swallowing: WHEN OTHERS THEN ROLLBACK/NULL \u2014 errors silently suppressed"
+      ],
       "raise_errors": [],
       "sql": {
         "selects_from": [
@@ -2647,7 +2696,10 @@
         {
           "name": "send_notification",
           "business_rules": [],
-          "rules": [],
+          "rules": [
+            "send_notification: Runs in autonomous transaction \u2014 changes committed independently of the caller",
+            "send_notification: Silently swallows exceptions \u2014 errors are suppressed to protect calling transaction"
+          ],
           "bugs": [],
           "raise_errors": [],
           "sql": {
@@ -2671,7 +2723,10 @@
         {
           "name": "process_queue",
           "business_rules": [],
-          "rules": [],
+          "rules": [
+            "process_queue: Silently swallows exceptions \u2014 errors are suppressed to protect calling transaction",
+            "process_queue: Sends email via UTL_SMTP (not UTL_MAIL)"
+          ],
           "bugs": [],
           "raise_errors": [],
           "sql": {
@@ -2735,8 +2790,8 @@
       "pragma_autonomous": true,
       "uses_sys_context": false,
       "utl_packages_used": [
-        "UTL_TCP",
-        "UTL_SMTP"
+        "UTL_SMTP",
+        "UTL_TCP"
       ]
     }
   },
@@ -3035,7 +3090,9 @@
         "If a pay period would cause year-to-date earnings to cross the wage base,",
         "When an employee's cumulative year-to-date earnings plus the current period gross",
         "If the employee's YTD earnings have already exceeded $200,000 before this",
-        "If the $200,000 threshold is crossed during this pay period, only the portion"
+        "If the $200,000 threshold is crossed during this pay period, only the portion",
+        "File I/O uses UTL_FILE with Oracle directory objects",
+        "Contains hard-coded configuration values that should be in SYSTEM_PARAMETERS table"
       ],
       "constraints": [
         "2024 Social Security wage base; earnings above this amount are exempt from SS tax",
@@ -3422,7 +3479,8 @@
             "Each W-4 withholding allowance reduces the employee's annualised taxable income",
             "If annualised income after applying the standard deduction and allowances is zero",
             "SINGLE and MARRIED_SEPARATE filers are taxed under the 2024 seven-bracket",
-            "MARRIED_JOINT filers are taxed under the 2024 seven-bracket progressive schedule"
+            "MARRIED_JOINT filers are taxed under the 2024 seven-bracket progressive schedule",
+            "calculate_federal_tax: LEGACY/stub \u2014 marked as placeholder or not fully implemented"
           ],
           "bugs": [],
           "raise_errors": [],
@@ -3515,7 +3573,9 @@
             "Total deductions aggregate all DEDUCTION, TAX, and BENEFIT lines",
             "Payslip excludes any detail lines that failed processing (STATUS = 'ERROR');"
           ],
-          "rules": [],
+          "rules": [
+            "get_payslip: LEGACY/stub \u2014 marked as placeholder or not fully implemented"
+          ],
           "bugs": [],
           "raise_errors": [],
           "sql": {
@@ -3534,7 +3594,9 @@
           "business_rules": [
             "Year-to-date earnings are the sum of successfully CALCULATED EARNING-type"
           ],
-          "rules": [],
+          "rules": [
+            "get_ytd_earnings: LEGACY/stub \u2014 marked as placeholder or not fully implemented"
+          ],
           "bugs": [],
           "raise_errors": [],
           "sql": {
@@ -3554,7 +3616,9 @@
           "business_rules": [
             "Pay register excludes detail lines in ERROR status; one row per employee"
           ],
-          "rules": [],
+          "rules": [
+            "generate_pay_register: Writes output file to Oracle directory object via UTL_FILE"
+          ],
           "bugs": [],
           "raise_errors": [],
           "sql": {
@@ -3579,8 +3643,8 @@
         "PKG_AUDIT"
       ],
       "sequences_used": [
-        "SEQ_PAY_PERIOD",
         "SEQ_PAYROLL_RUN",
+        "SEQ_PAY_PERIOD",
         "SEQ_PAYROLL_DETAIL",
         "SEQ_SALARY"
       ],
@@ -4042,9 +4106,9 @@
         "PKG_AUDIT"
       ],
       "sequences_used": [
-        "SEQ_REVIEW_CYCLE",
         "SEQ_PERF_REVIEW",
-        "SEQ_PERF_GOAL"
+        "SEQ_PERF_GOAL",
+        "SEQ_REVIEW_CYCLE"
       ],
       "pragma_autonomous": false,
       "uses_sys_context": false,
@@ -4171,7 +4235,8 @@
         "Payroll lines with STATUS = 'ERROR' are excluded from all totals; only successfully processed lines contribute to departmental payroll figures",
         "EEO gender breakdown uses three declared codes \u2014 'M' (male), 'F' (female), 'O' (other/non-binary) \u2014 plus a separate count for employees who have not disclosed gender",
         "Employees with a NULL gender value are counted separately as 'not disclosed' and are not rolled into the male, female, or other gender totals",
-        "Only employees hired on or before the reporting snapshot date are counted; future-dated hires are excluded from the compliance figures"
+        "Only employees hired on or before the reporting snapshot date are counted; future-dated hires are excluded from the compliance figures",
+        "Contains hard-coded configuration values that should be in SYSTEM_PARAMETERS table"
       ],
       "constraints": [
         "Payroll element ID 100 is the hard-coded identifier for Federal Income Tax withholding",
@@ -4335,7 +4400,9 @@
         {
           "name": "refresh_reporting_tables",
           "business_rules": [],
-          "rules": [],
+          "rules": [
+            "refresh_reporting_tables: LEGACY/stub \u2014 marked as placeholder or not fully implemented"
+          ],
           "bugs": [],
           "raise_errors": [],
           "sql": {
@@ -4489,7 +4556,8 @@
         "A new password must contain at least one uppercase letter; passwords composed entirely of lowercase characters are rejected",
         "Password change is blocked when the new password contains no uppercase letters",
         "A new password must contain at least one numeric digit; passwords with no numbers are rejected",
-        "Password change is blocked when the new password contains no numeric digits"
+        "Password change is blocked when the new password contains no numeric digits",
+        "Contains hard-coded configuration values that should be in SYSTEM_PARAMETERS table"
       ],
       "constraints": [
         "Session inactivity timeout is fixed at 30 minutes; sessions older than this threshold are automatically expired",
@@ -4554,7 +4622,8 @@
             "When multiple active employees share the same email address, the employee with the lowest EMP_ID is selected as the authenticated user"
           ],
           "rules": [
-            "Authentication is rejected with a generic message when no active employee is found for the supplied email, preventing username enumeration"
+            "Authentication is rejected with a generic message when no active employee is found for the supplied email, preventing username enumeration",
+            "authenticate: LEGACY/stub \u2014 marked as placeholder or not fully implemented"
           ],
           "bugs": [],
           "raise_errors": [
@@ -4687,7 +4756,8 @@
             "A new password must contain at least one uppercase letter; passwords composed entirely of lowercase characters are rejected",
             "Password change is blocked when the new password contains no uppercase letters",
             "A new password must contain at least one numeric digit; passwords with no numbers are rejected",
-            "Password change is blocked when the new password contains no numeric digits"
+            "Password change is blocked when the new password contains no numeric digits",
+            "change_password: LEGACY/stub \u2014 marked as placeholder or not fully implemented"
           ],
           "bugs": [],
           "raise_errors": [

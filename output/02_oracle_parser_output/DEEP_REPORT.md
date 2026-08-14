@@ -14,12 +14,12 @@
 | Sequences parsed | 29 |
 | Seed data rows | 133 |
 | Business rules extracted | 100 |
-| Validation rules extracted | 395 |
+| Validation rules extracted | 440 |
 | Constraints extracted | 33 |
-| Known bugs extracted | 13 |
+| Known bugs extracted | 17 |
 | Error codes extracted | 37 |
 | Check constraints extracted | 29 |
-| **Total rules** | **607** |
+| **Total rules** | **656** |
 
 ---
 
@@ -28,6 +28,11 @@
 ### HRMS.PKG_AUDIT
 
 **PRAGMA AUTONOMOUS_TRANSACTION: YES**
+
+**Validation Rules (3):**
+- Package uses PRAGMA AUTONOMOUS_TRANSACTION — audit/notification writes are independent of caller transactions
+- Captures client IP address for audit trail via SYS_CONTEXT
+- Captures Oracle session ID for audit trail via SYS_CONTEXT
 
 **Tables accessed (1):** AUDIT_LOG
 
@@ -41,7 +46,7 @@
 - Only system parameters explicitly flagged as editable (EDITABLE_FLAG = 'Y') may be modified; parameters marked non-editable are protected from update
 - _days_between
 
-**Validation Rules (10):**
+**Validation Rules (11):**
 - A parameter update must match exactly one editable row; if zero rows are updated the parameter either does not exist in the given group/code or has been locked as non-editable
 - Attempting to modify a non-existent or non-editable system parameter is a fatal error; callers must not silently ignore this condition
 - Saturday and Sunday are not counted as business days; only Monday through Friday increment the business day counter
@@ -52,6 +57,7 @@
 - An 11-digit number starting with '1' is formatted as a US/Canada international number with a +1 prefix; all other lengths or leading digits are returned unmodified
 - A null SSN or one with fewer than 4 characters cannot be partially unmasked; the entire value is replaced with the full mask '***-**-****' to prevent partial PII exposure
 - Format code 'LF' produces "Last, First" display order; any other value (including the default 'FL') produces "First Last" display order
+- Package uses PRAGMA AUTONOMOUS_TRANSACTION — audit/notification writes are independent of caller transactions
 
 **Tables accessed (6):** AND, AUDIT_LOG, MUST, P_DATE, SYSTEM_PARAMETERS, UPDATE
 
@@ -85,7 +91,7 @@
 - The org chart hierarchy traversal includes only employees with EMPLOYMENT_STATUS = 'ACTIVE'; terminated employees are excluded from the hierarchy
 - Headcount counts only employees who were actively employed on the specified as-of date — hired on or before that date and not yet terminated at that point
 
-**Validation Rules (33):**
+**Validation Rules (34):**
 - Department must exist and be active before it can be assigned to an employee
 - Assigning an inactive or non-existent department to an employee raises an application error
 - A NULL manager assignment is valid and indicates the employee is at the top of the reporting hierarchy with no manager above them
@@ -119,10 +125,11 @@
 - An employee record is considered invalid if either the first name or the last name is absent
 - An employee record is considered invalid if no hire date has been recorded
 - An employee record is considered inconsistent if EMPLOYMENT_STATUS is 'ACTIVE' but ACTIVE_FLAG is not 'Y'; both fields must be in agreement for active employees
+- Package uses PRAGMA AUTONOMOUS_TRANSACTION — audit/notification writes are independent of caller transactions
 
 **Tables accessed (19):** A, AFFECTS, DEPARTMENT, DEPARTMENTS, EMPLOYEE, EMPLOYEES, EMPLOYEE_HISTORY, EMPLOYEE_PAY_ELEMENTS, FAILED, IN, IS, JOB, JOB_GRADES, JOB_TITLES, LEAVE_REQUESTS, NOWAIT, PATTERN, SALARY_RECORDS, THE
 
-**Sequences used:** SEQ_EMPLOYEE, SEQ_EMP_HISTORY
+**Sequences used:** SEQ_EMP_HISTORY, SEQ_EMPLOYEE
 
 ### HRMS.PKG_INTEGRATION
 **Known Issues:**
@@ -132,6 +139,9 @@
 - - FTP credentials stored in SYSTEM_PARAMETERS table (cleartext)
 
 **UTL Packages used:** UTL_FILE
+
+**Validation Rules (1):**
+- File I/O uses UTL_FILE with Oracle directory objects
 
 **Tables accessed (5):** CSV, EMPLOYEES, PAYROLL, PAYROLL_DETAILS, V_IMPORTED
 
@@ -194,7 +204,7 @@
 
 **Tables accessed (14):** BALANCE, BUSINESS, EMPLOYEES, HOLIDAYS, LEAVE_ACCRUAL_LOG, LEAVE_BALANCES, LEAVE_REQUESTS, LEAVE_TYPES, PENDING, P_ACCRUAL_DATE, P_START_DATE, REQUEST, THE, V_REQUEST
 
-**Sequences used:** SEQ_LEAVE_ACCRUAL, SEQ_LEAVE_REQUEST, SEQ_LEAVE_BALANCE
+**Sequences used:** SEQ_LEAVE_BALANCE, SEQ_LEAVE_ACCRUAL, SEQ_LEAVE_REQUEST
 
 ### HRMS.PKG_NOTIFICATION
 **Known Issues:**
@@ -204,7 +214,12 @@
 
 **PRAGMA AUTONOMOUS_TRANSACTION: YES**
 
-**UTL Packages used:** UTL_TCP, UTL_SMTP
+**UTL Packages used:** UTL_SMTP, UTL_TCP
+
+**Validation Rules (3):**
+- Package uses PRAGMA AUTONOMOUS_TRANSACTION — audit/notification writes are independent of caller transactions
+- Email delivery uses UTL_SMTP (not UTL_MAIL)
+- Contains hard-coded configuration values that should be in SYSTEM_PARAMETERS table
 
 **Tables accessed (3):** EMPLOYEE, EMPLOYEES, NOTIFICATION_QUEUE
 
@@ -240,7 +255,7 @@
 - Year-to-date earnings are the sum of successfully CALCULATED EARNING-type
 - Pay register excludes detail lines in ERROR status; one row per employee
 
-**Validation Rules (38):**
+**Validation Rules (40):**
 - Base salary must be a positive number; zero or negative values are not permitted
 - Salary must be positive — raises error -20101 if violated
 - Monthly pay periods run from the 1st to the last calendar day of each month
@@ -279,10 +294,12 @@
 - When an employee's cumulative year-to-date earnings plus the current period gross
 - If the employee's YTD earnings have already exceeded $200,000 before this
 - If the $200,000 threshold is crossed during this pay period, only the portion
+- File I/O uses UTL_FILE with Oracle directory objects
+- Contains hard-coded configuration values that should be in SYSTEM_PARAMETERS table
 
 **Tables accessed (17):** EMPLOYEES, EMPLOYEE_PAY_ELEMENTS, EMPLOYEE_TAX_INFO, GET_SALARY_AS_OF, PAYROLL_DETAILS, PAYROLL_RUNS, PAY_PERIODS, PP, RUN, SALARY_RECORDS, SS, STATUS, TAX_BRACKETS, THE, V_END_DATE, V_PERIOD_END, V_START_DATE
 
-**Sequences used:** SEQ_PAY_PERIOD, SEQ_PAYROLL_RUN, SEQ_PAYROLL_DETAIL, SEQ_SALARY
+**Sequences used:** SEQ_PAYROLL_RUN, SEQ_PAY_PERIOD, SEQ_PAYROLL_DETAIL, SEQ_SALARY
 
 ### HRMS.PKG_PERFORMANCE
 
@@ -305,7 +322,7 @@
 
 **Tables accessed (6):** BULK, EMPLOYEES, PERFORMANCE_GOALS, PERFORMANCE_REVIEWS, REVIEW_CYCLES, THE
 
-**Sequences used:** SEQ_REVIEW_CYCLE, SEQ_PERF_REVIEW, SEQ_PERF_GOAL
+**Sequences used:** SEQ_PERF_REVIEW, SEQ_PERF_GOAL, SEQ_REVIEW_CYCLE
 
 ### HRMS.PKG_REPORTING
 **Known Issues:**
@@ -322,7 +339,7 @@
 - Only currently active employees are included; departed employees' unused leave balances are excluded from utilisation analysis
 - EEO compliance report covers only employees with EMPLOYMENT_STATUS = 'ACTIVE'; former employees are excluded from all compliance headcount figures
 
-**Validation Rules (15):**
+**Validation Rules (16):**
 - Headcount is segmented into three mutually exclusive employment classifications: FULL_TIME, PART_TIME, and CONTRACT
 - Gender breakdown uses codes 'M' (male) and 'F' (female); employees with any other gender code are not counted in either gender total
 - Employee must have been hired on or before the reporting snapshot date to be counted in headcount
@@ -338,6 +355,7 @@
 - EEO gender breakdown uses three declared codes — 'M' (male), 'F' (female), 'O' (other/non-binary) — plus a separate count for employees who have not disclosed gender
 - Employees with a NULL gender value are counted separately as 'not disclosed' and are not rolled into the male, female, or other gender totals
 - Only employees hired on or before the reporting snapshot date are counted; future-dated hires are excluded from the compliance figures
+- Contains hard-coded configuration values that should be in SYSTEM_PARAMETERS table
 
 **Tables accessed (7):** ALL, DIFFERENT, EMPLOYEES, LEAVE_BALANCES, PAYROLL_DETAILS, THE, UTILISATION
 
@@ -360,7 +378,7 @@
 - Only employees with EMPLOYMENT_STATUS = 'ACTIVE' are eligible to authenticate; terminated, suspended, or otherwise inactive employees are excluded
 - When multiple active employees share the same email address, the employee with the lowest EMP_ID is selected as the authenticated user
 
-**Validation Rules (13):**
+**Validation Rules (14):**
 - Authentication is rejected with a generic message when no active employee is found for the supplied email, preventing username enumeration
 - A session is only considered valid when SESSION_STATUS is exactly 'ACTIVE'; any other status (e.g. 'CLOSED', 'EXPIRED') immediately invalidates the session
 - A session is automatically expired and invalidated if more than 30 minutes have elapsed since the login time
@@ -374,6 +392,7 @@
 - Password change is blocked when the new password contains no uppercase letters
 - A new password must contain at least one numeric digit; passwords with no numbers are rejected
 - Password change is blocked when the new password contains no numeric digits
+- Contains hard-coded configuration values that should be in SYSTEM_PARAMETERS table
 
 **Tables accessed (4):** EMPLOYEES, IS, USER_SESSIONS, WOULD
 
@@ -446,7 +465,7 @@
 - Menu bar: MAIN_MENUBAR
 - Menus: File, Edit, Query, Navigate, Modules, Admin
 - Total items: 31
-- OPEN_FORM calls: HRMS_PERFORMANCE, HRMS_PAYROLL, HRMS_EMPLOYEE, HRMS_REPORTS, HRMS_LEAVE, HRMS_ADMIN
+- OPEN_FORM calls: HRMS_PERFORMANCE, HRMS_LEAVE, HRMS_PAYROLL, HRMS_EMPLOYEE, HRMS_REPORTS, HRMS_ADMIN
 - Security calls: PKG_SECURITY.has_permission
 - NOTE: Menu items are enabled/disabled at runtime based on PKG_SECURITY.has_permission() checks in WHEN-NEW-FORM-INSTANCE
 - NOTE: Compiled binary: HRMS_MENU.mmb — this file is the source representation
@@ -789,159 +808,159 @@ Total: 29 sequences
 
 ## Consolidated Business Rules
 
-Total: 607 rules
+Total: 656 rules
 
 | ID | Source | Type | Rule |
 |---|---|---|---|
-| BR-0001 | HRMS.PKG_COMMON | business_rule | Only system parameters explicitly flagged as editable (EDITABLE_FLAG = 'Y') may be modified; parameters marked non-edita |
-| BR-0002 | HRMS.PKG_COMMON | business_rule | _days_between |
-| BR-0003 | HRMS.PKG_COMMON | validation_rule | A parameter update must match exactly one editable row; if zero rows are updated the parameter either does not exist in  |
-| BR-0004 | HRMS.PKG_COMMON | validation_rule | Attempting to modify a non-existent or non-editable system parameter is a fatal error; callers must not silently ignore  |
-| BR-0005 | HRMS.PKG_COMMON | validation_rule | Saturday and Sunday are not counted as business days; only Monday through Friday increment the business day counter |
-| BR-0006 | HRMS.PKG_COMMON | validation_rule | Saturday and Sunday are skipped when advancing by business days; only weekdays (Monday through Friday) count toward the  |
-| BR-0007 | HRMS.PKG_COMMON | validation_rule | A date falling in October or later belongs to the fiscal year of the following calendar year (e.g. October 2024 is in fi |
-| BR-0008 | HRMS.PKG_COMMON | validation_rule | Fiscal quarters follow the October 1 fiscal year start: Q1 = October–December, Q2 = January–March, Q3 = April–June, Q4 = |
-| BR-0009 | HRMS.PKG_COMMON | validation_rule | A 10-digit number is formatted as a US domestic number in (NXX) NXX-XXXX notation |
-| BR-0010 | HRMS.PKG_COMMON | validation_rule | An 11-digit number starting with '1' is formatted as a US/Canada international number with a +1 prefix; all other length |
-| BR-0011 | HRMS.PKG_COMMON | validation_rule | A null SSN or one with fewer than 4 characters cannot be partially unmasked; the entire value is replaced with the full  |
-| BR-0012 | HRMS.PKG_COMMON | validation_rule | Format code 'LF' produces "Last, First" display order; any other value (including the default 'FL') produces "First Last |
-| BR-0013 | HRMS.PKG_COMMON | constraint | The fiscal year boundary is month 10 (October); the organisation's fiscal year begins on October 1 |
-| BR-0014 | HRMS.PKG_COMMON | constraint | A standard US domestic phone number must contain exactly 10 digits |
-| BR-0015 | HRMS.PKG_COMMON | constraint | An 11-digit phone number is only recognised as a valid US/Canada international number if it begins with country code '1' |
-| BR-0016 | HRMS.PKG_COMMON | constraint | An SSN must have at least 4 characters for the last-four-digit display to be meaningful |
-| BR-0017 | HRMS.PKG_COMMON.set_param | business_rule | Only system parameters explicitly flagged as editable (EDITABLE_FLAG = 'Y') may be modified; parameters marked non-edita |
-| BR-0018 | HRMS.PKG_COMMON.set_param | business_rule | _days_between |
-| BR-0019 | HRMS.PKG_COMMON.set_param | validation_rule | A parameter update must match exactly one editable row; if zero rows are updated the parameter either does not exist in  |
-| BR-0020 | HRMS.PKG_COMMON.set_param | validation_rule | Attempting to modify a non-existent or non-editable system parameter is a fatal error; callers must not silently ignore  |
-| BR-0021 | HRMS.PKG_COMMON.set_param | error_rule | Error -20900: Parameter not found or not editable:  |
-| BR-0022 | HRMS.PKG_COMMON.business_days_between | validation_rule | Saturday and Sunday are not counted as business days; only Monday through Friday increment the business day counter |
-| BR-0023 | HRMS.PKG_COMMON.add_business_days | validation_rule | Saturday and Sunday are skipped when advancing by business days; only weekdays (Monday through Friday) count toward the  |
-| BR-0024 | HRMS.PKG_COMMON.get_fiscal_year | validation_rule | A date falling in October or later belongs to the fiscal year of the following calendar year (e.g. October 2024 is in fi |
-| BR-0025 | HRMS.PKG_COMMON.get_fiscal_quarter | validation_rule | Fiscal quarters follow the October 1 fiscal year start: Q1 = October–December, Q2 = January–March, Q3 = April–June, Q4 = |
-| BR-0026 | HRMS.PKG_COMMON.format_phone | validation_rule | A 10-digit number is formatted as a US domestic number in (NXX) NXX-XXXX notation |
-| BR-0027 | HRMS.PKG_COMMON.format_phone | validation_rule | An 11-digit number starting with '1' is formatted as a US/Canada international number with a +1 prefix; all other length |
-| BR-0028 | HRMS.PKG_COMMON.format_ssn_masked | validation_rule | A null SSN or one with fewer than 4 characters cannot be partially unmasked; the entire value is replaced with the full  |
-| BR-0029 | HRMS.PKG_COMMON.format_name | validation_rule | Format code 'LF' produces "Last, First" display order; any other value (including the default 'FL') produces "First Last |
-| BR-0030 | HRMS.PKG_EMPLOYEE | business_rule | Only departments flagged as active (ACTIVE_FLAG = 'Y') are considered valid for employee assignment |
-| BR-0031 | HRMS.PKG_EMPLOYEE | business_rule | Only employees with EMPLOYMENT_STATUS = 'ACTIVE' are eligible to be assigned as a manager |
-| BR-0032 | HRMS.PKG_EMPLOYEE | business_rule | Only job titles with ACTIVE_FLAG = 'Y' are valid for assignment to a new employee |
-| BR-0033 | HRMS.PKG_EMPLOYEE | business_rule | The current salary is the active salary record that became effective on or before today and whose end date is either ope |
-| BR-0034 | HRMS.PKG_EMPLOYEE | business_rule | When provided, the status filter restricts search results to employees with the specified EMPLOYMENT_STATUS value (e.g., |
-| BR-0035 | HRMS.PKG_EMPLOYEE | business_rule | The most recent active salary record is used as the pre-promotion baseline for computing the percentage salary increase |
-| BR-0036 | HRMS.PKG_EMPLOYEE | business_rule | Only leave requests in PENDING status are identified for automatic cancellation upon employee termination |
-| BR-0037 | HRMS.PKG_EMPLOYEE | business_rule | Only currently active salary records (ACTIVE_FLAG = 'Y') are closed upon termination; previously ended records are not m |
-| BR-0038 | HRMS.PKG_EMPLOYEE | business_rule | Only currently active pay elements (ACTIVE_FLAG = 'Y') are deactivated at termination; previously ended pay elements are |
-| BR-0039 | HRMS.PKG_EMPLOYEE | business_rule | Only employees with EMPLOYMENT_STATUS = 'ACTIVE' are returned as direct reports; terminated or inactive employees are ex |
-| BR-0040 | HRMS.PKG_EMPLOYEE | business_rule | The org chart hierarchy traversal includes only employees with EMPLOYMENT_STATUS = 'ACTIVE'; terminated employees are ex |
-| BR-0041 | HRMS.PKG_EMPLOYEE | business_rule | Headcount counts only employees who were actively employed on the specified as-of date — hired on or before that date an |
-| BR-0042 | HRMS.PKG_EMPLOYEE | validation_rule | Department must exist and be active before it can be assigned to an employee |
-| BR-0043 | HRMS.PKG_EMPLOYEE | validation_rule | Assigning an inactive or non-existent department to an employee raises an application error |
-| BR-0044 | HRMS.PKG_EMPLOYEE | validation_rule | A NULL manager assignment is valid and indicates the employee is at the top of the reporting hierarchy with no manager a |
-| BR-0045 | HRMS.PKG_EMPLOYEE | validation_rule | The designated manager must exist in the system and have EMPLOYMENT_STATUS = 'ACTIVE' |
-| BR-0046 | HRMS.PKG_EMPLOYEE | validation_rule | Specifying a manager who does not exist or is not currently active raises an application error |
-| BR-0047 | HRMS.PKG_EMPLOYEE | validation_rule | When updating an existing employee, the new manager assignment must not create a circular reporting chain |
-| BR-0048 | HRMS.PKG_EMPLOYEE | validation_rule | An employee cannot directly or indirectly report to themselves; circular reporting chains are prohibited |
-| BR-0049 | HRMS.PKG_EMPLOYEE | validation_rule | Assigning a manager who already reports (directly or indirectly) to this employee creates a circular chain and raises an |
-| BR-0050 | HRMS.PKG_EMPLOYEE | validation_rule | Both first name and last name are mandatory fields when creating a new employee record |
-| BR-0051 | HRMS.PKG_EMPLOYEE | validation_rule | An employee cannot be created without both a first name and a last name |
-| BR-0052 | HRMS.PKG_EMPLOYEE | validation_rule | The job title specified at hire must exist in the JOB_TITLES table and be currently active |
-| BR-0053 | HRMS.PKG_EMPLOYEE | validation_rule | Employee starting salary must fall within the minimum and maximum range for their assigned job grade (soft warning — man |
-| BR-0054 | HRMS.PKG_EMPLOYEE | validation_rule | A salary record is only created at hire when a starting salary is explicitly provided; employees may be hired without an |
-| BR-0055 | HRMS.PKG_EMPLOYEE | validation_rule | Employee numbers must be unique; a duplicate generated during concurrent inserts requires the caller to retry the operat |
-| BR-0056 | HRMS.PKG_EMPLOYEE | validation_rule | Employee must exist in the system before their contact or personal information can be updated |
-| BR-0057 | HRMS.PKG_EMPLOYEE | validation_rule | Attempting to update a non-existent employee record raises an application error |
-| BR-0058 | HRMS.PKG_EMPLOYEE | validation_rule | If the update affects zero rows, an error is raised to signal an unexpected data integrity failure |
-| BR-0059 | HRMS.PKG_EMPLOYEE | validation_rule | Zero rows updated after a successful existence check indicates a concurrent deletion between the two operations |
-| BR-0060 | HRMS.PKG_EMPLOYEE | validation_rule | Requesting an employee by ID that does not exist in the EMPLOYEES table raises an application error |
-| BR-0061 | HRMS.PKG_EMPLOYEE | validation_rule | Requesting an employee by employee number that does not exist in the EMPLOYEES table raises an application error |
-| BR-0062 | HRMS.PKG_EMPLOYEE | validation_rule | Only employees with EMPLOYMENT_STATUS = 'ACTIVE' may be transferred; transferring a non-active employee is prohibited |
-| BR-0063 | HRMS.PKG_EMPLOYEE | validation_rule | Attempting to transfer an employee who is not in ACTIVE status raises an application error |
-| BR-0064 | HRMS.PKG_EMPLOYEE | validation_rule | A new manager for the transfer is validated (including circular-chain detection) only when one is explicitly provided; o |
-| BR-0065 | HRMS.PKG_EMPLOYEE | validation_rule | An employee who is already terminated cannot be terminated again; re-termination is blocked |
-| BR-0066 | HRMS.PKG_EMPLOYEE | validation_rule | Attempting to terminate an already-terminated employee raises an application error |
-| BR-0067 | HRMS.PKG_EMPLOYEE | validation_rule | All pending leave requests for a terminating employee are automatically cancelled; no manual action is required from the |
-| BR-0068 | HRMS.PKG_EMPLOYEE | validation_rule | A termination notification is sent to the employee's direct manager only when a manager is assigned; top-level employees |
-| BR-0069 | HRMS.PKG_EMPLOYEE | validation_rule | Rehiring an employee overwrites their hire date with the rehire date and clears all prior termination data; the employee |
-| BR-0070 | HRMS.PKG_EMPLOYEE | validation_rule | Attempting to rehire an employee ID that does not exist in the EMPLOYEES table raises an application error |
-| BR-0071 | HRMS.PKG_EMPLOYEE | validation_rule | An employee is considered active if and only if their EMPLOYMENT_STATUS column value equals 'ACTIVE' |
-| BR-0072 | HRMS.PKG_EMPLOYEE | validation_rule | An employee record is considered invalid if either the first name or the last name is absent |
-| BR-0073 | HRMS.PKG_EMPLOYEE | validation_rule | An employee record is considered invalid if no hire date has been recorded |
-| BR-0074 | HRMS.PKG_EMPLOYEE | validation_rule | An employee record is considered inconsistent if EMPLOYMENT_STATUS is 'ACTIVE' but ACTIVE_FLAG is not 'Y'; both fields m |
-| BR-0075 | HRMS.PKG_EMPLOYEE | constraint | The reporting hierarchy is limited to a maximum depth of 15 levels to prevent unbounded traversal during circular refere |
-| BR-0076 | HRMS.PKG_EMPLOYEE | constraint | The default maximum depth for org chart traversal is 10 levels; callers may override this, but deeper traversal risks ti |
-| BR-0077 | HRMS.PKG_EMPLOYEE | known_bug | race condition under concurrent inserts - no SELECT FOR UPDATE |
-| BR-0078 | HRMS.PKG_EMPLOYEE | known_bug | SQL injection possible via p_last_name if called with unvalidated input |
-| BR-0079 | HRMS.PKG_EMPLOYEE.validate_dept | business_rule | Only departments flagged as active (ACTIVE_FLAG = 'Y') are considered valid for employee assignment |
-| BR-0080 | HRMS.PKG_EMPLOYEE.validate_dept | validation_rule | Department must exist and be active before it can be assigned to an employee |
-| BR-0081 | HRMS.PKG_EMPLOYEE.validate_dept | validation_rule | Assigning an inactive or non-existent department to an employee raises an application error |
-| BR-0082 | HRMS.PKG_EMPLOYEE.validate_dept | error_rule | Error -20003: Invalid or inactive department:  |
-| BR-0083 | HRMS.PKG_EMPLOYEE.validate_manager | business_rule | Only employees with EMPLOYMENT_STATUS = 'ACTIVE' are eligible to be assigned as a manager |
-| BR-0084 | HRMS.PKG_EMPLOYEE.validate_manager | validation_rule | A NULL manager assignment is valid and indicates the employee is at the top of the reporting hierarchy with no manager a |
-| BR-0085 | HRMS.PKG_EMPLOYEE.validate_manager | validation_rule | The designated manager must exist in the system and have EMPLOYMENT_STATUS = 'ACTIVE' |
-| BR-0086 | HRMS.PKG_EMPLOYEE.validate_manager | validation_rule | Specifying a manager who does not exist or is not currently active raises an application error |
-| BR-0087 | HRMS.PKG_EMPLOYEE.validate_manager | validation_rule | When updating an existing employee, the new manager assignment must not create a circular reporting chain |
-| BR-0088 | HRMS.PKG_EMPLOYEE.validate_manager | validation_rule | An employee cannot directly or indirectly report to themselves; circular reporting chains are prohibited |
-| BR-0089 | HRMS.PKG_EMPLOYEE.validate_manager | validation_rule | Assigning a manager who already reports (directly or indirectly) to this employee creates a circular chain and raises an |
-| BR-0090 | HRMS.PKG_EMPLOYEE.validate_manager | error_rule | Error -20004: Invalid or inactive manager:  |
-| BR-0091 | HRMS.PKG_EMPLOYEE.validate_manager | error_rule | Error -20004: Circular reporting chain detected: Employee  |
-| BR-0092 | HRMS.PKG_EMPLOYEE.create_employee | business_rule | Only job titles with ACTIVE_FLAG = 'Y' are valid for assignment to a new employee |
-| BR-0093 | HRMS.PKG_EMPLOYEE.create_employee | validation_rule | Both first name and last name are mandatory fields when creating a new employee record |
-| BR-0094 | HRMS.PKG_EMPLOYEE.create_employee | validation_rule | An employee cannot be created without both a first name and a last name |
-| BR-0095 | HRMS.PKG_EMPLOYEE.create_employee | validation_rule | The job title specified at hire must exist in the JOB_TITLES table and be currently active |
-| BR-0096 | HRMS.PKG_EMPLOYEE.create_employee | validation_rule | Employee starting salary must fall within the minimum and maximum range for their assigned job grade (soft warning — man |
-| BR-0097 | HRMS.PKG_EMPLOYEE.create_employee | validation_rule | A salary record is only created at hire when a starting salary is explicitly provided; employees may be hired without an |
-| BR-0098 | HRMS.PKG_EMPLOYEE.create_employee | validation_rule | Employee numbers must be unique; a duplicate generated during concurrent inserts requires the caller to retry the operat |
-| BR-0099 | HRMS.PKG_EMPLOYEE.create_employee | error_rule | Error -20010: First name and last name are required |
-| BR-0100 | HRMS.PKG_EMPLOYEE.create_employee | error_rule | Error -20011: Invalid or inactive job:  |
-| BR-0101 | HRMS.PKG_EMPLOYEE.create_employee | error_rule | Error -20002: Duplicate employee number generated. Please retry. |
-| BR-0102 | HRMS.PKG_EMPLOYEE.update_employee | validation_rule | Employee must exist in the system before their contact or personal information can be updated |
-| BR-0103 | HRMS.PKG_EMPLOYEE.update_employee | validation_rule | Attempting to update a non-existent employee record raises an application error |
-| BR-0104 | HRMS.PKG_EMPLOYEE.update_employee | validation_rule | If the update affects zero rows, an error is raised to signal an unexpected data integrity failure |
-| BR-0105 | HRMS.PKG_EMPLOYEE.update_employee | validation_rule | Zero rows updated after a successful existence check indicates a concurrent deletion between the two operations |
-| BR-0106 | HRMS.PKG_EMPLOYEE.update_employee | error_rule | Error -20001: Employee not found:  |
-| BR-0107 | HRMS.PKG_EMPLOYEE.update_employee | error_rule | Error -20001: Employee update failed:  |
-| BR-0108 | HRMS.PKG_EMPLOYEE.get_employee | business_rule | The current salary is the active salary record that became effective on or before today and whose end date is either ope |
-| BR-0109 | HRMS.PKG_EMPLOYEE.get_employee | validation_rule | Requesting an employee by ID that does not exist in the EMPLOYEES table raises an application error |
-| BR-0110 | HRMS.PKG_EMPLOYEE.get_employee | error_rule | Error -20001: Employee not found:  |
-| BR-0111 | HRMS.PKG_EMPLOYEE.get_employee_by_number | validation_rule | Requesting an employee by employee number that does not exist in the EMPLOYEES table raises an application error |
-| BR-0112 | HRMS.PKG_EMPLOYEE.get_employee_by_number | error_rule | Error -20001: Employee not found:  |
-| BR-0113 | HRMS.PKG_EMPLOYEE.search_employees | business_rule | When provided, the status filter restricts search results to employees with the specified EMPLOYMENT_STATUS value (e.g., |
-| BR-0114 | HRMS.PKG_EMPLOYEE.transfer_employee | validation_rule | Only employees with EMPLOYMENT_STATUS = 'ACTIVE' may be transferred; transferring a non-active employee is prohibited |
-| BR-0115 | HRMS.PKG_EMPLOYEE.transfer_employee | validation_rule | Attempting to transfer an employee who is not in ACTIVE status raises an application error |
-| BR-0116 | HRMS.PKG_EMPLOYEE.transfer_employee | validation_rule | A new manager for the transfer is validated (including circular-chain detection) only when one is explicitly provided; o |
-| BR-0117 | HRMS.PKG_EMPLOYEE.transfer_employee | error_rule | Error -20012: Cannot transfer non-active employee. Status:  |
-| BR-0118 | HRMS.PKG_EMPLOYEE.promote_employee | business_rule | The most recent active salary record is used as the pre-promotion baseline for computing the percentage salary increase |
-| BR-0119 | HRMS.PKG_EMPLOYEE.terminate_employee | business_rule | Only leave requests in PENDING status are identified for automatic cancellation upon employee termination |
-| BR-0120 | HRMS.PKG_EMPLOYEE.terminate_employee | business_rule | Only currently active salary records (ACTIVE_FLAG = 'Y') are closed upon termination; previously ended records are not m |
-| BR-0121 | HRMS.PKG_EMPLOYEE.terminate_employee | business_rule | Only currently active pay elements (ACTIVE_FLAG = 'Y') are deactivated at termination; previously ended pay elements are |
-| BR-0122 | HRMS.PKG_EMPLOYEE.terminate_employee | validation_rule | An employee who is already terminated cannot be terminated again; re-termination is blocked |
-| BR-0123 | HRMS.PKG_EMPLOYEE.terminate_employee | validation_rule | Attempting to terminate an already-terminated employee raises an application error |
-| BR-0124 | HRMS.PKG_EMPLOYEE.terminate_employee | validation_rule | All pending leave requests for a terminating employee are automatically cancelled; no manual action is required from the |
-| BR-0125 | HRMS.PKG_EMPLOYEE.terminate_employee | validation_rule | A termination notification is sent to the employee's direct manager only when a manager is assigned; top-level employees |
-| BR-0126 | HRMS.PKG_EMPLOYEE.terminate_employee | error_rule | Error -20005: Employee  |
-| BR-0127 | HRMS.PKG_EMPLOYEE.rehire_employee | validation_rule | Rehiring an employee overwrites their hire date with the rehire date and clears all prior termination data; the employee |
-| BR-0128 | HRMS.PKG_EMPLOYEE.rehire_employee | validation_rule | Attempting to rehire an employee ID that does not exist in the EMPLOYEES table raises an application error |
-| BR-0129 | HRMS.PKG_EMPLOYEE.rehire_employee | error_rule | Error -20001: Employee not found for rehire:  |
-| BR-0130 | HRMS.PKG_EMPLOYEE.get_headcount_by_dept | business_rule | Headcount counts only employees who were actively employed on the specified as-of date — hired on or before that date an |
-| BR-0131 | HRMS.PKG_EMPLOYEE.is_active | validation_rule | An employee is considered active if and only if their EMPLOYMENT_STATUS column value equals 'ACTIVE' |
-| BR-0132 | HRMS.PKG_EMPLOYEE.validate_employee | validation_rule | An employee record is considered invalid if either the first name or the last name is absent |
-| BR-0133 | HRMS.PKG_EMPLOYEE.validate_employee | validation_rule | An employee record is considered invalid if no hire date has been recorded |
-| BR-0134 | HRMS.PKG_EMPLOYEE.validate_employee | validation_rule | An employee record is considered inconsistent if EMPLOYMENT_STATUS is 'ACTIVE' but ACTIVE_FLAG is not 'Y'; both fields m |
-| BR-0135 | HRMS.PKG_LEAVE | business_rule | Only holidays marked as currently active (ACTIVE_FLAG = 'Y') are |
-| BR-0136 | HRMS.PKG_LEAVE | business_rule | An employee's date range conflicts if any existing leave request |
-| BR-0137 | HRMS.PKG_LEAVE | business_rule | Only employees with EMPLOYMENT_STATUS = 'ACTIVE' are eligible |
-| BR-0138 | HRMS.PKG_LEAVE | business_rule | Only leave types flagged as active (ACTIVE_FLAG = 'Y') may be |
-| BR-0139 | HRMS.PKG_LEAVE | business_rule | Balance records are created only for leave types that are currently |
-| BR-0140 | HRMS.PKG_LEAVE | business_rule | Monthly accrual runs only for employees who are currently active |
-| BR-0141 | HRMS.PKG_LEAVE | business_rule | Accrual is processed only for leave types that are active, |
-| BR-0142 | HRMS.PKG_LEAVE | business_rule | Only employees who have a positive remaining balance at year-end |
-| BR-0143 | HRMS.PKG_LEAVE | business_rule | Returns only leave requests in PENDING status that are assigned |
-| BR-0144 | HRMS.PKG_LEAVE | business_rule | The team calendar shows only leave that has been approved or |
-| BR-0145 | HRMS.PKG_LEAVE | validation_rule | Employee must exist and have ACTIVE employment status to submit leave |
-| BR-0146 | HRMS.PKG_LEAVE | validation_rule | The requested leave type must exist and be currently active |
-| BR-0147 | HRMS.PKG_LEAVE | validation_rule | Some leave types require a minimum period of employment before an |
-| BR-0148 | HRMS.PKG_LEAVE | validation_rule | Employee's time since hire date must meet the leave type's minimum |
-| BR-0149 | HRMS.PKG_LEAVE | validation_rule | Employee has not yet served the minimum tenure required for this leave type |
-| BR-0150 | HRMS.PKG_LEAVE | validation_rule | Leave request start date must not be later than the end date |
+| BR-0001 | HRMS.PKG_AUDIT | validation_rule | Package uses PRAGMA AUTONOMOUS_TRANSACTION — audit/notification writes are independent of caller transactions |
+| BR-0002 | HRMS.PKG_AUDIT | validation_rule | Captures client IP address for audit trail via SYS_CONTEXT |
+| BR-0003 | HRMS.PKG_AUDIT | validation_rule | Captures Oracle session ID for audit trail via SYS_CONTEXT |
+| BR-0004 | HRMS.PKG_AUDIT | known_bug | Exception swallowing: WHEN OTHERS THEN ROLLBACK/NULL — errors silently suppressed |
+| BR-0005 | HRMS.PKG_AUDIT.log_action | validation_rule | log_action: Runs in autonomous transaction — changes committed independently of the caller |
+| BR-0006 | HRMS.PKG_AUDIT.log_action | validation_rule | log_action: Captures client IP address via SYS_CONTEXT for audit trail |
+| BR-0007 | HRMS.PKG_AUDIT.log_action | validation_rule | log_action: Captures Oracle session ID via SYS_CONTEXT for audit trail |
+| BR-0008 | HRMS.PKG_AUDIT.log_action | validation_rule | log_action: Silently swallows exceptions — errors are suppressed to protect calling transaction |
+| BR-0009 | HRMS.PKG_COMMON | business_rule | Only system parameters explicitly flagged as editable (EDITABLE_FLAG = 'Y') may be modified; parameters marked non-edita |
+| BR-0010 | HRMS.PKG_COMMON | business_rule | _days_between |
+| BR-0011 | HRMS.PKG_COMMON | validation_rule | A parameter update must match exactly one editable row; if zero rows are updated the parameter either does not exist in  |
+| BR-0012 | HRMS.PKG_COMMON | validation_rule | Attempting to modify a non-existent or non-editable system parameter is a fatal error; callers must not silently ignore  |
+| BR-0013 | HRMS.PKG_COMMON | validation_rule | Saturday and Sunday are not counted as business days; only Monday through Friday increment the business day counter |
+| BR-0014 | HRMS.PKG_COMMON | validation_rule | Saturday and Sunday are skipped when advancing by business days; only weekdays (Monday through Friday) count toward the  |
+| BR-0015 | HRMS.PKG_COMMON | validation_rule | A date falling in October or later belongs to the fiscal year of the following calendar year (e.g. October 2024 is in fi |
+| BR-0016 | HRMS.PKG_COMMON | validation_rule | Fiscal quarters follow the October 1 fiscal year start: Q1 = October–December, Q2 = January–March, Q3 = April–June, Q4 = |
+| BR-0017 | HRMS.PKG_COMMON | validation_rule | A 10-digit number is formatted as a US domestic number in (NXX) NXX-XXXX notation |
+| BR-0018 | HRMS.PKG_COMMON | validation_rule | An 11-digit number starting with '1' is formatted as a US/Canada international number with a +1 prefix; all other length |
+| BR-0019 | HRMS.PKG_COMMON | validation_rule | A null SSN or one with fewer than 4 characters cannot be partially unmasked; the entire value is replaced with the full  |
+| BR-0020 | HRMS.PKG_COMMON | validation_rule | Format code 'LF' produces "Last, First" display order; any other value (including the default 'FL') produces "First Last |
+| BR-0021 | HRMS.PKG_COMMON | validation_rule | Package uses PRAGMA AUTONOMOUS_TRANSACTION — audit/notification writes are independent of caller transactions |
+| BR-0022 | HRMS.PKG_COMMON | constraint | The fiscal year boundary is month 10 (October); the organisation's fiscal year begins on October 1 |
+| BR-0023 | HRMS.PKG_COMMON | constraint | A standard US domestic phone number must contain exactly 10 digits |
+| BR-0024 | HRMS.PKG_COMMON | constraint | An 11-digit phone number is only recognised as a valid US/Canada international number if it begins with country code '1' |
+| BR-0025 | HRMS.PKG_COMMON | constraint | An SSN must have at least 4 characters for the last-four-digit display to be meaningful |
+| BR-0026 | HRMS.PKG_COMMON | known_bug | Exception swallowing: WHEN OTHERS THEN ROLLBACK/NULL — errors silently suppressed |
+| BR-0027 | HRMS.PKG_COMMON.log_error | validation_rule | log_error: Runs in autonomous transaction — changes committed independently of the caller |
+| BR-0028 | HRMS.PKG_COMMON.log_error | validation_rule | log_error: Silently swallows exceptions — errors are suppressed to protect calling transaction |
+| BR-0029 | HRMS.PKG_COMMON.log_info | validation_rule | log_info: Runs in autonomous transaction — changes committed independently of the caller |
+| BR-0030 | HRMS.PKG_COMMON.log_info | validation_rule | log_info: Silently swallows exceptions — errors are suppressed to protect calling transaction |
+| BR-0031 | HRMS.PKG_COMMON.set_param | business_rule | Only system parameters explicitly flagged as editable (EDITABLE_FLAG = 'Y') may be modified; parameters marked non-edita |
+| BR-0032 | HRMS.PKG_COMMON.set_param | business_rule | _days_between |
+| BR-0033 | HRMS.PKG_COMMON.set_param | validation_rule | A parameter update must match exactly one editable row; if zero rows are updated the parameter either does not exist in  |
+| BR-0034 | HRMS.PKG_COMMON.set_param | validation_rule | Attempting to modify a non-existent or non-editable system parameter is a fatal error; callers must not silently ignore  |
+| BR-0035 | HRMS.PKG_COMMON.set_param | error_rule | Error -20900: Parameter not found or not editable:  |
+| BR-0036 | HRMS.PKG_COMMON.business_days_between | validation_rule | Saturday and Sunday are not counted as business days; only Monday through Friday increment the business day counter |
+| BR-0037 | HRMS.PKG_COMMON.add_business_days | validation_rule | Saturday and Sunday are skipped when advancing by business days; only weekdays (Monday through Friday) count toward the  |
+| BR-0038 | HRMS.PKG_COMMON.get_fiscal_year | validation_rule | A date falling in October or later belongs to the fiscal year of the following calendar year (e.g. October 2024 is in fi |
+| BR-0039 | HRMS.PKG_COMMON.get_fiscal_quarter | validation_rule | Fiscal quarters follow the October 1 fiscal year start: Q1 = October–December, Q2 = January–March, Q3 = April–June, Q4 = |
+| BR-0040 | HRMS.PKG_COMMON.format_phone | validation_rule | A 10-digit number is formatted as a US domestic number in (NXX) NXX-XXXX notation |
+| BR-0041 | HRMS.PKG_COMMON.format_phone | validation_rule | An 11-digit number starting with '1' is formatted as a US/Canada international number with a +1 prefix; all other length |
+| BR-0042 | HRMS.PKG_COMMON.format_ssn_masked | validation_rule | A null SSN or one with fewer than 4 characters cannot be partially unmasked; the entire value is replaced with the full  |
+| BR-0043 | HRMS.PKG_COMMON.format_name | validation_rule | Format code 'LF' produces "Last, First" display order; any other value (including the default 'FL') produces "First Last |
+| BR-0044 | HRMS.PKG_EMPLOYEE | business_rule | Only departments flagged as active (ACTIVE_FLAG = 'Y') are considered valid for employee assignment |
+| BR-0045 | HRMS.PKG_EMPLOYEE | business_rule | Only employees with EMPLOYMENT_STATUS = 'ACTIVE' are eligible to be assigned as a manager |
+| BR-0046 | HRMS.PKG_EMPLOYEE | business_rule | Only job titles with ACTIVE_FLAG = 'Y' are valid for assignment to a new employee |
+| BR-0047 | HRMS.PKG_EMPLOYEE | business_rule | The current salary is the active salary record that became effective on or before today and whose end date is either ope |
+| BR-0048 | HRMS.PKG_EMPLOYEE | business_rule | When provided, the status filter restricts search results to employees with the specified EMPLOYMENT_STATUS value (e.g., |
+| BR-0049 | HRMS.PKG_EMPLOYEE | business_rule | The most recent active salary record is used as the pre-promotion baseline for computing the percentage salary increase |
+| BR-0050 | HRMS.PKG_EMPLOYEE | business_rule | Only leave requests in PENDING status are identified for automatic cancellation upon employee termination |
+| BR-0051 | HRMS.PKG_EMPLOYEE | business_rule | Only currently active salary records (ACTIVE_FLAG = 'Y') are closed upon termination; previously ended records are not m |
+| BR-0052 | HRMS.PKG_EMPLOYEE | business_rule | Only currently active pay elements (ACTIVE_FLAG = 'Y') are deactivated at termination; previously ended pay elements are |
+| BR-0053 | HRMS.PKG_EMPLOYEE | business_rule | Only employees with EMPLOYMENT_STATUS = 'ACTIVE' are returned as direct reports; terminated or inactive employees are ex |
+| BR-0054 | HRMS.PKG_EMPLOYEE | business_rule | The org chart hierarchy traversal includes only employees with EMPLOYMENT_STATUS = 'ACTIVE'; terminated employees are ex |
+| BR-0055 | HRMS.PKG_EMPLOYEE | business_rule | Headcount counts only employees who were actively employed on the specified as-of date — hired on or before that date an |
+| BR-0056 | HRMS.PKG_EMPLOYEE | validation_rule | Department must exist and be active before it can be assigned to an employee |
+| BR-0057 | HRMS.PKG_EMPLOYEE | validation_rule | Assigning an inactive or non-existent department to an employee raises an application error |
+| BR-0058 | HRMS.PKG_EMPLOYEE | validation_rule | A NULL manager assignment is valid and indicates the employee is at the top of the reporting hierarchy with no manager a |
+| BR-0059 | HRMS.PKG_EMPLOYEE | validation_rule | The designated manager must exist in the system and have EMPLOYMENT_STATUS = 'ACTIVE' |
+| BR-0060 | HRMS.PKG_EMPLOYEE | validation_rule | Specifying a manager who does not exist or is not currently active raises an application error |
+| BR-0061 | HRMS.PKG_EMPLOYEE | validation_rule | When updating an existing employee, the new manager assignment must not create a circular reporting chain |
+| BR-0062 | HRMS.PKG_EMPLOYEE | validation_rule | An employee cannot directly or indirectly report to themselves; circular reporting chains are prohibited |
+| BR-0063 | HRMS.PKG_EMPLOYEE | validation_rule | Assigning a manager who already reports (directly or indirectly) to this employee creates a circular chain and raises an |
+| BR-0064 | HRMS.PKG_EMPLOYEE | validation_rule | Both first name and last name are mandatory fields when creating a new employee record |
+| BR-0065 | HRMS.PKG_EMPLOYEE | validation_rule | An employee cannot be created without both a first name and a last name |
+| BR-0066 | HRMS.PKG_EMPLOYEE | validation_rule | The job title specified at hire must exist in the JOB_TITLES table and be currently active |
+| BR-0067 | HRMS.PKG_EMPLOYEE | validation_rule | Employee starting salary must fall within the minimum and maximum range for their assigned job grade (soft warning — man |
+| BR-0068 | HRMS.PKG_EMPLOYEE | validation_rule | A salary record is only created at hire when a starting salary is explicitly provided; employees may be hired without an |
+| BR-0069 | HRMS.PKG_EMPLOYEE | validation_rule | Employee numbers must be unique; a duplicate generated during concurrent inserts requires the caller to retry the operat |
+| BR-0070 | HRMS.PKG_EMPLOYEE | validation_rule | Employee must exist in the system before their contact or personal information can be updated |
+| BR-0071 | HRMS.PKG_EMPLOYEE | validation_rule | Attempting to update a non-existent employee record raises an application error |
+| BR-0072 | HRMS.PKG_EMPLOYEE | validation_rule | If the update affects zero rows, an error is raised to signal an unexpected data integrity failure |
+| BR-0073 | HRMS.PKG_EMPLOYEE | validation_rule | Zero rows updated after a successful existence check indicates a concurrent deletion between the two operations |
+| BR-0074 | HRMS.PKG_EMPLOYEE | validation_rule | Requesting an employee by ID that does not exist in the EMPLOYEES table raises an application error |
+| BR-0075 | HRMS.PKG_EMPLOYEE | validation_rule | Requesting an employee by employee number that does not exist in the EMPLOYEES table raises an application error |
+| BR-0076 | HRMS.PKG_EMPLOYEE | validation_rule | Only employees with EMPLOYMENT_STATUS = 'ACTIVE' may be transferred; transferring a non-active employee is prohibited |
+| BR-0077 | HRMS.PKG_EMPLOYEE | validation_rule | Attempting to transfer an employee who is not in ACTIVE status raises an application error |
+| BR-0078 | HRMS.PKG_EMPLOYEE | validation_rule | A new manager for the transfer is validated (including circular-chain detection) only when one is explicitly provided; o |
+| BR-0079 | HRMS.PKG_EMPLOYEE | validation_rule | An employee who is already terminated cannot be terminated again; re-termination is blocked |
+| BR-0080 | HRMS.PKG_EMPLOYEE | validation_rule | Attempting to terminate an already-terminated employee raises an application error |
+| BR-0081 | HRMS.PKG_EMPLOYEE | validation_rule | All pending leave requests for a terminating employee are automatically cancelled; no manual action is required from the |
+| BR-0082 | HRMS.PKG_EMPLOYEE | validation_rule | A termination notification is sent to the employee's direct manager only when a manager is assigned; top-level employees |
+| BR-0083 | HRMS.PKG_EMPLOYEE | validation_rule | Rehiring an employee overwrites their hire date with the rehire date and clears all prior termination data; the employee |
+| BR-0084 | HRMS.PKG_EMPLOYEE | validation_rule | Attempting to rehire an employee ID that does not exist in the EMPLOYEES table raises an application error |
+| BR-0085 | HRMS.PKG_EMPLOYEE | validation_rule | An employee is considered active if and only if their EMPLOYMENT_STATUS column value equals 'ACTIVE' |
+| BR-0086 | HRMS.PKG_EMPLOYEE | validation_rule | An employee record is considered invalid if either the first name or the last name is absent |
+| BR-0087 | HRMS.PKG_EMPLOYEE | validation_rule | An employee record is considered invalid if no hire date has been recorded |
+| BR-0088 | HRMS.PKG_EMPLOYEE | validation_rule | An employee record is considered inconsistent if EMPLOYMENT_STATUS is 'ACTIVE' but ACTIVE_FLAG is not 'Y'; both fields m |
+| BR-0089 | HRMS.PKG_EMPLOYEE | validation_rule | Package uses PRAGMA AUTONOMOUS_TRANSACTION — audit/notification writes are independent of caller transactions |
+| BR-0090 | HRMS.PKG_EMPLOYEE | constraint | The reporting hierarchy is limited to a maximum depth of 15 levels to prevent unbounded traversal during circular refere |
+| BR-0091 | HRMS.PKG_EMPLOYEE | constraint | The default maximum depth for org chart traversal is 10 levels; callers may override this, but deeper traversal risks ti |
+| BR-0092 | HRMS.PKG_EMPLOYEE | known_bug | race condition under concurrent inserts - no SELECT FOR UPDATE |
+| BR-0093 | HRMS.PKG_EMPLOYEE | known_bug | SQL injection possible via p_last_name if called with unvalidated input |
+| BR-0094 | HRMS.PKG_EMPLOYEE | known_bug | Exception swallowing: WHEN OTHERS THEN ROLLBACK/NULL — errors silently suppressed |
+| BR-0095 | HRMS.PKG_EMPLOYEE.validate_dept | business_rule | Only departments flagged as active (ACTIVE_FLAG = 'Y') are considered valid for employee assignment |
+| BR-0096 | HRMS.PKG_EMPLOYEE.validate_dept | validation_rule | Department must exist and be active before it can be assigned to an employee |
+| BR-0097 | HRMS.PKG_EMPLOYEE.validate_dept | validation_rule | Assigning an inactive or non-existent department to an employee raises an application error |
+| BR-0098 | HRMS.PKG_EMPLOYEE.validate_dept | error_rule | Error -20003: Invalid or inactive department:  |
+| BR-0099 | HRMS.PKG_EMPLOYEE.validate_manager | business_rule | Only employees with EMPLOYMENT_STATUS = 'ACTIVE' are eligible to be assigned as a manager |
+| BR-0100 | HRMS.PKG_EMPLOYEE.validate_manager | validation_rule | A NULL manager assignment is valid and indicates the employee is at the top of the reporting hierarchy with no manager a |
+| BR-0101 | HRMS.PKG_EMPLOYEE.validate_manager | validation_rule | The designated manager must exist in the system and have EMPLOYMENT_STATUS = 'ACTIVE' |
+| BR-0102 | HRMS.PKG_EMPLOYEE.validate_manager | validation_rule | Specifying a manager who does not exist or is not currently active raises an application error |
+| BR-0103 | HRMS.PKG_EMPLOYEE.validate_manager | validation_rule | When updating an existing employee, the new manager assignment must not create a circular reporting chain |
+| BR-0104 | HRMS.PKG_EMPLOYEE.validate_manager | validation_rule | An employee cannot directly or indirectly report to themselves; circular reporting chains are prohibited |
+| BR-0105 | HRMS.PKG_EMPLOYEE.validate_manager | validation_rule | Assigning a manager who already reports (directly or indirectly) to this employee creates a circular chain and raises an |
+| BR-0106 | HRMS.PKG_EMPLOYEE.validate_manager | error_rule | Error -20004: Invalid or inactive manager:  |
+| BR-0107 | HRMS.PKG_EMPLOYEE.validate_manager | error_rule | Error -20004: Circular reporting chain detected: Employee  |
+| BR-0108 | HRMS.PKG_EMPLOYEE.log_history | validation_rule | log_history: Runs in autonomous transaction — changes committed independently of the caller |
+| BR-0109 | HRMS.PKG_EMPLOYEE.log_history | validation_rule | log_history: Silently swallows exceptions — errors are suppressed to protect calling transaction |
+| BR-0110 | HRMS.PKG_EMPLOYEE.create_employee | business_rule | Only job titles with ACTIVE_FLAG = 'Y' are valid for assignment to a new employee |
+| BR-0111 | HRMS.PKG_EMPLOYEE.create_employee | validation_rule | Both first name and last name are mandatory fields when creating a new employee record |
+| BR-0112 | HRMS.PKG_EMPLOYEE.create_employee | validation_rule | An employee cannot be created without both a first name and a last name |
+| BR-0113 | HRMS.PKG_EMPLOYEE.create_employee | validation_rule | The job title specified at hire must exist in the JOB_TITLES table and be currently active |
+| BR-0114 | HRMS.PKG_EMPLOYEE.create_employee | validation_rule | Employee starting salary must fall within the minimum and maximum range for their assigned job grade (soft warning — man |
+| BR-0115 | HRMS.PKG_EMPLOYEE.create_employee | validation_rule | A salary record is only created at hire when a starting salary is explicitly provided; employees may be hired without an |
+| BR-0116 | HRMS.PKG_EMPLOYEE.create_employee | validation_rule | Employee numbers must be unique; a duplicate generated during concurrent inserts requires the caller to retry the operat |
+| BR-0117 | HRMS.PKG_EMPLOYEE.create_employee | error_rule | Error -20010: First name and last name are required |
+| BR-0118 | HRMS.PKG_EMPLOYEE.create_employee | error_rule | Error -20011: Invalid or inactive job:  |
+| BR-0119 | HRMS.PKG_EMPLOYEE.create_employee | error_rule | Error -20002: Duplicate employee number generated. Please retry. |
+| BR-0120 | HRMS.PKG_EMPLOYEE.update_employee | validation_rule | Employee must exist in the system before their contact or personal information can be updated |
+| BR-0121 | HRMS.PKG_EMPLOYEE.update_employee | validation_rule | Attempting to update a non-existent employee record raises an application error |
+| BR-0122 | HRMS.PKG_EMPLOYEE.update_employee | validation_rule | If the update affects zero rows, an error is raised to signal an unexpected data integrity failure |
+| BR-0123 | HRMS.PKG_EMPLOYEE.update_employee | validation_rule | Zero rows updated after a successful existence check indicates a concurrent deletion between the two operations |
+| BR-0124 | HRMS.PKG_EMPLOYEE.update_employee | error_rule | Error -20001: Employee not found:  |
+| BR-0125 | HRMS.PKG_EMPLOYEE.update_employee | error_rule | Error -20001: Employee update failed:  |
+| BR-0126 | HRMS.PKG_EMPLOYEE.get_employee | business_rule | The current salary is the active salary record that became effective on or before today and whose end date is either ope |
+| BR-0127 | HRMS.PKG_EMPLOYEE.get_employee | validation_rule | Requesting an employee by ID that does not exist in the EMPLOYEES table raises an application error |
+| BR-0128 | HRMS.PKG_EMPLOYEE.get_employee | error_rule | Error -20001: Employee not found:  |
+| BR-0129 | HRMS.PKG_EMPLOYEE.get_employee_by_number | validation_rule | Requesting an employee by employee number that does not exist in the EMPLOYEES table raises an application error |
+| BR-0130 | HRMS.PKG_EMPLOYEE.get_employee_by_number | error_rule | Error -20001: Employee not found:  |
+| BR-0131 | HRMS.PKG_EMPLOYEE.search_employees | business_rule | When provided, the status filter restricts search results to employees with the specified EMPLOYMENT_STATUS value (e.g., |
+| BR-0132 | HRMS.PKG_EMPLOYEE.search_employees | validation_rule | search_employees: BUG — uses dynamic SQL concatenation with user input; vulnerable to SQL injection |
+| BR-0133 | HRMS.PKG_EMPLOYEE.transfer_employee | validation_rule | Only employees with EMPLOYMENT_STATUS = 'ACTIVE' may be transferred; transferring a non-active employee is prohibited |
+| BR-0134 | HRMS.PKG_EMPLOYEE.transfer_employee | validation_rule | Attempting to transfer an employee who is not in ACTIVE status raises an application error |
+| BR-0135 | HRMS.PKG_EMPLOYEE.transfer_employee | validation_rule | A new manager for the transfer is validated (including circular-chain detection) only when one is explicitly provided; o |
+| BR-0136 | HRMS.PKG_EMPLOYEE.transfer_employee | error_rule | Error -20012: Cannot transfer non-active employee. Status:  |
+| BR-0137 | HRMS.PKG_EMPLOYEE.promote_employee | business_rule | The most recent active salary record is used as the pre-promotion baseline for computing the percentage salary increase |
+| BR-0138 | HRMS.PKG_EMPLOYEE.terminate_employee | business_rule | Only leave requests in PENDING status are identified for automatic cancellation upon employee termination |
+| BR-0139 | HRMS.PKG_EMPLOYEE.terminate_employee | business_rule | Only currently active salary records (ACTIVE_FLAG = 'Y') are closed upon termination; previously ended records are not m |
+| BR-0140 | HRMS.PKG_EMPLOYEE.terminate_employee | business_rule | Only currently active pay elements (ACTIVE_FLAG = 'Y') are deactivated at termination; previously ended pay elements are |
+| BR-0141 | HRMS.PKG_EMPLOYEE.terminate_employee | validation_rule | An employee who is already terminated cannot be terminated again; re-termination is blocked |
+| BR-0142 | HRMS.PKG_EMPLOYEE.terminate_employee | validation_rule | Attempting to terminate an already-terminated employee raises an application error |
+| BR-0143 | HRMS.PKG_EMPLOYEE.terminate_employee | validation_rule | All pending leave requests for a terminating employee are automatically cancelled; no manual action is required from the |
+| BR-0144 | HRMS.PKG_EMPLOYEE.terminate_employee | validation_rule | A termination notification is sent to the employee's direct manager only when a manager is assigned; top-level employees |
+| BR-0145 | HRMS.PKG_EMPLOYEE.terminate_employee | validation_rule | terminate_employee: LEGACY/stub — marked as placeholder or not fully implemented |
+| BR-0146 | HRMS.PKG_EMPLOYEE.terminate_employee | error_rule | Error -20005: Employee  |
+| BR-0147 | HRMS.PKG_EMPLOYEE.rehire_employee | validation_rule | Rehiring an employee overwrites their hire date with the rehire date and clears all prior termination data; the employee |
+| BR-0148 | HRMS.PKG_EMPLOYEE.rehire_employee | validation_rule | Attempting to rehire an employee ID that does not exist in the EMPLOYEES table raises an application error |
+| BR-0149 | HRMS.PKG_EMPLOYEE.rehire_employee | error_rule | Error -20001: Employee not found for rehire:  |
+| BR-0150 | HRMS.PKG_EMPLOYEE.get_headcount_by_dept | business_rule | Headcount counts only employees who were actively employed on the specified as-of date — hired on or before that date an |
 
-*... and 457 more rules in business_rules.json*
+*... and 506 more rules in business_rules.json*

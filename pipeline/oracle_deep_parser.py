@@ -106,6 +106,43 @@ def extract_sql_statements(content: str) -> dict:
     }
 
 
+def infer_behavioral_rules_from_code(proc_name: str, body: str) -> list:
+    """Infer implicit behavioral rules from PL/SQL code patterns."""
+    rules = []
+    if not body:
+        return rules
+    if re.search(r"PRAGMA\s+AUTONOMOUS_TRANSACTION", body, re.IGNORECASE):
+        rules.append(f"{proc_name}: Runs in autonomous transaction — changes committed independently of the caller")
+    if re.search(r"SYS_CONTEXT\s*\(\s*'USERENV'\s*,\s*'IP_ADDRESS'", body, re.IGNORECASE):
+        rules.append(f"{proc_name}: Captures client IP address via SYS_CONTEXT for audit trail")
+    if re.search(r"SYS_CONTEXT\s*\(\s*'USERENV'\s*,\s*'SESSIONID'", body, re.IGNORECASE):
+        rules.append(f"{proc_name}: Captures Oracle session ID via SYS_CONTEXT for audit trail")
+    if re.search(r"EXCEPTION\s+WHEN\s+OTHERS\s+THEN\s*\n\s*(?:--|ROLLBACK|NULL)", body, re.IGNORECASE):
+        rules.append(f"{proc_name}: Silently swallows exceptions — errors are suppressed to protect calling transaction")
+    # Dynamic SQL injection risk
+    if re.search(r"v_sql\s*:=\s*v_sql\s*\|\|.*p_\w+", body, re.IGNORECASE):
+        rules.append(f"{proc_name}: BUG — uses dynamic SQL concatenation with user input; vulnerable to SQL injection")
+    # UTL_FILE file operations
+    if re.search(r"UTL_FILE\.FOPEN", body, re.IGNORECASE):
+        fname_m = re.search(r"v_filename\s*:=\s*'([^']+)'|v_filename\s*:=\s*([^;]+);", body, re.IGNORECASE)
+        rules.append(f"{proc_name}: Writes output file to Oracle directory object via UTL_FILE")
+    if re.search(r"UTL_FILE\.GET_LINE", body, re.IGNORECASE):
+        rules.append(f"{proc_name}: Reads input file line-by-line via UTL_FILE")
+    # LEGACY/stub markers
+    if re.search(r"LEGACY|Placeholder|stub|not.yet.implemented|TODO", body, re.IGNORECASE):
+        rules.append(f"{proc_name}: LEGACY/stub — marked as placeholder or not fully implemented")
+    # Fixed-width format markers
+    if re.search(r"fixed.width|RPAD|LPAD.*fixed", body, re.IGNORECASE):
+        rules.append(f"{proc_name}: Generates fixed-width format file (vendor-specific format)")
+    # SMTP email
+    if re.search(r"UTL_SMTP\.", body, re.IGNORECASE):
+        rules.append(f"{proc_name}: Sends email via UTL_SMTP (not UTL_MAIL)")
+    # Default retention
+    for m in re.finditer(r"DEFAULT\s+(\d+)\s*\).*(?:days|purge|retain|keep)", body, re.IGNORECASE):
+        rules.append(f"{proc_name}: Default retention period is {m.group(1)} days")
+    return rules
+
+
 def extract_procedure_bodies(content: str) -> list:
     results = []
     pattern = re.compile(
@@ -122,10 +159,12 @@ def extract_procedure_bodies(content: str) -> list:
         sql = extract_sql_statements(body)
         pkg_calls = list(set(re.findall(r"(PKG_\w+)\.\w+", body, re.IGNORECASE)))
         if_conditions = re.findall(r"IF\s+(.+?)\s+THEN", body, re.IGNORECASE)
+        # Merge inferred rules into the rules list
+        inferred = infer_behavioral_rules_from_code(name, body)
         results.append({
             "name": name,
             "business_rules": business_rules,
-            "rules": rules,
+            "rules": rules + inferred,
             "bugs": bugs,
             "raise_errors": raises,
             "sql": sql,
@@ -144,14 +183,34 @@ def deep_parse_pkb(filepath: Path) -> dict:
     pkg_match = re.search(r"CREATE\s+OR\s+REPLACE\s+PACKAGE\s+BODY\s+(\S+)\s+AS", content, re.IGNORECASE)
     pkg_name = pkg_match.group(1) if pkg_match else filepath.stem
 
+    # Package-level inferred behavioral rules
+    pkg_inferred_rules = []
+    if re.search(r"PRAGMA\s+AUTONOMOUS_TRANSACTION", content, re.IGNORECASE):
+        pkg_inferred_rules.append("Package uses PRAGMA AUTONOMOUS_TRANSACTION — audit/notification writes are independent of caller transactions")
+    if re.search(r"SYS_CONTEXT\s*\(\s*'USERENV'\s*,\s*'IP_ADDRESS'", content, re.IGNORECASE):
+        pkg_inferred_rules.append("Captures client IP address for audit trail via SYS_CONTEXT")
+    if re.search(r"SYS_CONTEXT\s*\(\s*'USERENV'\s*,\s*'SESSIONID'", content, re.IGNORECASE):
+        pkg_inferred_rules.append("Captures Oracle session ID for audit trail via SYS_CONTEXT")
+    utl_pkgs = list(set(re.findall(r"(UTL_\w+)\.", content, re.IGNORECASE)))
+    if "UTL_SMTP" in [u.upper() for u in utl_pkgs]:
+        pkg_inferred_rules.append("Email delivery uses UTL_SMTP (not UTL_MAIL)")
+    if "UTL_FILE" in [u.upper() for u in utl_pkgs]:
+        pkg_inferred_rules.append("File I/O uses UTL_FILE with Oracle directory objects")
+    if re.search(r"Hard.coded|should be in SYSTEM_PARAMETERS", content, re.IGNORECASE):
+        pkg_inferred_rules.append("Contains hard-coded configuration values that should be in SYSTEM_PARAMETERS table")
+
+    pkg_bugs = extract_inline_comments(content, "BUG")
+    if re.search(r"EXCEPTION\s+WHEN\s+OTHERS\s+THEN\s*\n\s*(?:ROLLBACK\s*;?\s*\n\s*)?(?:NULL|--)", content, re.IGNORECASE):
+        pkg_bugs.append("Exception swallowing: WHEN OTHERS THEN ROLLBACK/NULL — errors silently suppressed")
+
     return {
         "name": pkg_name,
         "file": filepath.name,
         "constants": extract_constants(content),
         "business_rules": extract_inline_comments(content, "BUSINESS"),
-        "rules": extract_inline_comments(content, "RULE"),
+        "rules": extract_inline_comments(content, "RULE") + pkg_inferred_rules,
         "constraints": extract_inline_comments(content, "CONSTRAINT"),
-        "bugs": extract_inline_comments(content, "BUG"),
+        "bugs": pkg_bugs,
         "raise_errors": extract_raise_application_errors(content),
         "sql": extract_sql_statements(content),
         "procedures": extract_procedure_bodies(content),
@@ -159,7 +218,7 @@ def deep_parse_pkb(filepath: Path) -> dict:
         "sequences_used": list(set(re.findall(r"(SEQ_\w+)\.NEXTVAL", content, re.IGNORECASE))),
         "pragma_autonomous": bool(re.search(r"PRAGMA\s+AUTONOMOUS_TRANSACTION", content, re.IGNORECASE)),
         "uses_sys_context": bool(re.search(r"SYS_CONTEXT\s*\(", content, re.IGNORECASE)),
-        "utl_packages_used": list(set(re.findall(r"(UTL_\w+)\.", content, re.IGNORECASE))),
+        "utl_packages_used": utl_pkgs,
     }
 
 
@@ -728,33 +787,30 @@ def deep_parse_schema() -> dict:
             columns = []
 
             # Match regular columns AND virtual/generated columns
+            # First pass: extract virtual/generated columns (full line match)
+            virtual_cols = {}
+            for virt_m in re.finditer(
+                r"^\s{2,6}(\w+)\s+(\w[\w\(\),]+)\s+GENERATED\s+ALWAYS\s+AS\s*\(([^)]+)\)\s*VIRTUAL",
+                body, re.MULTILINE | re.IGNORECASE
+            ):
+                virtual_cols[virt_m.group(1).upper()] = virt_m.group(3).strip()
+
             col_pattern = re.compile(
-                r"^\s{2,4}(\w+)\s+([\w\(\),]+(?:\s+\w+)?)"
-                r"(?:\s+GENERATED\s+ALWAYS\s+AS\s*\([^)]+\)\s*VIRTUAL)?"
-                r"(?:\s+DEFAULT\s+\S+)?"
-                r"(?:\s+(?:NOT\s+NULL|NULL))?",
+                r"^\s{2,6}(\w+)\s+([\w\(\),]+(?:\s+\w+)?)",
                 re.MULTILINE | re.IGNORECASE
             )
             for col_m in col_pattern.finditer(body):
                 col_name = col_m.group(1).upper()
-                if col_name.upper() in ("CONSTRAINT", "PRIMARY", "FOREIGN", "UNIQUE", "CHECK"):
+                if col_name.upper() in ("CONSTRAINT", "PRIMARY", "FOREIGN", "UNIQUE", "CHECK",
+                                         "GENERATED", "ALWAYS", "VIRTUAL", "DEFAULT"):
                     continue
                 col_entry = {
                     "name": col_name,
                     "type": col_m.group(2).strip(),
                 }
-                # Flag virtual/generated columns
-                if re.search(
-                    rf"\b{re.escape(col_name)}\b[^,]+GENERATED\s+ALWAYS\s+AS",
-                    body, re.IGNORECASE
-                ):
+                if col_name in virtual_cols:
                     col_entry["virtual"] = True
-                    gen_m = re.search(
-                        rf"\b{re.escape(col_name)}\b[^,]+GENERATED\s+ALWAYS\s+AS\s*\(([^)]+)\)",
-                        body, re.IGNORECASE
-                    )
-                    if gen_m:
-                        col_entry["expression"] = gen_m.group(1).strip()
+                    col_entry["expression"] = virtual_cols[col_name]
                 columns.append(col_entry)
 
             pks = re.findall(r"CONSTRAINT\s+\w+\s+PRIMARY\s+KEY\s*\(([^)]+)\)", body, re.IGNORECASE)

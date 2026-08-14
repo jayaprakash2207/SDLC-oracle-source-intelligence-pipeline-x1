@@ -1243,7 +1243,9 @@
         },
         {
           "name": "AVAILABLE",
-          "type": "NUMBER(6,2)     GENERATED"
+          "type": "NUMBER(6,2)     GENERATED",
+          "virtual": true,
+          "expression": "OPENING_BALANCE + ACCRUED - USED + ADJUSTMENT - PENDING"
         },
         {
           "name": "CARRYOVER_FROM_PREV",
@@ -1934,12 +1936,12 @@
         "EMPLOYEES"
       ],
       "joins": [
+        "JOB_TITLES",
+        "LOCATIONS",
         "JOB_GRADES",
         "DEPARTMENTS",
-        "EMPLOYEES",
-        "LOCATIONS",
-        "JOB_TITLES",
-        "SALARY_RECORDS"
+        "SALARY_RECORDS",
+        "EMPLOYEES"
       ],
       "query_snippet": "SELECT e.EMP_ID, e.EMP_NUMBER, e.FIRST_NAME, e.LAST_NAME,\n       e.FIRST_NAME || ' ' || e.LAST_NAME AS FULL_NAME,\n       e.EMAIL, e.PHONE_WORK, e.PHONE_MOBILE,\n       e.HIRE_DATE,\n       TRUNC(MONTHS_BETWEEN(SYSDATE, e.HIRE_DATE) / 12, 1) AS TENURE_YEARS,\n       e.EMPLOYMENT_TYPE, e.EMPLOYMENT_STATU"
     },
@@ -1957,36 +1959,36 @@
         "EMPLOYEES"
       ],
       "joins": [
-        "JOB_TITLES",
+        "DEPARTMENTS",
         "SALARY_RECORDS",
-        "JOB_GRADES",
-        "DEPARTMENTS"
+        "JOB_TITLES",
+        "JOB_GRADES"
       ],
       "query_snippet": "SELECT e.EMP_ID, e.EMP_NUMBER,\n       e.FIRST_NAME || ' ' || e.LAST_NAME AS EMP_NAME,\n       d.DEPT_NAME, j.JOB_TITLE, g.GRADE_NAME,\n       sr.BASE_SALARY,\n       g.MIN_SALARY AS GRADE_MIN,\n       g.MAX_SALARY AS GRADE_MAX,\n       (g.MIN_SALARY + g.MAX_SALARY) / 2 AS GRADE_MIDPOINT,\n       ROUND(sr."
     },
     "HRMS.VW_LEAVE_SUMMARY": {
       "name": "HRMS.VW_LEAVE_SUMMARY",
       "tables_used": [
-        "SYSDATE",
-        "LEAVE_BALANCES"
+        "LEAVE_BALANCES",
+        "SYSDATE"
       ],
       "joins": [
-        "EMPLOYEES",
+        "DEPARTMENTS",
         "LEAVE_TYPES",
-        "DEPARTMENTS"
+        "EMPLOYEES"
       ],
       "query_snippet": "SELECT e.EMP_ID, e.EMP_NUMBER,\n       e.FIRST_NAME || ' ' || e.LAST_NAME AS EMP_NAME,\n       d.DEPT_NAME,\n       lt.LEAVE_TYPE_NAME,\n       lb.OPENING_BALANCE,\n       lb.ACCRUED,\n       lb.USED,\n       lb.ADJUSTMENT,\n       lb.PENDING,\n       lb.OPENING_BALANCE + lb.ACCRUED - lb.USED + lb.ADJUSTMENT"
     },
     "HRMS.VW_PAYROLL_LATEST": {
       "name": "HRMS.VW_PAYROLL_LATEST",
       "tables_used": [
-        "PAYROLL_RUNS",
-        "PAYROLL_DETAILS"
+        "PAYROLL_DETAILS",
+        "PAYROLL_RUNS"
       ],
       "joins": [
+        "PAYROLL_RUNS",
         "PAY_PERIODS",
-        "EMPLOYEES",
-        "PAYROLL_RUNS"
+        "EMPLOYEES"
       ],
       "query_snippet": "SELECT pd.EMP_ID, e.EMP_NUMBER,\n       e.FIRST_NAME || ' ' || e.LAST_NAME AS EMP_NAME,\n       pp.PERIOD_NAME,\n       SUM(CASE WHEN pd.ELEMENT_TYPE = 'EARNING' THEN pd.AMOUNT ELSE 0 END) AS GROSS_PAY,\n       SUM(CASE WHEN pd.ELEMENT_TYPE = 'TAX' THEN ABS(pd.AMOUNT) ELSE 0 END) AS TOTAL_TAXES,\n       "
     },

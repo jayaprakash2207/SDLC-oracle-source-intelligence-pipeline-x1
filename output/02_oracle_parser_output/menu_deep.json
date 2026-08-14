@@ -140,10 +140,10 @@
     ],
     "open_forms": [
       "HRMS_PERFORMANCE",
+      "HRMS_LEAVE",
       "HRMS_PAYROLL",
       "HRMS_EMPLOYEE",
       "HRMS_REPORTS",
-      "HRMS_LEAVE",
       "HRMS_ADMIN"
     ],
     "show_windows": [

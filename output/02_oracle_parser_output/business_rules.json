@@ -1,4248 +1,4591 @@
 [
   {
     "id": "BR-0001",
+    "source": "HRMS.PKG_AUDIT",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Package uses PRAGMA AUTONOMOUS_TRANSACTION \u2014 audit/notification writes are independent of caller transactions"
+  },
+  {
+    "id": "BR-0002",
+    "source": "HRMS.PKG_AUDIT",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Captures client IP address for audit trail via SYS_CONTEXT"
+  },
+  {
+    "id": "BR-0003",
+    "source": "HRMS.PKG_AUDIT",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Captures Oracle session ID for audit trail via SYS_CONTEXT"
+  },
+  {
+    "id": "BR-0004",
+    "source": "HRMS.PKG_AUDIT",
+    "source_type": "plsql_package",
+    "category": "known_bug",
+    "rule": "Exception swallowing: WHEN OTHERS THEN ROLLBACK/NULL \u2014 errors silently suppressed"
+  },
+  {
+    "id": "BR-0005",
+    "source": "HRMS.PKG_AUDIT.log_action",
+    "source_type": "plsql_procedure",
+    "category": "validation_rule",
+    "rule": "log_action: Runs in autonomous transaction \u2014 changes committed independently of the caller"
+  },
+  {
+    "id": "BR-0006",
+    "source": "HRMS.PKG_AUDIT.log_action",
+    "source_type": "plsql_procedure",
+    "category": "validation_rule",
+    "rule": "log_action: Captures client IP address via SYS_CONTEXT for audit trail"
+  },
+  {
+    "id": "BR-0007",
+    "source": "HRMS.PKG_AUDIT.log_action",
+    "source_type": "plsql_procedure",
+    "category": "validation_rule",
+    "rule": "log_action: Captures Oracle session ID via SYS_CONTEXT for audit trail"
+  },
+  {
+    "id": "BR-0008",
+    "source": "HRMS.PKG_AUDIT.log_action",
+    "source_type": "plsql_procedure",
+    "category": "validation_rule",
+    "rule": "log_action: Silently swallows exceptions \u2014 errors are suppressed to protect calling transaction"
+  },
+  {
+    "id": "BR-0009",
     "source": "HRMS.PKG_COMMON",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Only system parameters explicitly flagged as editable (EDITABLE_FLAG = 'Y') may be modified; parameters marked non-editable are protected from update"
   },
   {
-    "id": "BR-0002",
+    "id": "BR-0010",
     "source": "HRMS.PKG_COMMON",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "_days_between"
-  },
-  {
-    "id": "BR-0003",
-    "source": "HRMS.PKG_COMMON",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "A parameter update must match exactly one editable row; if zero rows are updated the parameter either does not exist in the given group/code or has been locked as non-editable"
-  },
-  {
-    "id": "BR-0004",
-    "source": "HRMS.PKG_COMMON",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "Attempting to modify a non-existent or non-editable system parameter is a fatal error; callers must not silently ignore this condition"
-  },
-  {
-    "id": "BR-0005",
-    "source": "HRMS.PKG_COMMON",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "Saturday and Sunday are not counted as business days; only Monday through Friday increment the business day counter"
-  },
-  {
-    "id": "BR-0006",
-    "source": "HRMS.PKG_COMMON",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "Saturday and Sunday are skipped when advancing by business days; only weekdays (Monday through Friday) count toward the requested number of days added"
-  },
-  {
-    "id": "BR-0007",
-    "source": "HRMS.PKG_COMMON",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "A date falling in October or later belongs to the fiscal year of the following calendar year (e.g. October 2024 is in fiscal year 2025)"
-  },
-  {
-    "id": "BR-0008",
-    "source": "HRMS.PKG_COMMON",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "Fiscal quarters follow the October 1 fiscal year start: Q1 = October\u2013December, Q2 = January\u2013March, Q3 = April\u2013June, Q4 = July\u2013September"
-  },
-  {
-    "id": "BR-0009",
-    "source": "HRMS.PKG_COMMON",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "A 10-digit number is formatted as a US domestic number in (NXX) NXX-XXXX notation"
-  },
-  {
-    "id": "BR-0010",
-    "source": "HRMS.PKG_COMMON",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "An 11-digit number starting with '1' is formatted as a US/Canada international number with a +1 prefix; all other lengths or leading digits are returned unmodified"
   },
   {
     "id": "BR-0011",
     "source": "HRMS.PKG_COMMON",
     "source_type": "plsql_package",
     "category": "validation_rule",
-    "rule": "A null SSN or one with fewer than 4 characters cannot be partially unmasked; the entire value is replaced with the full mask '***-**-****' to prevent partial PII exposure"
+    "rule": "A parameter update must match exactly one editable row; if zero rows are updated the parameter either does not exist in the given group/code or has been locked as non-editable"
   },
   {
     "id": "BR-0012",
     "source": "HRMS.PKG_COMMON",
     "source_type": "plsql_package",
     "category": "validation_rule",
-    "rule": "Format code 'LF' produces \"Last, First\" display order; any other value (including the default 'FL') produces \"First Last\" display order"
+    "rule": "Attempting to modify a non-existent or non-editable system parameter is a fatal error; callers must not silently ignore this condition"
   },
   {
     "id": "BR-0013",
+    "source": "HRMS.PKG_COMMON",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Saturday and Sunday are not counted as business days; only Monday through Friday increment the business day counter"
+  },
+  {
+    "id": "BR-0014",
+    "source": "HRMS.PKG_COMMON",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Saturday and Sunday are skipped when advancing by business days; only weekdays (Monday through Friday) count toward the requested number of days added"
+  },
+  {
+    "id": "BR-0015",
+    "source": "HRMS.PKG_COMMON",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "A date falling in October or later belongs to the fiscal year of the following calendar year (e.g. October 2024 is in fiscal year 2025)"
+  },
+  {
+    "id": "BR-0016",
+    "source": "HRMS.PKG_COMMON",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Fiscal quarters follow the October 1 fiscal year start: Q1 = October\u2013December, Q2 = January\u2013March, Q3 = April\u2013June, Q4 = July\u2013September"
+  },
+  {
+    "id": "BR-0017",
+    "source": "HRMS.PKG_COMMON",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "A 10-digit number is formatted as a US domestic number in (NXX) NXX-XXXX notation"
+  },
+  {
+    "id": "BR-0018",
+    "source": "HRMS.PKG_COMMON",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "An 11-digit number starting with '1' is formatted as a US/Canada international number with a +1 prefix; all other lengths or leading digits are returned unmodified"
+  },
+  {
+    "id": "BR-0019",
+    "source": "HRMS.PKG_COMMON",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "A null SSN or one with fewer than 4 characters cannot be partially unmasked; the entire value is replaced with the full mask '***-**-****' to prevent partial PII exposure"
+  },
+  {
+    "id": "BR-0020",
+    "source": "HRMS.PKG_COMMON",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Format code 'LF' produces \"Last, First\" display order; any other value (including the default 'FL') produces \"First Last\" display order"
+  },
+  {
+    "id": "BR-0021",
+    "source": "HRMS.PKG_COMMON",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Package uses PRAGMA AUTONOMOUS_TRANSACTION \u2014 audit/notification writes are independent of caller transactions"
+  },
+  {
+    "id": "BR-0022",
     "source": "HRMS.PKG_COMMON",
     "source_type": "plsql_package",
     "category": "constraint",
     "rule": "The fiscal year boundary is month 10 (October); the organisation's fiscal year begins on October 1"
   },
   {
-    "id": "BR-0014",
+    "id": "BR-0023",
     "source": "HRMS.PKG_COMMON",
     "source_type": "plsql_package",
     "category": "constraint",
     "rule": "A standard US domestic phone number must contain exactly 10 digits"
   },
   {
-    "id": "BR-0015",
+    "id": "BR-0024",
     "source": "HRMS.PKG_COMMON",
     "source_type": "plsql_package",
     "category": "constraint",
     "rule": "An 11-digit phone number is only recognised as a valid US/Canada international number if it begins with country code '1'"
   },
   {
-    "id": "BR-0016",
+    "id": "BR-0025",
     "source": "HRMS.PKG_COMMON",
     "source_type": "plsql_package",
     "category": "constraint",
     "rule": "An SSN must have at least 4 characters for the last-four-digit display to be meaningful"
   },
   {
-    "id": "BR-0017",
+    "id": "BR-0026",
+    "source": "HRMS.PKG_COMMON",
+    "source_type": "plsql_package",
+    "category": "known_bug",
+    "rule": "Exception swallowing: WHEN OTHERS THEN ROLLBACK/NULL \u2014 errors silently suppressed"
+  },
+  {
+    "id": "BR-0027",
+    "source": "HRMS.PKG_COMMON.log_error",
+    "source_type": "plsql_procedure",
+    "category": "validation_rule",
+    "rule": "log_error: Runs in autonomous transaction \u2014 changes committed independently of the caller"
+  },
+  {
+    "id": "BR-0028",
+    "source": "HRMS.PKG_COMMON.log_error",
+    "source_type": "plsql_procedure",
+    "category": "validation_rule",
+    "rule": "log_error: Silently swallows exceptions \u2014 errors are suppressed to protect calling transaction"
+  },
+  {
+    "id": "BR-0029",
+    "source": "HRMS.PKG_COMMON.log_info",
+    "source_type": "plsql_procedure",
+    "category": "validation_rule",
+    "rule": "log_info: Runs in autonomous transaction \u2014 changes committed independently of the caller"
+  },
+  {
+    "id": "BR-0030",
+    "source": "HRMS.PKG_COMMON.log_info",
+    "source_type": "plsql_procedure",
+    "category": "validation_rule",
+    "rule": "log_info: Silently swallows exceptions \u2014 errors are suppressed to protect calling transaction"
+  },
+  {
+    "id": "BR-0031",
     "source": "HRMS.PKG_COMMON.set_param",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Only system parameters explicitly flagged as editable (EDITABLE_FLAG = 'Y') may be modified; parameters marked non-editable are protected from update"
   },
   {
-    "id": "BR-0018",
+    "id": "BR-0032",
     "source": "HRMS.PKG_COMMON.set_param",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "_days_between"
   },
   {
-    "id": "BR-0019",
+    "id": "BR-0033",
     "source": "HRMS.PKG_COMMON.set_param",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "A parameter update must match exactly one editable row; if zero rows are updated the parameter either does not exist in the given group/code or has been locked as non-editable"
   },
   {
-    "id": "BR-0020",
+    "id": "BR-0034",
     "source": "HRMS.PKG_COMMON.set_param",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Attempting to modify a non-existent or non-editable system parameter is a fatal error; callers must not silently ignore this condition"
   },
   {
-    "id": "BR-0021",
+    "id": "BR-0035",
     "source": "HRMS.PKG_COMMON.set_param",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20900: Parameter not found or not editable: "
   },
   {
-    "id": "BR-0022",
+    "id": "BR-0036",
     "source": "HRMS.PKG_COMMON.business_days_between",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Saturday and Sunday are not counted as business days; only Monday through Friday increment the business day counter"
   },
   {
-    "id": "BR-0023",
+    "id": "BR-0037",
     "source": "HRMS.PKG_COMMON.add_business_days",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Saturday and Sunday are skipped when advancing by business days; only weekdays (Monday through Friday) count toward the requested number of days added"
   },
   {
-    "id": "BR-0024",
+    "id": "BR-0038",
     "source": "HRMS.PKG_COMMON.get_fiscal_year",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "A date falling in October or later belongs to the fiscal year of the following calendar year (e.g. October 2024 is in fiscal year 2025)"
   },
   {
-    "id": "BR-0025",
+    "id": "BR-0039",
     "source": "HRMS.PKG_COMMON.get_fiscal_quarter",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Fiscal quarters follow the October 1 fiscal year start: Q1 = October\u2013December, Q2 = January\u2013March, Q3 = April\u2013June, Q4 = July\u2013September"
   },
   {
-    "id": "BR-0026",
+    "id": "BR-0040",
     "source": "HRMS.PKG_COMMON.format_phone",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "A 10-digit number is formatted as a US domestic number in (NXX) NXX-XXXX notation"
   },
   {
-    "id": "BR-0027",
+    "id": "BR-0041",
     "source": "HRMS.PKG_COMMON.format_phone",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "An 11-digit number starting with '1' is formatted as a US/Canada international number with a +1 prefix; all other lengths or leading digits are returned unmodified"
   },
   {
-    "id": "BR-0028",
+    "id": "BR-0042",
     "source": "HRMS.PKG_COMMON.format_ssn_masked",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "A null SSN or one with fewer than 4 characters cannot be partially unmasked; the entire value is replaced with the full mask '***-**-****' to prevent partial PII exposure"
   },
   {
-    "id": "BR-0029",
+    "id": "BR-0043",
     "source": "HRMS.PKG_COMMON.format_name",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Format code 'LF' produces \"Last, First\" display order; any other value (including the default 'FL') produces \"First Last\" display order"
   },
   {
-    "id": "BR-0030",
+    "id": "BR-0044",
     "source": "HRMS.PKG_EMPLOYEE",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Only departments flagged as active (ACTIVE_FLAG = 'Y') are considered valid for employee assignment"
   },
   {
-    "id": "BR-0031",
+    "id": "BR-0045",
     "source": "HRMS.PKG_EMPLOYEE",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Only employees with EMPLOYMENT_STATUS = 'ACTIVE' are eligible to be assigned as a manager"
   },
   {
-    "id": "BR-0032",
+    "id": "BR-0046",
     "source": "HRMS.PKG_EMPLOYEE",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Only job titles with ACTIVE_FLAG = 'Y' are valid for assignment to a new employee"
   },
   {
-    "id": "BR-0033",
+    "id": "BR-0047",
     "source": "HRMS.PKG_EMPLOYEE",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "The current salary is the active salary record that became effective on or before today and whose end date is either open-ended or in the future"
   },
   {
-    "id": "BR-0034",
+    "id": "BR-0048",
     "source": "HRMS.PKG_EMPLOYEE",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "When provided, the status filter restricts search results to employees with the specified EMPLOYMENT_STATUS value (e.g., ACTIVE, TERMINATED)"
   },
   {
-    "id": "BR-0035",
+    "id": "BR-0049",
     "source": "HRMS.PKG_EMPLOYEE",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "The most recent active salary record is used as the pre-promotion baseline for computing the percentage salary increase"
   },
   {
-    "id": "BR-0036",
+    "id": "BR-0050",
     "source": "HRMS.PKG_EMPLOYEE",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Only leave requests in PENDING status are identified for automatic cancellation upon employee termination"
   },
   {
-    "id": "BR-0037",
+    "id": "BR-0051",
     "source": "HRMS.PKG_EMPLOYEE",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Only currently active salary records (ACTIVE_FLAG = 'Y') are closed upon termination; previously ended records are not modified"
   },
   {
-    "id": "BR-0038",
+    "id": "BR-0052",
     "source": "HRMS.PKG_EMPLOYEE",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Only currently active pay elements (ACTIVE_FLAG = 'Y') are deactivated at termination; previously ended pay elements are not affected"
   },
   {
-    "id": "BR-0039",
+    "id": "BR-0053",
     "source": "HRMS.PKG_EMPLOYEE",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Only employees with EMPLOYMENT_STATUS = 'ACTIVE' are returned as direct reports; terminated or inactive employees are excluded"
   },
   {
-    "id": "BR-0040",
+    "id": "BR-0054",
     "source": "HRMS.PKG_EMPLOYEE",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "The org chart hierarchy traversal includes only employees with EMPLOYMENT_STATUS = 'ACTIVE'; terminated employees are excluded from the hierarchy"
   },
   {
-    "id": "BR-0041",
+    "id": "BR-0055",
     "source": "HRMS.PKG_EMPLOYEE",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Headcount counts only employees who were actively employed on the specified as-of date \u2014 hired on or before that date and not yet terminated at that point"
-  },
-  {
-    "id": "BR-0042",
-    "source": "HRMS.PKG_EMPLOYEE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "Department must exist and be active before it can be assigned to an employee"
-  },
-  {
-    "id": "BR-0043",
-    "source": "HRMS.PKG_EMPLOYEE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "Assigning an inactive or non-existent department to an employee raises an application error"
-  },
-  {
-    "id": "BR-0044",
-    "source": "HRMS.PKG_EMPLOYEE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "A NULL manager assignment is valid and indicates the employee is at the top of the reporting hierarchy with no manager above them"
-  },
-  {
-    "id": "BR-0045",
-    "source": "HRMS.PKG_EMPLOYEE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "The designated manager must exist in the system and have EMPLOYMENT_STATUS = 'ACTIVE'"
-  },
-  {
-    "id": "BR-0046",
-    "source": "HRMS.PKG_EMPLOYEE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "Specifying a manager who does not exist or is not currently active raises an application error"
-  },
-  {
-    "id": "BR-0047",
-    "source": "HRMS.PKG_EMPLOYEE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "When updating an existing employee, the new manager assignment must not create a circular reporting chain"
-  },
-  {
-    "id": "BR-0048",
-    "source": "HRMS.PKG_EMPLOYEE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "An employee cannot directly or indirectly report to themselves; circular reporting chains are prohibited"
-  },
-  {
-    "id": "BR-0049",
-    "source": "HRMS.PKG_EMPLOYEE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "Assigning a manager who already reports (directly or indirectly) to this employee creates a circular chain and raises an error"
-  },
-  {
-    "id": "BR-0050",
-    "source": "HRMS.PKG_EMPLOYEE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "Both first name and last name are mandatory fields when creating a new employee record"
-  },
-  {
-    "id": "BR-0051",
-    "source": "HRMS.PKG_EMPLOYEE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "An employee cannot be created without both a first name and a last name"
-  },
-  {
-    "id": "BR-0052",
-    "source": "HRMS.PKG_EMPLOYEE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "The job title specified at hire must exist in the JOB_TITLES table and be currently active"
-  },
-  {
-    "id": "BR-0053",
-    "source": "HRMS.PKG_EMPLOYEE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "Employee starting salary must fall within the minimum and maximum range for their assigned job grade (soft warning \u2014 manager approval via the Forms layer allows override)"
-  },
-  {
-    "id": "BR-0054",
-    "source": "HRMS.PKG_EMPLOYEE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "A salary record is only created at hire when a starting salary is explicitly provided; employees may be hired without an initial salary record"
-  },
-  {
-    "id": "BR-0055",
-    "source": "HRMS.PKG_EMPLOYEE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "Employee numbers must be unique; a duplicate generated during concurrent inserts requires the caller to retry the operation"
   },
   {
     "id": "BR-0056",
     "source": "HRMS.PKG_EMPLOYEE",
     "source_type": "plsql_package",
     "category": "validation_rule",
-    "rule": "Employee must exist in the system before their contact or personal information can be updated"
+    "rule": "Department must exist and be active before it can be assigned to an employee"
   },
   {
     "id": "BR-0057",
     "source": "HRMS.PKG_EMPLOYEE",
     "source_type": "plsql_package",
     "category": "validation_rule",
-    "rule": "Attempting to update a non-existent employee record raises an application error"
+    "rule": "Assigning an inactive or non-existent department to an employee raises an application error"
   },
   {
     "id": "BR-0058",
     "source": "HRMS.PKG_EMPLOYEE",
     "source_type": "plsql_package",
     "category": "validation_rule",
-    "rule": "If the update affects zero rows, an error is raised to signal an unexpected data integrity failure"
+    "rule": "A NULL manager assignment is valid and indicates the employee is at the top of the reporting hierarchy with no manager above them"
   },
   {
     "id": "BR-0059",
     "source": "HRMS.PKG_EMPLOYEE",
     "source_type": "plsql_package",
     "category": "validation_rule",
-    "rule": "Zero rows updated after a successful existence check indicates a concurrent deletion between the two operations"
+    "rule": "The designated manager must exist in the system and have EMPLOYMENT_STATUS = 'ACTIVE'"
   },
   {
     "id": "BR-0060",
     "source": "HRMS.PKG_EMPLOYEE",
     "source_type": "plsql_package",
     "category": "validation_rule",
-    "rule": "Requesting an employee by ID that does not exist in the EMPLOYEES table raises an application error"
+    "rule": "Specifying a manager who does not exist or is not currently active raises an application error"
   },
   {
     "id": "BR-0061",
     "source": "HRMS.PKG_EMPLOYEE",
     "source_type": "plsql_package",
     "category": "validation_rule",
-    "rule": "Requesting an employee by employee number that does not exist in the EMPLOYEES table raises an application error"
+    "rule": "When updating an existing employee, the new manager assignment must not create a circular reporting chain"
   },
   {
     "id": "BR-0062",
     "source": "HRMS.PKG_EMPLOYEE",
     "source_type": "plsql_package",
     "category": "validation_rule",
-    "rule": "Only employees with EMPLOYMENT_STATUS = 'ACTIVE' may be transferred; transferring a non-active employee is prohibited"
+    "rule": "An employee cannot directly or indirectly report to themselves; circular reporting chains are prohibited"
   },
   {
     "id": "BR-0063",
     "source": "HRMS.PKG_EMPLOYEE",
     "source_type": "plsql_package",
     "category": "validation_rule",
-    "rule": "Attempting to transfer an employee who is not in ACTIVE status raises an application error"
+    "rule": "Assigning a manager who already reports (directly or indirectly) to this employee creates a circular chain and raises an error"
   },
   {
     "id": "BR-0064",
     "source": "HRMS.PKG_EMPLOYEE",
     "source_type": "plsql_package",
     "category": "validation_rule",
-    "rule": "A new manager for the transfer is validated (including circular-chain detection) only when one is explicitly provided; omitting the manager preserves the existing assignment"
+    "rule": "Both first name and last name are mandatory fields when creating a new employee record"
   },
   {
     "id": "BR-0065",
     "source": "HRMS.PKG_EMPLOYEE",
     "source_type": "plsql_package",
     "category": "validation_rule",
-    "rule": "An employee who is already terminated cannot be terminated again; re-termination is blocked"
+    "rule": "An employee cannot be created without both a first name and a last name"
   },
   {
     "id": "BR-0066",
     "source": "HRMS.PKG_EMPLOYEE",
     "source_type": "plsql_package",
     "category": "validation_rule",
-    "rule": "Attempting to terminate an already-terminated employee raises an application error"
+    "rule": "The job title specified at hire must exist in the JOB_TITLES table and be currently active"
   },
   {
     "id": "BR-0067",
     "source": "HRMS.PKG_EMPLOYEE",
     "source_type": "plsql_package",
     "category": "validation_rule",
-    "rule": "All pending leave requests for a terminating employee are automatically cancelled; no manual action is required from the employee or their manager"
+    "rule": "Employee starting salary must fall within the minimum and maximum range for their assigned job grade (soft warning \u2014 manager approval via the Forms layer allows override)"
   },
   {
     "id": "BR-0068",
     "source": "HRMS.PKG_EMPLOYEE",
     "source_type": "plsql_package",
     "category": "validation_rule",
-    "rule": "A termination notification is sent to the employee's direct manager only when a manager is assigned; top-level employees with no manager do not trigger a manager notification"
+    "rule": "A salary record is only created at hire when a starting salary is explicitly provided; employees may be hired without an initial salary record"
   },
   {
     "id": "BR-0069",
     "source": "HRMS.PKG_EMPLOYEE",
     "source_type": "plsql_package",
     "category": "validation_rule",
-    "rule": "Rehiring an employee overwrites their hire date with the rehire date and clears all prior termination data; the employee is treated as starting fresh from the rehire date"
+    "rule": "Employee numbers must be unique; a duplicate generated during concurrent inserts requires the caller to retry the operation"
   },
   {
     "id": "BR-0070",
     "source": "HRMS.PKG_EMPLOYEE",
     "source_type": "plsql_package",
     "category": "validation_rule",
-    "rule": "Attempting to rehire an employee ID that does not exist in the EMPLOYEES table raises an application error"
+    "rule": "Employee must exist in the system before their contact or personal information can be updated"
   },
   {
     "id": "BR-0071",
     "source": "HRMS.PKG_EMPLOYEE",
     "source_type": "plsql_package",
     "category": "validation_rule",
-    "rule": "An employee is considered active if and only if their EMPLOYMENT_STATUS column value equals 'ACTIVE'"
+    "rule": "Attempting to update a non-existent employee record raises an application error"
   },
   {
     "id": "BR-0072",
     "source": "HRMS.PKG_EMPLOYEE",
     "source_type": "plsql_package",
     "category": "validation_rule",
-    "rule": "An employee record is considered invalid if either the first name or the last name is absent"
+    "rule": "If the update affects zero rows, an error is raised to signal an unexpected data integrity failure"
   },
   {
     "id": "BR-0073",
     "source": "HRMS.PKG_EMPLOYEE",
     "source_type": "plsql_package",
     "category": "validation_rule",
-    "rule": "An employee record is considered invalid if no hire date has been recorded"
+    "rule": "Zero rows updated after a successful existence check indicates a concurrent deletion between the two operations"
   },
   {
     "id": "BR-0074",
     "source": "HRMS.PKG_EMPLOYEE",
     "source_type": "plsql_package",
     "category": "validation_rule",
-    "rule": "An employee record is considered inconsistent if EMPLOYMENT_STATUS is 'ACTIVE' but ACTIVE_FLAG is not 'Y'; both fields must be in agreement for active employees"
+    "rule": "Requesting an employee by ID that does not exist in the EMPLOYEES table raises an application error"
   },
   {
     "id": "BR-0075",
+    "source": "HRMS.PKG_EMPLOYEE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Requesting an employee by employee number that does not exist in the EMPLOYEES table raises an application error"
+  },
+  {
+    "id": "BR-0076",
+    "source": "HRMS.PKG_EMPLOYEE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Only employees with EMPLOYMENT_STATUS = 'ACTIVE' may be transferred; transferring a non-active employee is prohibited"
+  },
+  {
+    "id": "BR-0077",
+    "source": "HRMS.PKG_EMPLOYEE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Attempting to transfer an employee who is not in ACTIVE status raises an application error"
+  },
+  {
+    "id": "BR-0078",
+    "source": "HRMS.PKG_EMPLOYEE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "A new manager for the transfer is validated (including circular-chain detection) only when one is explicitly provided; omitting the manager preserves the existing assignment"
+  },
+  {
+    "id": "BR-0079",
+    "source": "HRMS.PKG_EMPLOYEE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "An employee who is already terminated cannot be terminated again; re-termination is blocked"
+  },
+  {
+    "id": "BR-0080",
+    "source": "HRMS.PKG_EMPLOYEE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Attempting to terminate an already-terminated employee raises an application error"
+  },
+  {
+    "id": "BR-0081",
+    "source": "HRMS.PKG_EMPLOYEE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "All pending leave requests for a terminating employee are automatically cancelled; no manual action is required from the employee or their manager"
+  },
+  {
+    "id": "BR-0082",
+    "source": "HRMS.PKG_EMPLOYEE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "A termination notification is sent to the employee's direct manager only when a manager is assigned; top-level employees with no manager do not trigger a manager notification"
+  },
+  {
+    "id": "BR-0083",
+    "source": "HRMS.PKG_EMPLOYEE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Rehiring an employee overwrites their hire date with the rehire date and clears all prior termination data; the employee is treated as starting fresh from the rehire date"
+  },
+  {
+    "id": "BR-0084",
+    "source": "HRMS.PKG_EMPLOYEE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Attempting to rehire an employee ID that does not exist in the EMPLOYEES table raises an application error"
+  },
+  {
+    "id": "BR-0085",
+    "source": "HRMS.PKG_EMPLOYEE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "An employee is considered active if and only if their EMPLOYMENT_STATUS column value equals 'ACTIVE'"
+  },
+  {
+    "id": "BR-0086",
+    "source": "HRMS.PKG_EMPLOYEE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "An employee record is considered invalid if either the first name or the last name is absent"
+  },
+  {
+    "id": "BR-0087",
+    "source": "HRMS.PKG_EMPLOYEE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "An employee record is considered invalid if no hire date has been recorded"
+  },
+  {
+    "id": "BR-0088",
+    "source": "HRMS.PKG_EMPLOYEE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "An employee record is considered inconsistent if EMPLOYMENT_STATUS is 'ACTIVE' but ACTIVE_FLAG is not 'Y'; both fields must be in agreement for active employees"
+  },
+  {
+    "id": "BR-0089",
+    "source": "HRMS.PKG_EMPLOYEE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Package uses PRAGMA AUTONOMOUS_TRANSACTION \u2014 audit/notification writes are independent of caller transactions"
+  },
+  {
+    "id": "BR-0090",
     "source": "HRMS.PKG_EMPLOYEE",
     "source_type": "plsql_package",
     "category": "constraint",
     "rule": "The reporting hierarchy is limited to a maximum depth of 15 levels to prevent unbounded traversal during circular reference detection"
   },
   {
-    "id": "BR-0076",
+    "id": "BR-0091",
     "source": "HRMS.PKG_EMPLOYEE",
     "source_type": "plsql_package",
     "category": "constraint",
     "rule": "The default maximum depth for org chart traversal is 10 levels; callers may override this, but deeper traversal risks timeout on large organisations"
   },
   {
-    "id": "BR-0077",
+    "id": "BR-0092",
     "source": "HRMS.PKG_EMPLOYEE",
     "source_type": "plsql_package",
     "category": "known_bug",
     "rule": "race condition under concurrent inserts - no SELECT FOR UPDATE"
   },
   {
-    "id": "BR-0078",
+    "id": "BR-0093",
     "source": "HRMS.PKG_EMPLOYEE",
     "source_type": "plsql_package",
     "category": "known_bug",
     "rule": "SQL injection possible via p_last_name if called with unvalidated input"
   },
   {
-    "id": "BR-0079",
+    "id": "BR-0094",
+    "source": "HRMS.PKG_EMPLOYEE",
+    "source_type": "plsql_package",
+    "category": "known_bug",
+    "rule": "Exception swallowing: WHEN OTHERS THEN ROLLBACK/NULL \u2014 errors silently suppressed"
+  },
+  {
+    "id": "BR-0095",
     "source": "HRMS.PKG_EMPLOYEE.validate_dept",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Only departments flagged as active (ACTIVE_FLAG = 'Y') are considered valid for employee assignment"
   },
   {
-    "id": "BR-0080",
+    "id": "BR-0096",
     "source": "HRMS.PKG_EMPLOYEE.validate_dept",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Department must exist and be active before it can be assigned to an employee"
   },
   {
-    "id": "BR-0081",
+    "id": "BR-0097",
     "source": "HRMS.PKG_EMPLOYEE.validate_dept",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Assigning an inactive or non-existent department to an employee raises an application error"
   },
   {
-    "id": "BR-0082",
+    "id": "BR-0098",
     "source": "HRMS.PKG_EMPLOYEE.validate_dept",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20003: Invalid or inactive department: "
   },
   {
-    "id": "BR-0083",
+    "id": "BR-0099",
     "source": "HRMS.PKG_EMPLOYEE.validate_manager",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Only employees with EMPLOYMENT_STATUS = 'ACTIVE' are eligible to be assigned as a manager"
   },
   {
-    "id": "BR-0084",
+    "id": "BR-0100",
     "source": "HRMS.PKG_EMPLOYEE.validate_manager",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "A NULL manager assignment is valid and indicates the employee is at the top of the reporting hierarchy with no manager above them"
   },
   {
-    "id": "BR-0085",
+    "id": "BR-0101",
     "source": "HRMS.PKG_EMPLOYEE.validate_manager",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "The designated manager must exist in the system and have EMPLOYMENT_STATUS = 'ACTIVE'"
   },
   {
-    "id": "BR-0086",
+    "id": "BR-0102",
     "source": "HRMS.PKG_EMPLOYEE.validate_manager",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Specifying a manager who does not exist or is not currently active raises an application error"
   },
   {
-    "id": "BR-0087",
+    "id": "BR-0103",
     "source": "HRMS.PKG_EMPLOYEE.validate_manager",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "When updating an existing employee, the new manager assignment must not create a circular reporting chain"
   },
   {
-    "id": "BR-0088",
+    "id": "BR-0104",
     "source": "HRMS.PKG_EMPLOYEE.validate_manager",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "An employee cannot directly or indirectly report to themselves; circular reporting chains are prohibited"
   },
   {
-    "id": "BR-0089",
+    "id": "BR-0105",
     "source": "HRMS.PKG_EMPLOYEE.validate_manager",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Assigning a manager who already reports (directly or indirectly) to this employee creates a circular chain and raises an error"
   },
   {
-    "id": "BR-0090",
+    "id": "BR-0106",
     "source": "HRMS.PKG_EMPLOYEE.validate_manager",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20004: Invalid or inactive manager: "
   },
   {
-    "id": "BR-0091",
+    "id": "BR-0107",
     "source": "HRMS.PKG_EMPLOYEE.validate_manager",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20004: Circular reporting chain detected: Employee "
   },
   {
-    "id": "BR-0092",
+    "id": "BR-0108",
+    "source": "HRMS.PKG_EMPLOYEE.log_history",
+    "source_type": "plsql_procedure",
+    "category": "validation_rule",
+    "rule": "log_history: Runs in autonomous transaction \u2014 changes committed independently of the caller"
+  },
+  {
+    "id": "BR-0109",
+    "source": "HRMS.PKG_EMPLOYEE.log_history",
+    "source_type": "plsql_procedure",
+    "category": "validation_rule",
+    "rule": "log_history: Silently swallows exceptions \u2014 errors are suppressed to protect calling transaction"
+  },
+  {
+    "id": "BR-0110",
     "source": "HRMS.PKG_EMPLOYEE.create_employee",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Only job titles with ACTIVE_FLAG = 'Y' are valid for assignment to a new employee"
   },
   {
-    "id": "BR-0093",
+    "id": "BR-0111",
     "source": "HRMS.PKG_EMPLOYEE.create_employee",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Both first name and last name are mandatory fields when creating a new employee record"
   },
   {
-    "id": "BR-0094",
+    "id": "BR-0112",
     "source": "HRMS.PKG_EMPLOYEE.create_employee",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "An employee cannot be created without both a first name and a last name"
   },
   {
-    "id": "BR-0095",
+    "id": "BR-0113",
     "source": "HRMS.PKG_EMPLOYEE.create_employee",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "The job title specified at hire must exist in the JOB_TITLES table and be currently active"
   },
   {
-    "id": "BR-0096",
+    "id": "BR-0114",
     "source": "HRMS.PKG_EMPLOYEE.create_employee",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Employee starting salary must fall within the minimum and maximum range for their assigned job grade (soft warning \u2014 manager approval via the Forms layer allows override)"
   },
   {
-    "id": "BR-0097",
+    "id": "BR-0115",
     "source": "HRMS.PKG_EMPLOYEE.create_employee",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "A salary record is only created at hire when a starting salary is explicitly provided; employees may be hired without an initial salary record"
   },
   {
-    "id": "BR-0098",
+    "id": "BR-0116",
     "source": "HRMS.PKG_EMPLOYEE.create_employee",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Employee numbers must be unique; a duplicate generated during concurrent inserts requires the caller to retry the operation"
   },
   {
-    "id": "BR-0099",
+    "id": "BR-0117",
     "source": "HRMS.PKG_EMPLOYEE.create_employee",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20010: First name and last name are required"
   },
   {
-    "id": "BR-0100",
+    "id": "BR-0118",
     "source": "HRMS.PKG_EMPLOYEE.create_employee",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20011: Invalid or inactive job: "
   },
   {
-    "id": "BR-0101",
+    "id": "BR-0119",
     "source": "HRMS.PKG_EMPLOYEE.create_employee",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20002: Duplicate employee number generated. Please retry."
   },
   {
-    "id": "BR-0102",
+    "id": "BR-0120",
     "source": "HRMS.PKG_EMPLOYEE.update_employee",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Employee must exist in the system before their contact or personal information can be updated"
   },
   {
-    "id": "BR-0103",
+    "id": "BR-0121",
     "source": "HRMS.PKG_EMPLOYEE.update_employee",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Attempting to update a non-existent employee record raises an application error"
   },
   {
-    "id": "BR-0104",
+    "id": "BR-0122",
     "source": "HRMS.PKG_EMPLOYEE.update_employee",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "If the update affects zero rows, an error is raised to signal an unexpected data integrity failure"
   },
   {
-    "id": "BR-0105",
+    "id": "BR-0123",
     "source": "HRMS.PKG_EMPLOYEE.update_employee",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Zero rows updated after a successful existence check indicates a concurrent deletion between the two operations"
   },
   {
-    "id": "BR-0106",
+    "id": "BR-0124",
     "source": "HRMS.PKG_EMPLOYEE.update_employee",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20001: Employee not found: "
   },
   {
-    "id": "BR-0107",
+    "id": "BR-0125",
     "source": "HRMS.PKG_EMPLOYEE.update_employee",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20001: Employee update failed: "
   },
   {
-    "id": "BR-0108",
+    "id": "BR-0126",
     "source": "HRMS.PKG_EMPLOYEE.get_employee",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "The current salary is the active salary record that became effective on or before today and whose end date is either open-ended or in the future"
   },
   {
-    "id": "BR-0109",
+    "id": "BR-0127",
     "source": "HRMS.PKG_EMPLOYEE.get_employee",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Requesting an employee by ID that does not exist in the EMPLOYEES table raises an application error"
   },
   {
-    "id": "BR-0110",
+    "id": "BR-0128",
     "source": "HRMS.PKG_EMPLOYEE.get_employee",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20001: Employee not found: "
   },
   {
-    "id": "BR-0111",
+    "id": "BR-0129",
     "source": "HRMS.PKG_EMPLOYEE.get_employee_by_number",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Requesting an employee by employee number that does not exist in the EMPLOYEES table raises an application error"
   },
   {
-    "id": "BR-0112",
+    "id": "BR-0130",
     "source": "HRMS.PKG_EMPLOYEE.get_employee_by_number",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20001: Employee not found: "
   },
   {
-    "id": "BR-0113",
+    "id": "BR-0131",
     "source": "HRMS.PKG_EMPLOYEE.search_employees",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "When provided, the status filter restricts search results to employees with the specified EMPLOYMENT_STATUS value (e.g., ACTIVE, TERMINATED)"
   },
   {
-    "id": "BR-0114",
+    "id": "BR-0132",
+    "source": "HRMS.PKG_EMPLOYEE.search_employees",
+    "source_type": "plsql_procedure",
+    "category": "validation_rule",
+    "rule": "search_employees: BUG \u2014 uses dynamic SQL concatenation with user input; vulnerable to SQL injection"
+  },
+  {
+    "id": "BR-0133",
     "source": "HRMS.PKG_EMPLOYEE.transfer_employee",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Only employees with EMPLOYMENT_STATUS = 'ACTIVE' may be transferred; transferring a non-active employee is prohibited"
   },
   {
-    "id": "BR-0115",
+    "id": "BR-0134",
     "source": "HRMS.PKG_EMPLOYEE.transfer_employee",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Attempting to transfer an employee who is not in ACTIVE status raises an application error"
   },
   {
-    "id": "BR-0116",
+    "id": "BR-0135",
     "source": "HRMS.PKG_EMPLOYEE.transfer_employee",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "A new manager for the transfer is validated (including circular-chain detection) only when one is explicitly provided; omitting the manager preserves the existing assignment"
   },
   {
-    "id": "BR-0117",
+    "id": "BR-0136",
     "source": "HRMS.PKG_EMPLOYEE.transfer_employee",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20012: Cannot transfer non-active employee. Status: "
   },
   {
-    "id": "BR-0118",
+    "id": "BR-0137",
     "source": "HRMS.PKG_EMPLOYEE.promote_employee",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "The most recent active salary record is used as the pre-promotion baseline for computing the percentage salary increase"
   },
   {
-    "id": "BR-0119",
+    "id": "BR-0138",
     "source": "HRMS.PKG_EMPLOYEE.terminate_employee",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Only leave requests in PENDING status are identified for automatic cancellation upon employee termination"
   },
   {
-    "id": "BR-0120",
+    "id": "BR-0139",
     "source": "HRMS.PKG_EMPLOYEE.terminate_employee",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Only currently active salary records (ACTIVE_FLAG = 'Y') are closed upon termination; previously ended records are not modified"
   },
   {
-    "id": "BR-0121",
+    "id": "BR-0140",
     "source": "HRMS.PKG_EMPLOYEE.terminate_employee",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Only currently active pay elements (ACTIVE_FLAG = 'Y') are deactivated at termination; previously ended pay elements are not affected"
   },
   {
-    "id": "BR-0122",
+    "id": "BR-0141",
     "source": "HRMS.PKG_EMPLOYEE.terminate_employee",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "An employee who is already terminated cannot be terminated again; re-termination is blocked"
   },
   {
-    "id": "BR-0123",
+    "id": "BR-0142",
     "source": "HRMS.PKG_EMPLOYEE.terminate_employee",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Attempting to terminate an already-terminated employee raises an application error"
   },
   {
-    "id": "BR-0124",
+    "id": "BR-0143",
     "source": "HRMS.PKG_EMPLOYEE.terminate_employee",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "All pending leave requests for a terminating employee are automatically cancelled; no manual action is required from the employee or their manager"
   },
   {
-    "id": "BR-0125",
+    "id": "BR-0144",
     "source": "HRMS.PKG_EMPLOYEE.terminate_employee",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "A termination notification is sent to the employee's direct manager only when a manager is assigned; top-level employees with no manager do not trigger a manager notification"
   },
   {
-    "id": "BR-0126",
+    "id": "BR-0145",
+    "source": "HRMS.PKG_EMPLOYEE.terminate_employee",
+    "source_type": "plsql_procedure",
+    "category": "validation_rule",
+    "rule": "terminate_employee: LEGACY/stub \u2014 marked as placeholder or not fully implemented"
+  },
+  {
+    "id": "BR-0146",
     "source": "HRMS.PKG_EMPLOYEE.terminate_employee",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20005: Employee "
   },
   {
-    "id": "BR-0127",
+    "id": "BR-0147",
     "source": "HRMS.PKG_EMPLOYEE.rehire_employee",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Rehiring an employee overwrites their hire date with the rehire date and clears all prior termination data; the employee is treated as starting fresh from the rehire date"
   },
   {
-    "id": "BR-0128",
+    "id": "BR-0148",
     "source": "HRMS.PKG_EMPLOYEE.rehire_employee",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Attempting to rehire an employee ID that does not exist in the EMPLOYEES table raises an application error"
   },
   {
-    "id": "BR-0129",
+    "id": "BR-0149",
     "source": "HRMS.PKG_EMPLOYEE.rehire_employee",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20001: Employee not found for rehire: "
   },
   {
-    "id": "BR-0130",
+    "id": "BR-0150",
     "source": "HRMS.PKG_EMPLOYEE.get_headcount_by_dept",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Headcount counts only employees who were actively employed on the specified as-of date \u2014 hired on or before that date and not yet terminated at that point"
   },
   {
-    "id": "BR-0131",
+    "id": "BR-0151",
     "source": "HRMS.PKG_EMPLOYEE.is_active",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "An employee is considered active if and only if their EMPLOYMENT_STATUS column value equals 'ACTIVE'"
   },
   {
-    "id": "BR-0132",
+    "id": "BR-0152",
     "source": "HRMS.PKG_EMPLOYEE.validate_employee",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "An employee record is considered invalid if either the first name or the last name is absent"
   },
   {
-    "id": "BR-0133",
+    "id": "BR-0153",
     "source": "HRMS.PKG_EMPLOYEE.validate_employee",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "An employee record is considered invalid if no hire date has been recorded"
   },
   {
-    "id": "BR-0134",
+    "id": "BR-0154",
     "source": "HRMS.PKG_EMPLOYEE.validate_employee",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "An employee record is considered inconsistent if EMPLOYMENT_STATUS is 'ACTIVE' but ACTIVE_FLAG is not 'Y'; both fields must be in agreement for active employees"
   },
   {
-    "id": "BR-0135",
+    "id": "BR-0155",
+    "source": "HRMS.PKG_INTEGRATION",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "File I/O uses UTL_FILE with Oracle directory objects"
+  },
+  {
+    "id": "BR-0156",
+    "source": "HRMS.PKG_INTEGRATION.generate_gl_journal",
+    "source_type": "plsql_procedure",
+    "category": "validation_rule",
+    "rule": "generate_gl_journal: Writes output file to Oracle directory object via UTL_FILE"
+  },
+  {
+    "id": "BR-0157",
+    "source": "HRMS.PKG_INTEGRATION.generate_gl_journal",
+    "source_type": "plsql_procedure",
+    "category": "validation_rule",
+    "rule": "generate_gl_journal: LEGACY/stub \u2014 marked as placeholder or not fully implemented"
+  },
+  {
+    "id": "BR-0158",
+    "source": "HRMS.PKG_INTEGRATION.generate_gl_journal",
+    "source_type": "plsql_procedure",
+    "category": "validation_rule",
+    "rule": "generate_gl_journal: Generates fixed-width format file (vendor-specific format)"
+  },
+  {
+    "id": "BR-0159",
+    "source": "HRMS.PKG_INTEGRATION.export_benefits_feed",
+    "source_type": "plsql_procedure",
+    "category": "validation_rule",
+    "rule": "export_benefits_feed: Writes output file to Oracle directory object via UTL_FILE"
+  },
+  {
+    "id": "BR-0160",
+    "source": "HRMS.PKG_INTEGRATION.export_benefits_feed",
+    "source_type": "plsql_procedure",
+    "category": "validation_rule",
+    "rule": "export_benefits_feed: Generates fixed-width format file (vendor-specific format)"
+  },
+  {
+    "id": "BR-0161",
+    "source": "HRMS.PKG_INTEGRATION.import_time_attendance",
+    "source_type": "plsql_procedure",
+    "category": "validation_rule",
+    "rule": "import_time_attendance: Writes output file to Oracle directory object via UTL_FILE"
+  },
+  {
+    "id": "BR-0162",
+    "source": "HRMS.PKG_INTEGRATION.import_time_attendance",
+    "source_type": "plsql_procedure",
+    "category": "validation_rule",
+    "rule": "import_time_attendance: Reads input file line-by-line via UTL_FILE"
+  },
+  {
+    "id": "BR-0163",
+    "source": "HRMS.PKG_INTEGRATION.import_time_attendance",
+    "source_type": "plsql_procedure",
+    "category": "validation_rule",
+    "rule": "import_time_attendance: LEGACY/stub \u2014 marked as placeholder or not fully implemented"
+  },
+  {
+    "id": "BR-0164",
+    "source": "HRMS.PKG_INTEGRATION.sync_org_structure",
+    "source_type": "plsql_procedure",
+    "category": "validation_rule",
+    "rule": "sync_org_structure: LEGACY/stub \u2014 marked as placeholder or not fully implemented"
+  },
+  {
+    "id": "BR-0165",
     "source": "HRMS.PKG_LEAVE",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Only holidays marked as currently active (ACTIVE_FLAG = 'Y') are"
   },
   {
-    "id": "BR-0136",
+    "id": "BR-0166",
     "source": "HRMS.PKG_LEAVE",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "An employee's date range conflicts if any existing leave request"
   },
   {
-    "id": "BR-0137",
+    "id": "BR-0167",
     "source": "HRMS.PKG_LEAVE",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Only employees with EMPLOYMENT_STATUS = 'ACTIVE' are eligible"
   },
   {
-    "id": "BR-0138",
+    "id": "BR-0168",
     "source": "HRMS.PKG_LEAVE",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Only leave types flagged as active (ACTIVE_FLAG = 'Y') may be"
   },
   {
-    "id": "BR-0139",
+    "id": "BR-0169",
     "source": "HRMS.PKG_LEAVE",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Balance records are created only for leave types that are currently"
   },
   {
-    "id": "BR-0140",
+    "id": "BR-0170",
     "source": "HRMS.PKG_LEAVE",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Monthly accrual runs only for employees who are currently active"
   },
   {
-    "id": "BR-0141",
+    "id": "BR-0171",
     "source": "HRMS.PKG_LEAVE",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Accrual is processed only for leave types that are active,"
   },
   {
-    "id": "BR-0142",
+    "id": "BR-0172",
     "source": "HRMS.PKG_LEAVE",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Only employees who have a positive remaining balance at year-end"
   },
   {
-    "id": "BR-0143",
+    "id": "BR-0173",
     "source": "HRMS.PKG_LEAVE",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Returns only leave requests in PENDING status that are assigned"
   },
   {
-    "id": "BR-0144",
+    "id": "BR-0174",
     "source": "HRMS.PKG_LEAVE",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "The team calendar shows only leave that has been approved or"
-  },
-  {
-    "id": "BR-0145",
-    "source": "HRMS.PKG_LEAVE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "Employee must exist and have ACTIVE employment status to submit leave"
-  },
-  {
-    "id": "BR-0146",
-    "source": "HRMS.PKG_LEAVE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "The requested leave type must exist and be currently active"
-  },
-  {
-    "id": "BR-0147",
-    "source": "HRMS.PKG_LEAVE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "Some leave types require a minimum period of employment before an"
-  },
-  {
-    "id": "BR-0148",
-    "source": "HRMS.PKG_LEAVE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "Employee's time since hire date must meet the leave type's minimum"
-  },
-  {
-    "id": "BR-0149",
-    "source": "HRMS.PKG_LEAVE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "Employee has not yet served the minimum tenure required for this leave type"
-  },
-  {
-    "id": "BR-0150",
-    "source": "HRMS.PKG_LEAVE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "Leave request start date must not be later than the end date"
-  },
-  {
-    "id": "BR-0151",
-    "source": "HRMS.PKG_LEAVE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "A leave request with a start date after the end date is invalid"
-  },
-  {
-    "id": "BR-0152",
-    "source": "HRMS.PKG_LEAVE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "Backdated leave requests are permitted only within a limited window;"
-  },
-  {
-    "id": "BR-0153",
-    "source": "HRMS.PKG_LEAVE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "Backdated leave requests more than 5 calendar days in the past"
-  },
-  {
-    "id": "BR-0154",
-    "source": "HRMS.PKG_LEAVE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "A half-day leave request is always counted as exactly 0.5 days regardless"
-  },
-  {
-    "id": "BR-0155",
-    "source": "HRMS.PKG_LEAVE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "A leave request must span at least one business day; requests that fall"
-  },
-  {
-    "id": "BR-0156",
-    "source": "HRMS.PKG_LEAVE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "The requested date range contains no working days after excluding"
-  },
-  {
-    "id": "BR-0157",
-    "source": "HRMS.PKG_LEAVE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "An employee cannot have two leave requests for overlapping date ranges"
-  },
-  {
-    "id": "BR-0158",
-    "source": "HRMS.PKG_LEAVE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "The requested leave period overlaps with a leave request that is"
-  },
-  {
-    "id": "BR-0159",
-    "source": "HRMS.PKG_LEAVE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "Balance enforcement only applies to leave types that are accrual-based"
-  },
-  {
-    "id": "BR-0160",
-    "source": "HRMS.PKG_LEAVE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "The employee's available leave balance must be sufficient to cover"
-  },
-  {
-    "id": "BR-0161",
-    "source": "HRMS.PKG_LEAVE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "Insufficient accrued leave balance to cover the requested duration"
-  },
-  {
-    "id": "BR-0162",
-    "source": "HRMS.PKG_LEAVE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "An approval notification is sent to the employee's direct manager only"
-  },
-  {
-    "id": "BR-0163",
-    "source": "HRMS.PKG_LEAVE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "Leave types with REQUIRES_APPROVAL = 'N' bypass the approval workflow"
-  },
-  {
-    "id": "BR-0164",
-    "source": "HRMS.PKG_LEAVE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "Only a leave request currently in PENDING status can be approved;"
-  },
-  {
-    "id": "BR-0165",
-    "source": "HRMS.PKG_LEAVE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "Attempt to approve a leave request that is not in PENDING status"
-  },
-  {
-    "id": "BR-0166",
-    "source": "HRMS.PKG_LEAVE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "Only a leave request currently in PENDING status can be rejected;"
-  },
-  {
-    "id": "BR-0167",
-    "source": "HRMS.PKG_LEAVE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "Attempt to reject a leave request that is not in PENDING status"
-  },
-  {
-    "id": "BR-0168",
-    "source": "HRMS.PKG_LEAVE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "Only leave requests in PENDING or APPROVED status can be cancelled;"
-  },
-  {
-    "id": "BR-0169",
-    "source": "HRMS.PKG_LEAVE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "Attempt to cancel a leave request that is in an unmodifiable status"
-  },
-  {
-    "id": "BR-0170",
-    "source": "HRMS.PKG_LEAVE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "When a PENDING request is cancelled, the reserved (pending) balance is"
-  },
-  {
-    "id": "BR-0171",
-    "source": "HRMS.PKG_LEAVE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "When an APPROVED request is cancelled, the consumed (used) balance is"
-  },
-  {
-    "id": "BR-0172",
-    "source": "HRMS.PKG_LEAVE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "An employee must have been employed for at least the leave type's"
-  },
-  {
-    "id": "BR-0173",
-    "source": "HRMS.PKG_LEAVE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "An employee's leave balance cannot exceed the leave type's"
-  },
-  {
-    "id": "BR-0174",
-    "source": "HRMS.PKG_LEAVE",
-    "source_type": "plsql_package",
-    "category": "validation_rule",
-    "rule": "When a leave type has a defined carryover ceiling, any unused balance"
   },
   {
     "id": "BR-0175",
     "source": "HRMS.PKG_LEAVE",
     "source_type": "plsql_package",
     "category": "validation_rule",
-    "rule": "Carried-over leave days that have passed their expiry date and have not"
+    "rule": "Employee must exist and have ACTIVE employment status to submit leave"
   },
   {
     "id": "BR-0176",
+    "source": "HRMS.PKG_LEAVE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "The requested leave type must exist and be currently active"
+  },
+  {
+    "id": "BR-0177",
+    "source": "HRMS.PKG_LEAVE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Some leave types require a minimum period of employment before an"
+  },
+  {
+    "id": "BR-0178",
+    "source": "HRMS.PKG_LEAVE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Employee's time since hire date must meet the leave type's minimum"
+  },
+  {
+    "id": "BR-0179",
+    "source": "HRMS.PKG_LEAVE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Employee has not yet served the minimum tenure required for this leave type"
+  },
+  {
+    "id": "BR-0180",
+    "source": "HRMS.PKG_LEAVE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Leave request start date must not be later than the end date"
+  },
+  {
+    "id": "BR-0181",
+    "source": "HRMS.PKG_LEAVE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "A leave request with a start date after the end date is invalid"
+  },
+  {
+    "id": "BR-0182",
+    "source": "HRMS.PKG_LEAVE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Backdated leave requests are permitted only within a limited window;"
+  },
+  {
+    "id": "BR-0183",
+    "source": "HRMS.PKG_LEAVE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Backdated leave requests more than 5 calendar days in the past"
+  },
+  {
+    "id": "BR-0184",
+    "source": "HRMS.PKG_LEAVE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "A half-day leave request is always counted as exactly 0.5 days regardless"
+  },
+  {
+    "id": "BR-0185",
+    "source": "HRMS.PKG_LEAVE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "A leave request must span at least one business day; requests that fall"
+  },
+  {
+    "id": "BR-0186",
+    "source": "HRMS.PKG_LEAVE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "The requested date range contains no working days after excluding"
+  },
+  {
+    "id": "BR-0187",
+    "source": "HRMS.PKG_LEAVE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "An employee cannot have two leave requests for overlapping date ranges"
+  },
+  {
+    "id": "BR-0188",
+    "source": "HRMS.PKG_LEAVE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "The requested leave period overlaps with a leave request that is"
+  },
+  {
+    "id": "BR-0189",
+    "source": "HRMS.PKG_LEAVE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Balance enforcement only applies to leave types that are accrual-based"
+  },
+  {
+    "id": "BR-0190",
+    "source": "HRMS.PKG_LEAVE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "The employee's available leave balance must be sufficient to cover"
+  },
+  {
+    "id": "BR-0191",
+    "source": "HRMS.PKG_LEAVE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Insufficient accrued leave balance to cover the requested duration"
+  },
+  {
+    "id": "BR-0192",
+    "source": "HRMS.PKG_LEAVE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "An approval notification is sent to the employee's direct manager only"
+  },
+  {
+    "id": "BR-0193",
+    "source": "HRMS.PKG_LEAVE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Leave types with REQUIRES_APPROVAL = 'N' bypass the approval workflow"
+  },
+  {
+    "id": "BR-0194",
+    "source": "HRMS.PKG_LEAVE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Only a leave request currently in PENDING status can be approved;"
+  },
+  {
+    "id": "BR-0195",
+    "source": "HRMS.PKG_LEAVE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Attempt to approve a leave request that is not in PENDING status"
+  },
+  {
+    "id": "BR-0196",
+    "source": "HRMS.PKG_LEAVE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Only a leave request currently in PENDING status can be rejected;"
+  },
+  {
+    "id": "BR-0197",
+    "source": "HRMS.PKG_LEAVE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Attempt to reject a leave request that is not in PENDING status"
+  },
+  {
+    "id": "BR-0198",
+    "source": "HRMS.PKG_LEAVE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Only leave requests in PENDING or APPROVED status can be cancelled;"
+  },
+  {
+    "id": "BR-0199",
+    "source": "HRMS.PKG_LEAVE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Attempt to cancel a leave request that is in an unmodifiable status"
+  },
+  {
+    "id": "BR-0200",
+    "source": "HRMS.PKG_LEAVE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "When a PENDING request is cancelled, the reserved (pending) balance is"
+  },
+  {
+    "id": "BR-0201",
+    "source": "HRMS.PKG_LEAVE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "When an APPROVED request is cancelled, the consumed (used) balance is"
+  },
+  {
+    "id": "BR-0202",
+    "source": "HRMS.PKG_LEAVE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "An employee must have been employed for at least the leave type's"
+  },
+  {
+    "id": "BR-0203",
+    "source": "HRMS.PKG_LEAVE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "An employee's leave balance cannot exceed the leave type's"
+  },
+  {
+    "id": "BR-0204",
+    "source": "HRMS.PKG_LEAVE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "When a leave type has a defined carryover ceiling, any unused balance"
+  },
+  {
+    "id": "BR-0205",
+    "source": "HRMS.PKG_LEAVE",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Carried-over leave days that have passed their expiry date and have not"
+  },
+  {
+    "id": "BR-0206",
     "source": "HRMS.PKG_LEAVE",
     "source_type": "plsql_package",
     "category": "constraint",
     "rule": "The maximum number of calendar days into the past an employee"
   },
   {
-    "id": "BR-0177",
+    "id": "BR-0207",
     "source": "HRMS.PKG_LEAVE",
     "source_type": "plsql_package",
     "category": "constraint",
     "rule": "The batch commits after every 100 employees to limit transaction"
   },
   {
-    "id": "BR-0178",
+    "id": "BR-0208",
     "source": "HRMS.PKG_LEAVE",
     "source_type": "plsql_package",
     "category": "known_bug",
     "rule": "Does not handle \"observed\" holidays (e.g., if July 4 falls on"
   },
   {
-    "id": "BR-0179",
+    "id": "BR-0209",
     "source": "HRMS.PKG_LEAVE",
     "source_type": "plsql_package",
     "category": "known_bug",
     "rule": "If run twice on same day, can double-subtract"
   },
   {
-    "id": "BR-0180",
+    "id": "BR-0210",
     "source": "HRMS.PKG_LEAVE.calculate_business_days",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Only holidays marked as currently active (ACTIVE_FLAG = 'Y') are"
   },
   {
-    "id": "BR-0181",
+    "id": "BR-0211",
     "source": "HRMS.PKG_LEAVE.check_leave_overlap",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "An employee's date range conflicts if any existing leave request"
   },
   {
-    "id": "BR-0182",
+    "id": "BR-0212",
     "source": "HRMS.PKG_LEAVE.submit_leave_request",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Only employees with EMPLOYMENT_STATUS = 'ACTIVE' are eligible"
   },
   {
-    "id": "BR-0183",
+    "id": "BR-0213",
     "source": "HRMS.PKG_LEAVE.submit_leave_request",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Only leave types flagged as active (ACTIVE_FLAG = 'Y') may be"
   },
   {
-    "id": "BR-0184",
+    "id": "BR-0214",
     "source": "HRMS.PKG_LEAVE.submit_leave_request",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Employee must exist and have ACTIVE employment status to submit leave"
   },
   {
-    "id": "BR-0185",
+    "id": "BR-0215",
     "source": "HRMS.PKG_LEAVE.submit_leave_request",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "The requested leave type must exist and be currently active"
   },
   {
-    "id": "BR-0186",
+    "id": "BR-0216",
     "source": "HRMS.PKG_LEAVE.submit_leave_request",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Some leave types require a minimum period of employment before an"
   },
   {
-    "id": "BR-0187",
+    "id": "BR-0217",
     "source": "HRMS.PKG_LEAVE.submit_leave_request",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Employee's time since hire date must meet the leave type's minimum"
   },
   {
-    "id": "BR-0188",
+    "id": "BR-0218",
     "source": "HRMS.PKG_LEAVE.submit_leave_request",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Employee has not yet served the minimum tenure required for this leave type"
   },
   {
-    "id": "BR-0189",
+    "id": "BR-0219",
     "source": "HRMS.PKG_LEAVE.submit_leave_request",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Leave request start date must not be later than the end date"
   },
   {
-    "id": "BR-0190",
+    "id": "BR-0220",
     "source": "HRMS.PKG_LEAVE.submit_leave_request",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "A leave request with a start date after the end date is invalid"
   },
   {
-    "id": "BR-0191",
+    "id": "BR-0221",
     "source": "HRMS.PKG_LEAVE.submit_leave_request",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Backdated leave requests are permitted only within a limited window;"
   },
   {
-    "id": "BR-0192",
+    "id": "BR-0222",
     "source": "HRMS.PKG_LEAVE.submit_leave_request",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Backdated leave requests more than 5 calendar days in the past"
   },
   {
-    "id": "BR-0193",
+    "id": "BR-0223",
     "source": "HRMS.PKG_LEAVE.submit_leave_request",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "A half-day leave request is always counted as exactly 0.5 days regardless"
   },
   {
-    "id": "BR-0194",
+    "id": "BR-0224",
     "source": "HRMS.PKG_LEAVE.submit_leave_request",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "A leave request must span at least one business day; requests that fall"
   },
   {
-    "id": "BR-0195",
+    "id": "BR-0225",
     "source": "HRMS.PKG_LEAVE.submit_leave_request",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "The requested date range contains no working days after excluding"
   },
   {
-    "id": "BR-0196",
+    "id": "BR-0226",
     "source": "HRMS.PKG_LEAVE.submit_leave_request",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "An employee cannot have two leave requests for overlapping date ranges"
   },
   {
-    "id": "BR-0197",
+    "id": "BR-0227",
     "source": "HRMS.PKG_LEAVE.submit_leave_request",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "The requested leave period overlaps with a leave request that is"
   },
   {
-    "id": "BR-0198",
+    "id": "BR-0228",
     "source": "HRMS.PKG_LEAVE.submit_leave_request",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Balance enforcement only applies to leave types that are accrual-based"
   },
   {
-    "id": "BR-0199",
+    "id": "BR-0229",
     "source": "HRMS.PKG_LEAVE.submit_leave_request",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "The employee's available leave balance must be sufficient to cover"
   },
   {
-    "id": "BR-0200",
+    "id": "BR-0230",
     "source": "HRMS.PKG_LEAVE.submit_leave_request",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Insufficient accrued leave balance to cover the requested duration"
   },
   {
-    "id": "BR-0201",
+    "id": "BR-0231",
     "source": "HRMS.PKG_LEAVE.submit_leave_request",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "An approval notification is sent to the employee's direct manager only"
   },
   {
-    "id": "BR-0202",
+    "id": "BR-0232",
     "source": "HRMS.PKG_LEAVE.submit_leave_request",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Leave types with REQUIRES_APPROVAL = 'N' bypass the approval workflow"
   },
   {
-    "id": "BR-0203",
+    "id": "BR-0233",
     "source": "HRMS.PKG_LEAVE.submit_leave_request",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20001: Employee not found or not active: "
   },
   {
-    "id": "BR-0204",
+    "id": "BR-0234",
     "source": "HRMS.PKG_LEAVE.submit_leave_request",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20203: Invalid leave type: "
   },
   {
-    "id": "BR-0205",
+    "id": "BR-0235",
     "source": "HRMS.PKG_LEAVE.submit_leave_request",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20203: Minimum tenure of "
   },
   {
-    "id": "BR-0206",
+    "id": "BR-0236",
     "source": "HRMS.PKG_LEAVE.submit_leave_request",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20210: Start date must be before or equal to end date"
   },
   {
-    "id": "BR-0207",
+    "id": "BR-0237",
     "source": "HRMS.PKG_LEAVE.submit_leave_request",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20211: Cannot submit leave requests more than 5 days in the past"
   },
   {
-    "id": "BR-0208",
+    "id": "BR-0238",
     "source": "HRMS.PKG_LEAVE.submit_leave_request",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20212: No business days in the selected range"
   },
   {
-    "id": "BR-0209",
+    "id": "BR-0239",
     "source": "HRMS.PKG_LEAVE.submit_leave_request",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20202: Leave request overlaps with an existing request"
   },
   {
-    "id": "BR-0210",
+    "id": "BR-0240",
     "source": "HRMS.PKG_LEAVE.submit_leave_request",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20201: Insufficient leave balance. Available: "
   },
   {
-    "id": "BR-0211",
+    "id": "BR-0241",
     "source": "HRMS.PKG_LEAVE.approve_leave_request",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Only a leave request currently in PENDING status can be approved;"
   },
   {
-    "id": "BR-0212",
+    "id": "BR-0242",
     "source": "HRMS.PKG_LEAVE.approve_leave_request",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Attempt to approve a leave request that is not in PENDING status"
   },
   {
-    "id": "BR-0213",
+    "id": "BR-0243",
     "source": "HRMS.PKG_LEAVE.approve_leave_request",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20204: Cannot approve request in status: "
   },
   {
-    "id": "BR-0214",
+    "id": "BR-0244",
     "source": "HRMS.PKG_LEAVE.reject_leave_request",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Only a leave request currently in PENDING status can be rejected;"
   },
   {
-    "id": "BR-0215",
+    "id": "BR-0245",
     "source": "HRMS.PKG_LEAVE.reject_leave_request",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Attempt to reject a leave request that is not in PENDING status"
   },
   {
-    "id": "BR-0216",
+    "id": "BR-0246",
     "source": "HRMS.PKG_LEAVE.reject_leave_request",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20204: Cannot reject request in status: "
   },
   {
-    "id": "BR-0217",
+    "id": "BR-0247",
     "source": "HRMS.PKG_LEAVE.cancel_leave_request",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Only leave requests in PENDING or APPROVED status can be cancelled;"
   },
   {
-    "id": "BR-0218",
+    "id": "BR-0248",
     "source": "HRMS.PKG_LEAVE.cancel_leave_request",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Attempt to cancel a leave request that is in an unmodifiable status"
   },
   {
-    "id": "BR-0219",
+    "id": "BR-0249",
     "source": "HRMS.PKG_LEAVE.cancel_leave_request",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "When a PENDING request is cancelled, the reserved (pending) balance is"
   },
   {
-    "id": "BR-0220",
+    "id": "BR-0250",
     "source": "HRMS.PKG_LEAVE.cancel_leave_request",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "When an APPROVED request is cancelled, the consumed (used) balance is"
   },
   {
-    "id": "BR-0221",
+    "id": "BR-0251",
     "source": "HRMS.PKG_LEAVE.cancel_leave_request",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20204: Cannot cancel request in status: "
   },
   {
-    "id": "BR-0222",
+    "id": "BR-0252",
     "source": "HRMS.PKG_LEAVE.initialize_balances",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Balance records are created only for leave types that are currently"
   },
   {
-    "id": "BR-0223",
+    "id": "BR-0253",
     "source": "HRMS.PKG_LEAVE.run_monthly_accrual",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Monthly accrual runs only for employees who are currently active"
   },
   {
-    "id": "BR-0224",
+    "id": "BR-0254",
     "source": "HRMS.PKG_LEAVE.run_monthly_accrual",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Accrual is processed only for leave types that are active,"
   },
   {
-    "id": "BR-0225",
+    "id": "BR-0255",
     "source": "HRMS.PKG_LEAVE.run_monthly_accrual",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "An employee must have been employed for at least the leave type's"
   },
   {
-    "id": "BR-0226",
+    "id": "BR-0256",
     "source": "HRMS.PKG_LEAVE.run_monthly_accrual",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "An employee's leave balance cannot exceed the leave type's"
   },
   {
-    "id": "BR-0227",
+    "id": "BR-0257",
     "source": "HRMS.PKG_LEAVE.process_carryover",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Only employees who have a positive remaining balance at year-end"
   },
   {
-    "id": "BR-0228",
+    "id": "BR-0258",
     "source": "HRMS.PKG_LEAVE.process_carryover",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "When a leave type has a defined carryover ceiling, any unused balance"
   },
   {
-    "id": "BR-0229",
+    "id": "BR-0259",
     "source": "HRMS.PKG_LEAVE.expire_carryover",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Carried-over leave days that have passed their expiry date and have not"
   },
   {
-    "id": "BR-0230",
+    "id": "BR-0260",
     "source": "HRMS.PKG_LEAVE.get_pending_requests",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Returns only leave requests in PENDING status that are assigned"
   },
   {
-    "id": "BR-0231",
+    "id": "BR-0261",
     "source": "HRMS.PKG_LEAVE.get_team_calendar",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "The team calendar shows only leave that has been approved or"
   },
   {
-    "id": "BR-0232",
+    "id": "BR-0262",
+    "source": "HRMS.PKG_NOTIFICATION",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Package uses PRAGMA AUTONOMOUS_TRANSACTION \u2014 audit/notification writes are independent of caller transactions"
+  },
+  {
+    "id": "BR-0263",
+    "source": "HRMS.PKG_NOTIFICATION",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Email delivery uses UTL_SMTP (not UTL_MAIL)"
+  },
+  {
+    "id": "BR-0264",
+    "source": "HRMS.PKG_NOTIFICATION",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Contains hard-coded configuration values that should be in SYSTEM_PARAMETERS table"
+  },
+  {
+    "id": "BR-0265",
+    "source": "HRMS.PKG_NOTIFICATION",
+    "source_type": "plsql_package",
+    "category": "known_bug",
+    "rule": "Exception swallowing: WHEN OTHERS THEN ROLLBACK/NULL \u2014 errors silently suppressed"
+  },
+  {
+    "id": "BR-0266",
+    "source": "HRMS.PKG_NOTIFICATION.send_notification",
+    "source_type": "plsql_procedure",
+    "category": "validation_rule",
+    "rule": "send_notification: Runs in autonomous transaction \u2014 changes committed independently of the caller"
+  },
+  {
+    "id": "BR-0267",
+    "source": "HRMS.PKG_NOTIFICATION.send_notification",
+    "source_type": "plsql_procedure",
+    "category": "validation_rule",
+    "rule": "send_notification: Silently swallows exceptions \u2014 errors are suppressed to protect calling transaction"
+  },
+  {
+    "id": "BR-0268",
+    "source": "HRMS.PKG_NOTIFICATION.process_queue",
+    "source_type": "plsql_procedure",
+    "category": "validation_rule",
+    "rule": "process_queue: Silently swallows exceptions \u2014 errors are suppressed to protect calling transaction"
+  },
+  {
+    "id": "BR-0269",
+    "source": "HRMS.PKG_NOTIFICATION.process_queue",
+    "source_type": "plsql_procedure",
+    "category": "validation_rule",
+    "rule": "process_queue: Sends email via UTL_SMTP (not UTL_MAIL)"
+  },
+  {
+    "id": "BR-0270",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Targets the currently active salary record (ACTIVE_FLAG = 'Y') that predates"
   },
   {
-    "id": "BR-0233",
+    "id": "BR-0271",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Retrieves only the salary record that is currently active (ACTIVE_FLAG = 'Y'),"
   },
   {
-    "id": "BR-0234",
+    "id": "BR-0272",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Retrieves the salary record effective on a specific point-in-time date;"
   },
   {
-    "id": "BR-0235",
+    "id": "BR-0273",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Current pay period is defined as an OPEN period whose date range"
   },
   {
-    "id": "BR-0236",
+    "id": "BR-0274",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Only employees with EMPLOYMENT_STATUS = 'ACTIVE' and ACTIVE_FLAG = 'Y'"
   },
   {
-    "id": "BR-0237",
+    "id": "BR-0275",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Run gross total sums only EARNING-type detail lines; deduction total sums"
   },
   {
-    "id": "BR-0238",
+    "id": "BR-0276",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "W-4 tax elections are matched to the employee and the tax year of the pay period;"
   },
   {
-    "id": "BR-0239",
+    "id": "BR-0277",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Only active (ACTIVE_FLAG = 'Y') deduction and benefit elements are applied;"
   },
   {
-    "id": "BR-0240",
+    "id": "BR-0278",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Gross pay is the sum of all EARNING-type detail lines for the employee"
   },
   {
-    "id": "BR-0241",
+    "id": "BR-0279",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Total deductions aggregate all DEDUCTION, TAX, and BENEFIT lines"
   },
   {
-    "id": "BR-0242",
+    "id": "BR-0280",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Payslip excludes any detail lines that failed processing (STATUS = 'ERROR');"
   },
   {
-    "id": "BR-0243",
+    "id": "BR-0281",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Year-to-date earnings are the sum of successfully CALCULATED EARNING-type"
   },
   {
-    "id": "BR-0244",
+    "id": "BR-0282",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Pay register excludes detail lines in ERROR status; one row per employee"
   },
   {
-    "id": "BR-0245",
+    "id": "BR-0283",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Base salary must be a positive number; zero or negative values are not permitted"
   },
   {
-    "id": "BR-0246",
+    "id": "BR-0284",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Salary must be positive \u2014 raises error -20101 if violated"
   },
   {
-    "id": "BR-0247",
+    "id": "BR-0285",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Monthly pay periods run from the 1st to the last calendar day of each month"
   },
   {
-    "id": "BR-0248",
+    "id": "BR-0286",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "When the monthly pay date falls on a Saturday, it is moved back one day to Friday"
   },
   {
-    "id": "BR-0249",
+    "id": "BR-0287",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "When the monthly pay date falls on a Sunday, it is moved back two days to Friday"
   },
   {
-    "id": "BR-0250",
+    "id": "BR-0288",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Biweekly pay periods are 14 days long, anchored so that the pay date falls on a Friday;"
   },
   {
-    "id": "BR-0251",
+    "id": "BR-0289",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "A biweekly period is included in the year's set if either the period start"
   },
   {
-    "id": "BR-0252",
+    "id": "BR-0290",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "A pay period that is already in CLOSED status cannot be closed again"
   },
   {
-    "id": "BR-0253",
+    "id": "BR-0291",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Attempting to close an already-closed period raises error -20102"
   },
   {
-    "id": "BR-0254",
+    "id": "BR-0292",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "A payroll run cannot be created against a pay period that has already been closed"
   },
   {
-    "id": "BR-0255",
+    "id": "BR-0293",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Attempting to create a run for a closed period raises error -20102"
   },
   {
-    "id": "BR-0256",
+    "id": "BR-0294",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "If any employee-level errors were encountered, the entire payroll run is marked ERROR;"
   },
   {
-    "id": "BR-0257",
+    "id": "BR-0295",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Gross pay per period is calculated by dividing annual salary by the number of"
   },
   {
-    "id": "BR-0258",
+    "id": "BR-0296",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "An employee must have an active salary record as of the period end date"
   },
   {
-    "id": "BR-0259",
+    "id": "BR-0297",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Employee with no salary record on the period end date cannot be processed \u2014 raises error -20104"
   },
   {
-    "id": "BR-0260",
+    "id": "BR-0298",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "If no W-4 is on file for the current tax year, the employee is treated"
   },
   {
-    "id": "BR-0261",
+    "id": "BR-0299",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Federal income tax withholding is only recorded when the calculated amount is greater than zero"
   },
   {
-    "id": "BR-0262",
+    "id": "BR-0300",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "State income tax is only calculated and withheld when the employee has a"
   },
   {
-    "id": "BR-0263",
+    "id": "BR-0301",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "State income tax withholding is only recorded when the calculated amount is greater than zero"
   },
   {
-    "id": "BR-0264",
+    "id": "BR-0302",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Social Security withholding is only recorded when there is a taxable wage amount"
   },
   {
-    "id": "BR-0265",
+    "id": "BR-0303",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Medicare withholding is only recorded when the calculated amount is greater than zero"
   },
   {
-    "id": "BR-0266",
+    "id": "BR-0304",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "An employee-level override amount takes absolute precedence over any"
   },
   {
-    "id": "BR-0267",
+    "id": "BR-0305",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "For FLAT deductions, use the employee's specific amount; if none is set,"
   },
   {
-    "id": "BR-0268",
+    "id": "BR-0306",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "For PERCENTAGE deductions, apply the employee's rate (or the element default"
   },
   {
-    "id": "BR-0269",
+    "id": "BR-0307",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Only positive deduction amounts are written to payroll details;"
   },
   {
-    "id": "BR-0270",
+    "id": "BR-0308",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "A payroll run can only be approved when it is in CALCULATED status; runs"
   },
   {
-    "id": "BR-0271",
+    "id": "BR-0309",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Attempting to approve a run that is not in CALCULATED status raises error -20103"
   },
   {
-    "id": "BR-0272",
+    "id": "BR-0310",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Employees filing as MARRIED_JOINT receive the married standard deduction ($29,200);"
   },
   {
-    "id": "BR-0273",
+    "id": "BR-0311",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Each W-4 withholding allowance reduces the employee's annualised taxable income"
   },
   {
-    "id": "BR-0274",
+    "id": "BR-0312",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "If annualised income after applying the standard deduction and allowances is zero"
   },
   {
-    "id": "BR-0275",
+    "id": "BR-0313",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "SINGLE and MARRIED_SEPARATE filers are taxed under the 2024 seven-bracket"
   },
   {
-    "id": "BR-0276",
+    "id": "BR-0314",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "MARRIED_JOINT filers are taxed under the 2024 seven-bracket progressive schedule"
   },
   {
-    "id": "BR-0277",
+    "id": "BR-0315",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Employees working in TX, FL, or WA have no state income tax withheld because"
   },
   {
-    "id": "BR-0278",
+    "id": "BR-0316",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Once an employee's year-to-date earnings equal or exceed the Social Security"
   },
   {
-    "id": "BR-0279",
+    "id": "BR-0317",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "If a pay period would cause year-to-date earnings to cross the wage base,"
   },
   {
-    "id": "BR-0280",
+    "id": "BR-0318",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "When an employee's cumulative year-to-date earnings plus the current period gross"
   },
   {
-    "id": "BR-0281",
+    "id": "BR-0319",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "If the employee's YTD earnings have already exceeded $200,000 before this"
   },
   {
-    "id": "BR-0282",
+    "id": "BR-0320",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "If the $200,000 threshold is crossed during this pay period, only the portion"
   },
   {
-    "id": "BR-0283",
+    "id": "BR-0321",
+    "source": "HRMS.PKG_PAYROLL",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "File I/O uses UTL_FILE with Oracle directory objects"
+  },
+  {
+    "id": "BR-0322",
+    "source": "HRMS.PKG_PAYROLL",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Contains hard-coded configuration values that should be in SYSTEM_PARAMETERS table"
+  },
+  {
+    "id": "BR-0323",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "constraint",
     "rule": "2024 Social Security wage base; earnings above this amount are exempt from SS tax"
   },
   {
-    "id": "BR-0284",
+    "id": "BR-0324",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "constraint",
     "rule": "Employee share of Social Security tax is 6.2% of wages up to the wage base"
   },
   {
-    "id": "BR-0285",
+    "id": "BR-0325",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "constraint",
     "rule": "Employee share of standard Medicare tax is 1.45% of all wages with no cap"
   },
   {
-    "id": "BR-0286",
+    "id": "BR-0326",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "constraint",
     "rule": "Additional Medicare surtax rate of 0.9% applies above the high-earner threshold"
   },
   {
-    "id": "BR-0287",
+    "id": "BR-0327",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "constraint",
     "rule": "Annual earnings above $200,000 trigger the additional 0.9% Medicare surtax"
   },
   {
-    "id": "BR-0288",
+    "id": "BR-0328",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "constraint",
     "rule": "2024 standard deduction for single or non-jointly-filing taxpayers is $14,600"
   },
   {
-    "id": "BR-0289",
+    "id": "BR-0329",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "constraint",
     "rule": "2024 standard deduction for married filing jointly taxpayers is $29,200"
   },
   {
-    "id": "BR-0290",
+    "id": "BR-0330",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "constraint",
     "rule": "Each W-4 withholding allowance reduces annualised taxable income by $4,300"
   },
   {
-    "id": "BR-0291",
+    "id": "BR-0331",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "constraint",
     "rule": "Biweekly pay date is 5 calendar days after the period end date"
   },
   {
-    "id": "BR-0292",
+    "id": "BR-0332",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "constraint",
     "rule": "Payroll changes are committed to the database every 50 employees processed"
   },
   {
-    "id": "BR-0293",
+    "id": "BR-0333",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "constraint",
     "rule": "State flat withholding rates: CA 7.25%, NY 6.85%, IL 4.95%, PA 3.07%,"
   },
   {
-    "id": "BR-0294",
+    "id": "BR-0334",
     "source": "HRMS.PKG_PAYROLL",
     "source_type": "plsql_package",
     "category": "known_bug",
     "rule": "Cursor loop - should use BULK COLLECT + FORALL"
   },
   {
-    "id": "BR-0295",
+    "id": "BR-0335",
     "source": "HRMS.PKG_PAYROLL.create_salary_record",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Targets the currently active salary record (ACTIVE_FLAG = 'Y') that predates"
   },
   {
-    "id": "BR-0296",
+    "id": "BR-0336",
     "source": "HRMS.PKG_PAYROLL.create_salary_record",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Base salary must be a positive number; zero or negative values are not permitted"
   },
   {
-    "id": "BR-0297",
+    "id": "BR-0337",
     "source": "HRMS.PKG_PAYROLL.create_salary_record",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Salary must be positive \u2014 raises error -20101 if violated"
   },
   {
-    "id": "BR-0298",
+    "id": "BR-0338",
     "source": "HRMS.PKG_PAYROLL.create_salary_record",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20101: Salary must be positive: "
   },
   {
-    "id": "BR-0299",
+    "id": "BR-0339",
     "source": "HRMS.PKG_PAYROLL.get_current_salary",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Retrieves only the salary record that is currently active (ACTIVE_FLAG = 'Y'),"
   },
   {
-    "id": "BR-0300",
+    "id": "BR-0340",
     "source": "HRMS.PKG_PAYROLL.get_salary_as_of",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Retrieves the salary record effective on a specific point-in-time date;"
   },
   {
-    "id": "BR-0301",
+    "id": "BR-0341",
     "source": "HRMS.PKG_PAYROLL.create_pay_periods",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Monthly pay periods run from the 1st to the last calendar day of each month"
   },
   {
-    "id": "BR-0302",
+    "id": "BR-0342",
     "source": "HRMS.PKG_PAYROLL.create_pay_periods",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "When the monthly pay date falls on a Saturday, it is moved back one day to Friday"
   },
   {
-    "id": "BR-0303",
+    "id": "BR-0343",
     "source": "HRMS.PKG_PAYROLL.create_pay_periods",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "When the monthly pay date falls on a Sunday, it is moved back two days to Friday"
   },
   {
-    "id": "BR-0304",
+    "id": "BR-0344",
     "source": "HRMS.PKG_PAYROLL.create_pay_periods",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Biweekly pay periods are 14 days long, anchored so that the pay date falls on a Friday;"
   },
   {
-    "id": "BR-0305",
+    "id": "BR-0345",
     "source": "HRMS.PKG_PAYROLL.create_pay_periods",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "A biweekly period is included in the year's set if either the period start"
   },
   {
-    "id": "BR-0306",
+    "id": "BR-0346",
     "source": "HRMS.PKG_PAYROLL.close_pay_period",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "A pay period that is already in CLOSED status cannot be closed again"
   },
   {
-    "id": "BR-0307",
+    "id": "BR-0347",
     "source": "HRMS.PKG_PAYROLL.close_pay_period",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Attempting to close an already-closed period raises error -20102"
   },
   {
-    "id": "BR-0308",
+    "id": "BR-0348",
     "source": "HRMS.PKG_PAYROLL.close_pay_period",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20102: Period already closed: "
   },
   {
-    "id": "BR-0309",
+    "id": "BR-0349",
     "source": "HRMS.PKG_PAYROLL.create_payroll_run",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "A payroll run cannot be created against a pay period that has already been closed"
   },
   {
-    "id": "BR-0310",
+    "id": "BR-0350",
     "source": "HRMS.PKG_PAYROLL.create_payroll_run",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Attempting to create a run for a closed period raises error -20102"
   },
   {
-    "id": "BR-0311",
+    "id": "BR-0351",
     "source": "HRMS.PKG_PAYROLL.create_payroll_run",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20102: Cannot create run for closed period: "
   },
   {
-    "id": "BR-0312",
+    "id": "BR-0352",
     "source": "HRMS.PKG_PAYROLL.calculate_payroll",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Only employees with EMPLOYMENT_STATUS = 'ACTIVE' and ACTIVE_FLAG = 'Y'"
   },
   {
-    "id": "BR-0313",
+    "id": "BR-0353",
     "source": "HRMS.PKG_PAYROLL.calculate_payroll",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Run gross total sums only EARNING-type detail lines; deduction total sums"
   },
   {
-    "id": "BR-0314",
+    "id": "BR-0354",
     "source": "HRMS.PKG_PAYROLL.calculate_payroll",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "If any employee-level errors were encountered, the entire payroll run is marked ERROR;"
   },
   {
-    "id": "BR-0315",
+    "id": "BR-0355",
     "source": "HRMS.PKG_PAYROLL.calculate_employee_pay",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "W-4 tax elections are matched to the employee and the tax year of the pay period;"
   },
   {
-    "id": "BR-0316",
+    "id": "BR-0356",
     "source": "HRMS.PKG_PAYROLL.calculate_employee_pay",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Only active (ACTIVE_FLAG = 'Y') deduction and benefit elements are applied;"
   },
   {
-    "id": "BR-0317",
+    "id": "BR-0357",
     "source": "HRMS.PKG_PAYROLL.calculate_employee_pay",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Gross pay per period is calculated by dividing annual salary by the number of"
   },
   {
-    "id": "BR-0318",
+    "id": "BR-0358",
     "source": "HRMS.PKG_PAYROLL.calculate_employee_pay",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "An employee must have an active salary record as of the period end date"
   },
   {
-    "id": "BR-0319",
+    "id": "BR-0359",
     "source": "HRMS.PKG_PAYROLL.calculate_employee_pay",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Employee with no salary record on the period end date cannot be processed \u2014 raises error -20104"
   },
   {
-    "id": "BR-0320",
+    "id": "BR-0360",
     "source": "HRMS.PKG_PAYROLL.calculate_employee_pay",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "If no W-4 is on file for the current tax year, the employee is treated"
   },
   {
-    "id": "BR-0321",
+    "id": "BR-0361",
     "source": "HRMS.PKG_PAYROLL.calculate_employee_pay",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Federal income tax withholding is only recorded when the calculated amount is greater than zero"
   },
   {
-    "id": "BR-0322",
+    "id": "BR-0362",
     "source": "HRMS.PKG_PAYROLL.calculate_employee_pay",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "State income tax is only calculated and withheld when the employee has a"
   },
   {
-    "id": "BR-0323",
+    "id": "BR-0363",
     "source": "HRMS.PKG_PAYROLL.calculate_employee_pay",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "State income tax withholding is only recorded when the calculated amount is greater than zero"
   },
   {
-    "id": "BR-0324",
+    "id": "BR-0364",
     "source": "HRMS.PKG_PAYROLL.calculate_employee_pay",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Social Security withholding is only recorded when there is a taxable wage amount"
   },
   {
-    "id": "BR-0325",
+    "id": "BR-0365",
     "source": "HRMS.PKG_PAYROLL.calculate_employee_pay",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Medicare withholding is only recorded when the calculated amount is greater than zero"
   },
   {
-    "id": "BR-0326",
+    "id": "BR-0366",
     "source": "HRMS.PKG_PAYROLL.calculate_employee_pay",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "An employee-level override amount takes absolute precedence over any"
   },
   {
-    "id": "BR-0327",
+    "id": "BR-0367",
     "source": "HRMS.PKG_PAYROLL.calculate_employee_pay",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "For FLAT deductions, use the employee's specific amount; if none is set,"
   },
   {
-    "id": "BR-0328",
+    "id": "BR-0368",
     "source": "HRMS.PKG_PAYROLL.calculate_employee_pay",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "For PERCENTAGE deductions, apply the employee's rate (or the element default"
   },
   {
-    "id": "BR-0329",
+    "id": "BR-0369",
     "source": "HRMS.PKG_PAYROLL.calculate_employee_pay",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Only positive deduction amounts are written to payroll details;"
   },
   {
-    "id": "BR-0330",
+    "id": "BR-0370",
     "source": "HRMS.PKG_PAYROLL.calculate_employee_pay",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20104: No active salary record for employee "
   },
   {
-    "id": "BR-0331",
+    "id": "BR-0371",
     "source": "HRMS.PKG_PAYROLL.approve_payroll",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "A payroll run can only be approved when it is in CALCULATED status; runs"
   },
   {
-    "id": "BR-0332",
+    "id": "BR-0372",
     "source": "HRMS.PKG_PAYROLL.approve_payroll",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Attempting to approve a run that is not in CALCULATED status raises error -20103"
   },
   {
-    "id": "BR-0333",
+    "id": "BR-0373",
     "source": "HRMS.PKG_PAYROLL.approve_payroll",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20103: Cannot approve run in status: "
   },
   {
-    "id": "BR-0334",
+    "id": "BR-0374",
     "source": "HRMS.PKG_PAYROLL.calculate_federal_tax",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Employees filing as MARRIED_JOINT receive the married standard deduction ($29,200);"
   },
   {
-    "id": "BR-0335",
+    "id": "BR-0375",
     "source": "HRMS.PKG_PAYROLL.calculate_federal_tax",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Each W-4 withholding allowance reduces the employee's annualised taxable income"
   },
   {
-    "id": "BR-0336",
+    "id": "BR-0376",
     "source": "HRMS.PKG_PAYROLL.calculate_federal_tax",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "If annualised income after applying the standard deduction and allowances is zero"
   },
   {
-    "id": "BR-0337",
+    "id": "BR-0377",
     "source": "HRMS.PKG_PAYROLL.calculate_federal_tax",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "SINGLE and MARRIED_SEPARATE filers are taxed under the 2024 seven-bracket"
   },
   {
-    "id": "BR-0338",
+    "id": "BR-0378",
     "source": "HRMS.PKG_PAYROLL.calculate_federal_tax",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "MARRIED_JOINT filers are taxed under the 2024 seven-bracket progressive schedule"
   },
   {
-    "id": "BR-0339",
+    "id": "BR-0379",
+    "source": "HRMS.PKG_PAYROLL.calculate_federal_tax",
+    "source_type": "plsql_procedure",
+    "category": "validation_rule",
+    "rule": "calculate_federal_tax: LEGACY/stub \u2014 marked as placeholder or not fully implemented"
+  },
+  {
+    "id": "BR-0380",
     "source": "HRMS.PKG_PAYROLL.calculate_state_tax",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Employees working in TX, FL, or WA have no state income tax withheld because"
   },
   {
-    "id": "BR-0340",
+    "id": "BR-0381",
     "source": "HRMS.PKG_PAYROLL.calculate_fica",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Once an employee's year-to-date earnings equal or exceed the Social Security"
   },
   {
-    "id": "BR-0341",
+    "id": "BR-0382",
     "source": "HRMS.PKG_PAYROLL.calculate_fica",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "If a pay period would cause year-to-date earnings to cross the wage base,"
   },
   {
-    "id": "BR-0342",
+    "id": "BR-0383",
     "source": "HRMS.PKG_PAYROLL.calculate_medicare",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "When an employee's cumulative year-to-date earnings plus the current period gross"
   },
   {
-    "id": "BR-0343",
+    "id": "BR-0384",
     "source": "HRMS.PKG_PAYROLL.calculate_medicare",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "If the employee's YTD earnings have already exceeded $200,000 before this"
   },
   {
-    "id": "BR-0344",
+    "id": "BR-0385",
     "source": "HRMS.PKG_PAYROLL.calculate_medicare",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "If the $200,000 threshold is crossed during this pay period, only the portion"
   },
   {
-    "id": "BR-0345",
+    "id": "BR-0386",
     "source": "HRMS.PKG_PAYROLL.get_payslip",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Gross pay is the sum of all EARNING-type detail lines for the employee"
   },
   {
-    "id": "BR-0346",
+    "id": "BR-0387",
     "source": "HRMS.PKG_PAYROLL.get_payslip",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Total deductions aggregate all DEDUCTION, TAX, and BENEFIT lines"
   },
   {
-    "id": "BR-0347",
+    "id": "BR-0388",
     "source": "HRMS.PKG_PAYROLL.get_payslip",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Payslip excludes any detail lines that failed processing (STATUS = 'ERROR');"
   },
   {
-    "id": "BR-0348",
+    "id": "BR-0389",
+    "source": "HRMS.PKG_PAYROLL.get_payslip",
+    "source_type": "plsql_procedure",
+    "category": "validation_rule",
+    "rule": "get_payslip: LEGACY/stub \u2014 marked as placeholder or not fully implemented"
+  },
+  {
+    "id": "BR-0390",
     "source": "HRMS.PKG_PAYROLL.get_ytd_earnings",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Year-to-date earnings are the sum of successfully CALCULATED EARNING-type"
   },
   {
-    "id": "BR-0349",
+    "id": "BR-0391",
+    "source": "HRMS.PKG_PAYROLL.get_ytd_earnings",
+    "source_type": "plsql_procedure",
+    "category": "validation_rule",
+    "rule": "get_ytd_earnings: LEGACY/stub \u2014 marked as placeholder or not fully implemented"
+  },
+  {
+    "id": "BR-0392",
     "source": "HRMS.PKG_PAYROLL.generate_pay_register",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Pay register excludes detail lines in ERROR status; one row per employee"
   },
   {
-    "id": "BR-0350",
+    "id": "BR-0393",
+    "source": "HRMS.PKG_PAYROLL.generate_pay_register",
+    "source_type": "plsql_procedure",
+    "category": "validation_rule",
+    "rule": "generate_pay_register: Writes output file to Oracle directory object via UTL_FILE"
+  },
+  {
+    "id": "BR-0394",
     "source": "HRMS.PKG_PERFORMANCE",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Returns only the reviews where the given employee is the designated reviewer, scoped to a single review cycle"
   },
   {
-    "id": "BR-0351",
+    "id": "BR-0395",
     "source": "HRMS.PKG_PERFORMANCE",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Includes only reviews that have received a final rating (completed reviews); optionally scoped to employees in a single department"
   },
   {
-    "id": "BR-0352",
+    "id": "BR-0396",
     "source": "HRMS.PKG_PERFORMANCE",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Only employees with ACTIVE employment status are eligible for bulk performance review generation"
   },
   {
-    "id": "BR-0353",
+    "id": "BR-0397",
     "source": "HRMS.PKG_PERFORMANCE",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "A review cycle can only be transitioned to OPEN status if it is currently in DRAFT status"
   },
   {
-    "id": "BR-0354",
+    "id": "BR-0398",
     "source": "HRMS.PKG_PERFORMANCE",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Zero rows updated indicates the cycle was not in DRAFT status; the open transition is rejected"
   },
   {
-    "id": "BR-0355",
+    "id": "BR-0399",
     "source": "HRMS.PKG_PERFORMANCE",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Attempting to open a review cycle that is not in DRAFT status raises application error -20401"
   },
   {
-    "id": "BR-0356",
+    "id": "BR-0400",
     "source": "HRMS.PKG_PERFORMANCE",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "A self-assessment can only be submitted when the review is in NOT_STARTED or SELF_REVIEW status; submission advances the review to MANAGER_REVIEW"
   },
   {
-    "id": "BR-0357",
+    "id": "BR-0401",
     "source": "HRMS.PKG_PERFORMANCE",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Zero rows updated indicates the review does not exist or is not in an eligible status for self-assessment submission"
   },
   {
-    "id": "BR-0358",
+    "id": "BR-0402",
     "source": "HRMS.PKG_PERFORMANCE",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Submitting a self-assessment for a review not in NOT_STARTED or SELF_REVIEW status raises application error -20402"
   },
   {
-    "id": "BR-0359",
+    "id": "BR-0403",
     "source": "HRMS.PKG_PERFORMANCE",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "The overall performance rating must fall within the valid scoring range of 1.0 (lowest) to 5.0 (highest)"
   },
   {
-    "id": "BR-0360",
+    "id": "BR-0404",
     "source": "HRMS.PKG_PERFORMANCE",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Submitting a rating outside the 1.0 to 5.0 range raises application error -20403 and the review record is not updated"
   },
   {
-    "id": "BR-0361",
+    "id": "BR-0405",
     "source": "HRMS.PKG_PERFORMANCE",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "An employee can only acknowledge a review that has been marked COMPLETED by the manager; reviews in any other status are silently unaffected"
   },
   {
-    "id": "BR-0362",
+    "id": "BR-0406",
     "source": "HRMS.PKG_PERFORMANCE",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Employees without a designated manager are excluded from bulk review generation; a manager assignment is required to create a review"
   },
   {
-    "id": "BR-0363",
+    "id": "BR-0407",
     "source": "HRMS.PKG_PERFORMANCE",
     "source_type": "plsql_package",
     "category": "constraint",
     "rule": "A score of 4.5 or above qualifies as 'Exceptional', the highest performance band"
   },
   {
-    "id": "BR-0364",
+    "id": "BR-0408",
     "source": "HRMS.PKG_PERFORMANCE",
     "source_type": "plsql_package",
     "category": "constraint",
     "rule": "A score of 3.5 or above (but below 4.5) qualifies as 'Exceeds Expectations'"
   },
   {
-    "id": "BR-0365",
+    "id": "BR-0409",
     "source": "HRMS.PKG_PERFORMANCE",
     "source_type": "plsql_package",
     "category": "constraint",
     "rule": "A score of 2.5 or above (but below 3.5) qualifies as 'Meets Expectations'"
   },
   {
-    "id": "BR-0366",
+    "id": "BR-0410",
     "source": "HRMS.PKG_PERFORMANCE",
     "source_type": "plsql_package",
     "category": "constraint",
     "rule": "A score of 1.5 or above (but below 2.5) qualifies as 'Needs Improvement'"
   },
   {
-    "id": "BR-0367",
+    "id": "BR-0411",
     "source": "HRMS.PKG_PERFORMANCE",
     "source_type": "plsql_package",
     "category": "constraint",
     "rule": "A progress percentage of 100 or above automatically advances the goal status to COMPLETED"
   },
   {
-    "id": "BR-0368",
+    "id": "BR-0412",
     "source": "HRMS.PKG_PERFORMANCE",
     "source_type": "plsql_package",
     "category": "constraint",
     "rule": "Any non-zero progress percentage below 100 automatically sets the goal status to IN_PROGRESS"
   },
   {
-    "id": "BR-0369",
+    "id": "BR-0413",
     "source": "HRMS.PKG_PERFORMANCE.open_review_cycle",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "A review cycle can only be transitioned to OPEN status if it is currently in DRAFT status"
   },
   {
-    "id": "BR-0370",
+    "id": "BR-0414",
     "source": "HRMS.PKG_PERFORMANCE.open_review_cycle",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Zero rows updated indicates the cycle was not in DRAFT status; the open transition is rejected"
   },
   {
-    "id": "BR-0371",
+    "id": "BR-0415",
     "source": "HRMS.PKG_PERFORMANCE.open_review_cycle",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Attempting to open a review cycle that is not in DRAFT status raises application error -20401"
   },
   {
-    "id": "BR-0372",
+    "id": "BR-0416",
     "source": "HRMS.PKG_PERFORMANCE.open_review_cycle",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20401: Cannot open cycle - must be in DRAFT status"
   },
   {
-    "id": "BR-0373",
+    "id": "BR-0417",
     "source": "HRMS.PKG_PERFORMANCE.submit_self_assessment",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "A self-assessment can only be submitted when the review is in NOT_STARTED or SELF_REVIEW status; submission advances the review to MANAGER_REVIEW"
   },
   {
-    "id": "BR-0374",
+    "id": "BR-0418",
     "source": "HRMS.PKG_PERFORMANCE.submit_self_assessment",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Zero rows updated indicates the review does not exist or is not in an eligible status for self-assessment submission"
   },
   {
-    "id": "BR-0375",
+    "id": "BR-0419",
     "source": "HRMS.PKG_PERFORMANCE.submit_self_assessment",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Submitting a self-assessment for a review not in NOT_STARTED or SELF_REVIEW status raises application error -20402"
   },
   {
-    "id": "BR-0376",
+    "id": "BR-0420",
     "source": "HRMS.PKG_PERFORMANCE.submit_self_assessment",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20402: Review not found or not in correct status"
   },
   {
-    "id": "BR-0377",
+    "id": "BR-0421",
     "source": "HRMS.PKG_PERFORMANCE.submit_manager_review",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "The overall performance rating must fall within the valid scoring range of 1.0 (lowest) to 5.0 (highest)"
   },
   {
-    "id": "BR-0378",
+    "id": "BR-0422",
     "source": "HRMS.PKG_PERFORMANCE.submit_manager_review",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Submitting a rating outside the 1.0 to 5.0 range raises application error -20403 and the review record is not updated"
   },
   {
-    "id": "BR-0379",
+    "id": "BR-0423",
     "source": "HRMS.PKG_PERFORMANCE.submit_manager_review",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20403: Rating must be between 1.0 and 5.0"
   },
   {
-    "id": "BR-0380",
+    "id": "BR-0424",
     "source": "HRMS.PKG_PERFORMANCE.acknowledge_review",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "An employee can only acknowledge a review that has been marked COMPLETED by the manager; reviews in any other status are silently unaffected"
   },
   {
-    "id": "BR-0381",
+    "id": "BR-0425",
     "source": "HRMS.PKG_PERFORMANCE.get_team_reviews",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Returns only the reviews where the given employee is the designated reviewer, scoped to a single review cycle"
   },
   {
-    "id": "BR-0382",
+    "id": "BR-0426",
     "source": "HRMS.PKG_PERFORMANCE.generate_reviews_for_cycle",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Only employees with ACTIVE employment status are eligible for bulk performance review generation"
   },
   {
-    "id": "BR-0383",
+    "id": "BR-0427",
     "source": "HRMS.PKG_PERFORMANCE.generate_reviews_for_cycle",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Employees without a designated manager are excluded from bulk review generation; a manager assignment is required to create a review"
   },
   {
-    "id": "BR-0384",
+    "id": "BR-0428",
     "source": "HRMS.PKG_REPORTING",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Only employees with EMPLOYMENT_STATUS = 'ACTIVE' are included in headcount; inactive, suspended, or terminated records are excluded"
   },
   {
-    "id": "BR-0385",
+    "id": "BR-0429",
     "source": "HRMS.PKG_REPORTING",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Only the currently active salary record (ACTIVE_FLAG = 'Y') is used for compensation analysis; historical salary rows are excluded"
   },
   {
-    "id": "BR-0386",
+    "id": "BR-0430",
     "source": "HRMS.PKG_REPORTING",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Compensation analysis is restricted to employees with EMPLOYMENT_STATUS = 'ACTIVE'"
   },
   {
-    "id": "BR-0387",
+    "id": "BR-0431",
     "source": "HRMS.PKG_REPORTING",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Only the currently active salary record (ACTIVE_FLAG = 'Y') is retrieved; a new hire without an active salary record still appears in the report with a NULL base salary"
   },
   {
-    "id": "BR-0388",
+    "id": "BR-0432",
     "source": "HRMS.PKG_REPORTING",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Report is scoped to employees whose hire date falls within the specified date range, capturing all starters in the period"
   },
   {
-    "id": "BR-0389",
+    "id": "BR-0433",
     "source": "HRMS.PKG_REPORTING",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Leave utilisation data is scoped to a single calendar year; balances from different years are not combined"
   },
   {
-    "id": "BR-0390",
+    "id": "BR-0434",
     "source": "HRMS.PKG_REPORTING",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Only currently active employees are included; departed employees' unused leave balances are excluded from utilisation analysis"
   },
   {
-    "id": "BR-0391",
+    "id": "BR-0435",
     "source": "HRMS.PKG_REPORTING",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "EEO compliance report covers only employees with EMPLOYMENT_STATUS = 'ACTIVE'; former employees are excluded from all compliance headcount figures"
   },
   {
-    "id": "BR-0392",
+    "id": "BR-0436",
     "source": "HRMS.PKG_REPORTING",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Headcount is segmented into three mutually exclusive employment classifications: FULL_TIME, PART_TIME, and CONTRACT"
   },
   {
-    "id": "BR-0393",
+    "id": "BR-0437",
     "source": "HRMS.PKG_REPORTING",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Gender breakdown uses codes 'M' (male) and 'F' (female); employees with any other gender code are not counted in either gender total"
   },
   {
-    "id": "BR-0394",
+    "id": "BR-0438",
     "source": "HRMS.PKG_REPORTING",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Employee must have been hired on or before the reporting snapshot date to be counted in headcount"
   },
   {
-    "id": "BR-0395",
+    "id": "BR-0439",
     "source": "HRMS.PKG_REPORTING",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Employee must not be terminated as of the snapshot date; a NULL termination date or a future termination date both satisfy this requirement"
   },
   {
-    "id": "BR-0396",
+    "id": "BR-0440",
     "source": "HRMS.PKG_REPORTING",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "A departure is counted as a termination only when TERMINATION_DATE falls within the specified reporting window (inclusive on both boundaries)"
   },
   {
-    "id": "BR-0397",
+    "id": "BR-0441",
     "source": "HRMS.PKG_REPORTING",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Current headcount reflects employees whose EMPLOYMENT_STATUS is 'ACTIVE' at query time, not as of a historical snapshot date"
   },
   {
-    "id": "BR-0398",
+    "id": "BR-0442",
     "source": "HRMS.PKG_REPORTING",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "A departure is classified as voluntary when TERMINATION_REASON = 'VOLUNTARY', indicating the employee resigned or chose to leave"
   },
   {
-    "id": "BR-0399",
+    "id": "BR-0443",
     "source": "HRMS.PKG_REPORTING",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "A departure is classified as involuntary when TERMINATION_REASON is any value other than 'VOLUNTARY', covering layoffs, dismissals, and other employer-initiated separations"
   },
   {
-    "id": "BR-0400",
+    "id": "BR-0444",
     "source": "HRMS.PKG_REPORTING",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Only departments that had at least one employee hired on or before the period end date are shown; departments with no historical headcount are suppressed from the report"
   },
   {
-    "id": "BR-0401",
+    "id": "BR-0445",
     "source": "HRMS.PKG_REPORTING",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Gross pay is the sum of all payroll lines with ELEMENT_TYPE = 'EARNING'; deduction, benefit, and tax lines are excluded from the gross total"
   },
   {
-    "id": "BR-0402",
+    "id": "BR-0446",
     "source": "HRMS.PKG_REPORTING",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Total deductions aggregates all lines classified as ELEMENT_TYPE 'DEDUCTION' or 'BENEFIT'; ABS() is applied because these amounts are stored as negative values in PAYROLL_DETAILS"
   },
   {
-    "id": "BR-0403",
+    "id": "BR-0447",
     "source": "HRMS.PKG_REPORTING",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Payroll lines with STATUS = 'ERROR' are excluded from all totals; only successfully processed lines contribute to departmental payroll figures"
   },
   {
-    "id": "BR-0404",
+    "id": "BR-0448",
     "source": "HRMS.PKG_REPORTING",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "EEO gender breakdown uses three declared codes \u2014 'M' (male), 'F' (female), 'O' (other/non-binary) \u2014 plus a separate count for employees who have not disclosed gender"
   },
   {
-    "id": "BR-0405",
+    "id": "BR-0449",
     "source": "HRMS.PKG_REPORTING",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Employees with a NULL gender value are counted separately as 'not disclosed' and are not rolled into the male, female, or other gender totals"
   },
   {
-    "id": "BR-0406",
+    "id": "BR-0450",
     "source": "HRMS.PKG_REPORTING",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Only employees hired on or before the reporting snapshot date are counted; future-dated hires are excluded from the compliance figures"
   },
   {
-    "id": "BR-0407",
+    "id": "BR-0451",
+    "source": "HRMS.PKG_REPORTING",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Contains hard-coded configuration values that should be in SYSTEM_PARAMETERS table"
+  },
+  {
+    "id": "BR-0452",
     "source": "HRMS.PKG_REPORTING",
     "source_type": "plsql_package",
     "category": "constraint",
     "rule": "Payroll element ID 100 is the hard-coded identifier for Federal Income Tax withholding"
   },
   {
-    "id": "BR-0408",
+    "id": "BR-0453",
     "source": "HRMS.PKG_REPORTING",
     "source_type": "plsql_package",
     "category": "constraint",
     "rule": "Payroll element ID 101 is the hard-coded identifier for State Income Tax withholding"
   },
   {
-    "id": "BR-0409",
+    "id": "BR-0454",
     "source": "HRMS.PKG_REPORTING",
     "source_type": "plsql_package",
     "category": "constraint",
     "rule": "Payroll element ID 102 is the hard-coded identifier for Social Security (FICA) withholding"
   },
   {
-    "id": "BR-0410",
+    "id": "BR-0455",
     "source": "HRMS.PKG_REPORTING",
     "source_type": "plsql_package",
     "category": "constraint",
     "rule": "Payroll element ID 103 is the hard-coded identifier for Medicare withholding"
   },
   {
-    "id": "BR-0411",
+    "id": "BR-0456",
     "source": "HRMS.PKG_REPORTING.headcount_report",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Only employees with EMPLOYMENT_STATUS = 'ACTIVE' are included in headcount; inactive, suspended, or terminated records are excluded"
   },
   {
-    "id": "BR-0412",
+    "id": "BR-0457",
     "source": "HRMS.PKG_REPORTING.headcount_report",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Headcount is segmented into three mutually exclusive employment classifications: FULL_TIME, PART_TIME, and CONTRACT"
   },
   {
-    "id": "BR-0413",
+    "id": "BR-0458",
     "source": "HRMS.PKG_REPORTING.headcount_report",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Gender breakdown uses codes 'M' (male) and 'F' (female); employees with any other gender code are not counted in either gender total"
   },
   {
-    "id": "BR-0414",
+    "id": "BR-0459",
     "source": "HRMS.PKG_REPORTING.headcount_report",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Employee must have been hired on or before the reporting snapshot date to be counted in headcount"
   },
   {
-    "id": "BR-0415",
+    "id": "BR-0460",
     "source": "HRMS.PKG_REPORTING.headcount_report",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Employee must not be terminated as of the snapshot date; a NULL termination date or a future termination date both satisfy this requirement"
   },
   {
-    "id": "BR-0416",
+    "id": "BR-0461",
     "source": "HRMS.PKG_REPORTING.compensation_summary",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Only the currently active salary record (ACTIVE_FLAG = 'Y') is used for compensation analysis; historical salary rows are excluded"
   },
   {
-    "id": "BR-0417",
+    "id": "BR-0462",
     "source": "HRMS.PKG_REPORTING.compensation_summary",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Compensation analysis is restricted to employees with EMPLOYMENT_STATUS = 'ACTIVE'"
   },
   {
-    "id": "BR-0418",
+    "id": "BR-0463",
     "source": "HRMS.PKG_REPORTING.turnover_report",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "A departure is counted as a termination only when TERMINATION_DATE falls within the specified reporting window (inclusive on both boundaries)"
   },
   {
-    "id": "BR-0419",
+    "id": "BR-0464",
     "source": "HRMS.PKG_REPORTING.turnover_report",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Current headcount reflects employees whose EMPLOYMENT_STATUS is 'ACTIVE' at query time, not as of a historical snapshot date"
   },
   {
-    "id": "BR-0420",
+    "id": "BR-0465",
     "source": "HRMS.PKG_REPORTING.turnover_report",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "A departure is classified as voluntary when TERMINATION_REASON = 'VOLUNTARY', indicating the employee resigned or chose to leave"
   },
   {
-    "id": "BR-0421",
+    "id": "BR-0466",
     "source": "HRMS.PKG_REPORTING.turnover_report",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "A departure is classified as involuntary when TERMINATION_REASON is any value other than 'VOLUNTARY', covering layoffs, dismissals, and other employer-initiated separations"
   },
   {
-    "id": "BR-0422",
+    "id": "BR-0467",
     "source": "HRMS.PKG_REPORTING.turnover_report",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Only departments that had at least one employee hired on or before the period end date are shown; departments with no historical headcount are suppressed from the report"
   },
   {
-    "id": "BR-0423",
+    "id": "BR-0468",
     "source": "HRMS.PKG_REPORTING.new_hires_report",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Only the currently active salary record (ACTIVE_FLAG = 'Y') is retrieved; a new hire without an active salary record still appears in the report with a NULL base salary"
   },
   {
-    "id": "BR-0424",
+    "id": "BR-0469",
     "source": "HRMS.PKG_REPORTING.new_hires_report",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Report is scoped to employees whose hire date falls within the specified date range, capturing all starters in the period"
   },
   {
-    "id": "BR-0425",
+    "id": "BR-0470",
     "source": "HRMS.PKG_REPORTING.payroll_summary_report",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Gross pay is the sum of all payroll lines with ELEMENT_TYPE = 'EARNING'; deduction, benefit, and tax lines are excluded from the gross total"
   },
   {
-    "id": "BR-0426",
+    "id": "BR-0471",
     "source": "HRMS.PKG_REPORTING.payroll_summary_report",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Total deductions aggregates all lines classified as ELEMENT_TYPE 'DEDUCTION' or 'BENEFIT'; ABS() is applied because these amounts are stored as negative values in PAYROLL_DETAILS"
   },
   {
-    "id": "BR-0427",
+    "id": "BR-0472",
     "source": "HRMS.PKG_REPORTING.payroll_summary_report",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Payroll lines with STATUS = 'ERROR' are excluded from all totals; only successfully processed lines contribute to departmental payroll figures"
   },
   {
-    "id": "BR-0428",
+    "id": "BR-0473",
     "source": "HRMS.PKG_REPORTING.eeo_compliance_report",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "EEO compliance report covers only employees with EMPLOYMENT_STATUS = 'ACTIVE'; former employees are excluded from all compliance headcount figures"
   },
   {
-    "id": "BR-0429",
+    "id": "BR-0474",
     "source": "HRMS.PKG_REPORTING.eeo_compliance_report",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "EEO gender breakdown uses three declared codes \u2014 'M' (male), 'F' (female), 'O' (other/non-binary) \u2014 plus a separate count for employees who have not disclosed gender"
   },
   {
-    "id": "BR-0430",
+    "id": "BR-0475",
     "source": "HRMS.PKG_REPORTING.eeo_compliance_report",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Employees with a NULL gender value are counted separately as 'not disclosed' and are not rolled into the male, female, or other gender totals"
   },
   {
-    "id": "BR-0431",
+    "id": "BR-0476",
     "source": "HRMS.PKG_REPORTING.eeo_compliance_report",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Only employees hired on or before the reporting snapshot date are counted; future-dated hires are excluded from the compliance figures"
   },
   {
-    "id": "BR-0432",
+    "id": "BR-0477",
+    "source": "HRMS.PKG_REPORTING.refresh_reporting_tables",
+    "source_type": "plsql_procedure",
+    "category": "validation_rule",
+    "rule": "refresh_reporting_tables: LEGACY/stub \u2014 marked as placeholder or not fully implemented"
+  },
+  {
+    "id": "BR-0478",
     "source": "HRMS.PKG_SECURITY",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Only employees with EMPLOYMENT_STATUS = 'ACTIVE' are eligible to authenticate; terminated, suspended, or otherwise inactive employees are excluded"
   },
   {
-    "id": "BR-0433",
+    "id": "BR-0479",
     "source": "HRMS.PKG_SECURITY",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "When multiple active employees share the same email address, the employee with the lowest EMP_ID is selected as the authenticated user"
   },
   {
-    "id": "BR-0434",
+    "id": "BR-0480",
     "source": "HRMS.PKG_SECURITY",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Authentication is rejected with a generic message when no active employee is found for the supplied email, preventing username enumeration"
   },
   {
-    "id": "BR-0435",
+    "id": "BR-0481",
     "source": "HRMS.PKG_SECURITY",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "A session is only considered valid when SESSION_STATUS is exactly 'ACTIVE'; any other status (e.g. 'CLOSED', 'EXPIRED') immediately invalidates the session"
   },
   {
-    "id": "BR-0436",
+    "id": "BR-0482",
     "source": "HRMS.PKG_SECURITY",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "A session is automatically expired and invalidated if more than 30 minutes have elapsed since the login time"
   },
   {
-    "id": "BR-0437",
+    "id": "BR-0483",
     "source": "HRMS.PKG_SECURITY",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Employees at job grade 8 or above are granted full access to every module and every action without further restriction"
   },
   {
-    "id": "BR-0438",
+    "id": "BR-0484",
     "source": "HRMS.PKG_SECURITY",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Employees at job grade 5 or above may perform VIEW actions on any module regardless of their department"
   },
   {
-    "id": "BR-0439",
+    "id": "BR-0485",
     "source": "HRMS.PKG_SECURITY",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "All employees regardless of job grade are permitted to create and view their own leave requests in the LEAVE module"
   },
   {
-    "id": "BR-0440",
+    "id": "BR-0486",
     "source": "HRMS.PKG_SECURITY",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "All employees regardless of job grade are permitted to view their own record in the EMPLOYEE module"
   },
   {
-    "id": "BR-0441",
+    "id": "BR-0487",
     "source": "HRMS.PKG_SECURITY",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "A new password must be at least 8 characters long; shorter passwords are rejected before any update is applied"
   },
   {
-    "id": "BR-0442",
+    "id": "BR-0488",
     "source": "HRMS.PKG_SECURITY",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Password change is blocked when the new password contains fewer than 8 characters"
   },
   {
-    "id": "BR-0443",
+    "id": "BR-0489",
     "source": "HRMS.PKG_SECURITY",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "A new password must contain at least one uppercase letter; passwords composed entirely of lowercase characters are rejected"
   },
   {
-    "id": "BR-0444",
+    "id": "BR-0490",
     "source": "HRMS.PKG_SECURITY",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Password change is blocked when the new password contains no uppercase letters"
   },
   {
-    "id": "BR-0445",
+    "id": "BR-0491",
     "source": "HRMS.PKG_SECURITY",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "A new password must contain at least one numeric digit; passwords with no numbers are rejected"
   },
   {
-    "id": "BR-0446",
+    "id": "BR-0492",
     "source": "HRMS.PKG_SECURITY",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Password change is blocked when the new password contains no numeric digits"
   },
   {
-    "id": "BR-0447",
+    "id": "BR-0493",
+    "source": "HRMS.PKG_SECURITY",
+    "source_type": "plsql_package",
+    "category": "validation_rule",
+    "rule": "Contains hard-coded configuration values that should be in SYSTEM_PARAMETERS table"
+  },
+  {
+    "id": "BR-0494",
     "source": "HRMS.PKG_SECURITY",
     "source_type": "plsql_package",
     "category": "constraint",
     "rule": "Session inactivity timeout is fixed at 30 minutes; sessions older than this threshold are automatically expired"
   },
   {
-    "id": "BR-0448",
+    "id": "BR-0495",
     "source": "HRMS.PKG_SECURITY",
     "source_type": "plsql_package",
     "category": "constraint",
     "rule": "Job grade 8 is the minimum threshold for unrestricted (senior management) access to all modules and actions"
   },
   {
-    "id": "BR-0449",
+    "id": "BR-0496",
     "source": "HRMS.PKG_SECURITY",
     "source_type": "plsql_package",
     "category": "constraint",
     "rule": "Job grade 5 is the minimum threshold for read-only access across all modules"
   },
   {
-    "id": "BR-0450",
+    "id": "BR-0497",
     "source": "HRMS.PKG_SECURITY",
     "source_type": "plsql_package",
     "category": "constraint",
     "rule": "Minimum allowable password length is 8 characters"
   },
   {
-    "id": "BR-0451",
+    "id": "BR-0498",
     "source": "HRMS.PKG_SECURITY.authenticate",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Only employees with EMPLOYMENT_STATUS = 'ACTIVE' are eligible to authenticate; terminated, suspended, or otherwise inactive employees are excluded"
   },
   {
-    "id": "BR-0452",
+    "id": "BR-0499",
     "source": "HRMS.PKG_SECURITY.authenticate",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "When multiple active employees share the same email address, the employee with the lowest EMP_ID is selected as the authenticated user"
   },
   {
-    "id": "BR-0453",
+    "id": "BR-0500",
     "source": "HRMS.PKG_SECURITY.authenticate",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Authentication is rejected with a generic message when no active employee is found for the supplied email, preventing username enumeration"
   },
   {
-    "id": "BR-0454",
+    "id": "BR-0501",
+    "source": "HRMS.PKG_SECURITY.authenticate",
+    "source_type": "plsql_procedure",
+    "category": "validation_rule",
+    "rule": "authenticate: LEGACY/stub \u2014 marked as placeholder or not fully implemented"
+  },
+  {
+    "id": "BR-0502",
     "source": "HRMS.PKG_SECURITY.authenticate",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20301: Invalid username or password"
   },
   {
-    "id": "BR-0455",
+    "id": "BR-0503",
     "source": "HRMS.PKG_SECURITY.is_session_valid",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "A session is only considered valid when SESSION_STATUS is exactly 'ACTIVE'; any other status (e.g. 'CLOSED', 'EXPIRED') immediately invalidates the session"
   },
   {
-    "id": "BR-0456",
+    "id": "BR-0504",
     "source": "HRMS.PKG_SECURITY.is_session_valid",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "A session is automatically expired and invalidated if more than 30 minutes have elapsed since the login time"
   },
   {
-    "id": "BR-0457",
+    "id": "BR-0505",
     "source": "HRMS.PKG_SECURITY.has_permission",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Employees at job grade 8 or above are granted full access to every module and every action without further restriction"
   },
   {
-    "id": "BR-0458",
+    "id": "BR-0506",
     "source": "HRMS.PKG_SECURITY.has_permission",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Employees at job grade 5 or above may perform VIEW actions on any module regardless of their department"
   },
   {
-    "id": "BR-0459",
+    "id": "BR-0507",
     "source": "HRMS.PKG_SECURITY.has_permission",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "All employees regardless of job grade are permitted to create and view their own leave requests in the LEAVE module"
   },
   {
-    "id": "BR-0460",
+    "id": "BR-0508",
     "source": "HRMS.PKG_SECURITY.has_permission",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "All employees regardless of job grade are permitted to view their own record in the EMPLOYEE module"
   },
   {
-    "id": "BR-0461",
+    "id": "BR-0509",
     "source": "HRMS.PKG_SECURITY.change_password",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "A new password must be at least 8 characters long; shorter passwords are rejected before any update is applied"
   },
   {
-    "id": "BR-0462",
+    "id": "BR-0510",
     "source": "HRMS.PKG_SECURITY.change_password",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Password change is blocked when the new password contains fewer than 8 characters"
   },
   {
-    "id": "BR-0463",
+    "id": "BR-0511",
     "source": "HRMS.PKG_SECURITY.change_password",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "A new password must contain at least one uppercase letter; passwords composed entirely of lowercase characters are rejected"
   },
   {
-    "id": "BR-0464",
+    "id": "BR-0512",
     "source": "HRMS.PKG_SECURITY.change_password",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Password change is blocked when the new password contains no uppercase letters"
   },
   {
-    "id": "BR-0465",
+    "id": "BR-0513",
     "source": "HRMS.PKG_SECURITY.change_password",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "A new password must contain at least one numeric digit; passwords with no numbers are rejected"
   },
   {
-    "id": "BR-0466",
+    "id": "BR-0514",
     "source": "HRMS.PKG_SECURITY.change_password",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Password change is blocked when the new password contains no numeric digits"
   },
   {
-    "id": "BR-0467",
+    "id": "BR-0515",
+    "source": "HRMS.PKG_SECURITY.change_password",
+    "source_type": "plsql_procedure",
+    "category": "validation_rule",
+    "rule": "change_password: LEGACY/stub \u2014 marked as placeholder or not fully implemented"
+  },
+  {
+    "id": "BR-0516",
     "source": "HRMS.PKG_SECURITY.change_password",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20310: Password must be at least 8 characters"
   },
   {
-    "id": "BR-0468",
+    "id": "BR-0517",
     "source": "HRMS.PKG_SECURITY.change_password",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20311: Password must contain an uppercase letter"
   },
   {
-    "id": "BR-0469",
+    "id": "BR-0518",
     "source": "HRMS.PKG_SECURITY.change_password",
     "source_type": "plsql_procedure",
     "category": "error_rule",
     "rule": "Error -20312: Password must contain a number"
   },
   {
-    "id": "BR-0470",
+    "id": "BR-0519",
     "source": "HRMS.PKG_VALIDATION",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Look up the minimum and maximum salary boundaries defined for the specified job grade"
   },
   {
-    "id": "BR-0471",
+    "id": "BR-0520",
     "source": "HRMS.PKG_VALIDATION",
     "source_type": "plsql_package",
     "category": "business_rule",
     "rule": "Only active holidays (ACTIVE_FLAG = 'Y') that apply globally (LOCATION_CODE IS NULL) or match the specific location block a date from being a business day"
   },
   {
-    "id": "BR-0472",
+    "id": "BR-0521",
     "source": "HRMS.PKG_VALIDATION",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Both start date and end date must be provided; a null in either makes the range invalid"
   },
   {
-    "id": "BR-0473",
+    "id": "BR-0522",
     "source": "HRMS.PKG_VALIDATION",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "End date must be on or after start date for a valid date range"
   },
   {
-    "id": "BR-0474",
+    "id": "BR-0523",
     "source": "HRMS.PKG_VALIDATION",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Both salary amount and job grade must be supplied before salary validation can proceed"
   },
   {
-    "id": "BR-0475",
+    "id": "BR-0524",
     "source": "HRMS.PKG_VALIDATION",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Salary must not fall below the minimum pay band defined for the employee's job grade"
   },
   {
-    "id": "BR-0476",
+    "id": "BR-0525",
     "source": "HRMS.PKG_VALIDATION",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Salary must not exceed the maximum pay band defined for the employee's job grade"
   },
   {
-    "id": "BR-0477",
+    "id": "BR-0526",
     "source": "HRMS.PKG_VALIDATION",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Employee number must follow the format EMP- followed by exactly 6 digits (e.g. EMP-001234)"
   },
   {
-    "id": "BR-0478",
+    "id": "BR-0527",
     "source": "HRMS.PKG_VALIDATION",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "A date qualifies as a future date only if its calendar day is strictly after today; same-day dates are not considered future"
   },
   {
-    "id": "BR-0479",
+    "id": "BR-0528",
     "source": "HRMS.PKG_VALIDATION",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Saturday and Sunday are never valid business days regardless of location or holiday configuration"
   },
   {
-    "id": "BR-0480",
+    "id": "BR-0529",
     "source": "HRMS.PKG_VALIDATION",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "A weekday is a valid business day only when no active holiday record exists for that date and location"
   },
   {
-    "id": "BR-0481",
+    "id": "BR-0530",
     "source": "HRMS.PKG_VALIDATION",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "Required-field validation is currently only implemented for the EMPLOYEES table; other tables pass through without checks"
   },
   {
-    "id": "BR-0482",
+    "id": "BR-0531",
     "source": "HRMS.PKG_VALIDATION",
     "source_type": "plsql_package",
     "category": "validation_rule",
     "rule": "An employee record must have First Name, Last Name, Hire Date, Department, and Job Title populated before it is considered complete"
   },
   {
-    "id": "BR-0483",
+    "id": "BR-0532",
     "source": "HRMS.PKG_VALIDATION.validate_date_range",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Both start date and end date must be provided; a null in either makes the range invalid"
   },
   {
-    "id": "BR-0484",
+    "id": "BR-0533",
     "source": "HRMS.PKG_VALIDATION.validate_date_range",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "End date must be on or after start date for a valid date range"
   },
   {
-    "id": "BR-0485",
+    "id": "BR-0534",
     "source": "HRMS.PKG_VALIDATION.validate_salary_for_grade",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Look up the minimum and maximum salary boundaries defined for the specified job grade"
   },
   {
-    "id": "BR-0486",
+    "id": "BR-0535",
     "source": "HRMS.PKG_VALIDATION.validate_salary_for_grade",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Both salary amount and job grade must be supplied before salary validation can proceed"
   },
   {
-    "id": "BR-0487",
+    "id": "BR-0536",
     "source": "HRMS.PKG_VALIDATION.validate_salary_for_grade",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Salary must not fall below the minimum pay band defined for the employee's job grade"
   },
   {
-    "id": "BR-0488",
+    "id": "BR-0537",
     "source": "HRMS.PKG_VALIDATION.validate_salary_for_grade",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Salary must not exceed the maximum pay band defined for the employee's job grade"
   },
   {
-    "id": "BR-0489",
+    "id": "BR-0538",
     "source": "HRMS.PKG_VALIDATION.validate_emp_number_format",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Employee number must follow the format EMP- followed by exactly 6 digits (e.g. EMP-001234)"
   },
   {
-    "id": "BR-0490",
+    "id": "BR-0539",
     "source": "HRMS.PKG_VALIDATION.is_future_date",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "A date qualifies as a future date only if its calendar day is strictly after today; same-day dates are not considered future"
   },
   {
-    "id": "BR-0491",
+    "id": "BR-0540",
     "source": "HRMS.PKG_VALIDATION.is_business_day",
     "source_type": "plsql_procedure",
     "category": "business_rule",
     "rule": "Only active holidays (ACTIVE_FLAG = 'Y') that apply globally (LOCATION_CODE IS NULL) or match the specific location block a date from being a business day"
   },
   {
-    "id": "BR-0492",
+    "id": "BR-0541",
     "source": "HRMS.PKG_VALIDATION.is_business_day",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Saturday and Sunday are never valid business days regardless of location or holiday configuration"
   },
   {
-    "id": "BR-0493",
+    "id": "BR-0542",
     "source": "HRMS.PKG_VALIDATION.is_business_day",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "A weekday is a valid business day only when no active holiday record exists for that date and location"
   },
   {
-    "id": "BR-0494",
+    "id": "BR-0543",
     "source": "HRMS.PKG_VALIDATION.validate_required_fields",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "Required-field validation is currently only implemented for the EMPLOYEES table; other tables pass through without checks"
   },
   {
-    "id": "BR-0495",
+    "id": "BR-0544",
     "source": "HRMS.PKG_VALIDATION.validate_required_fields",
     "source_type": "plsql_procedure",
     "category": "validation_rule",
     "rule": "An employee record must have First Name, Last Name, Hire Date, Department, and Job Title populated before it is considered complete"
   },
   {
-    "id": "BR-0496",
+    "id": "BR-0545",
     "source": "HRMS_EMPLOYEE",
     "source_type": "oracle_form",
     "category": "validation_rule",
     "rule": "WHEN-NEW-FORM-INSTANCE: Session must be valid before form operations are permitted"
   },
   {
-    "id": "BR-0497",
+    "id": "BR-0546",
     "source": "HRMS_EMPLOYEE",
     "source_type": "oracle_form",
     "category": "validation_rule",
     "rule": "WHEN-NEW-FORM-INSTANCE: Requires EDIT permission on EMPLOYEE"
   },
   {
-    "id": "BR-0498",
+    "id": "BR-0547",
     "source": "HRMS_EMPLOYEE",
     "source_type": "oracle_form",
     "category": "validation_rule",
     "rule": "WHEN-NEW-FORM-INSTANCE: Insert operations may be disabled based on user permissions"
   },
   {
-    "id": "BR-0499",
+    "id": "BR-0548",
     "source": "HRMS_EMPLOYEE",
     "source_type": "oracle_form",
     "category": "validation_rule",
     "rule": "WHEN-NEW-FORM-INSTANCE: Update operations may be disabled based on user permissions"
   },
   {
-    "id": "BR-0500",
+    "id": "BR-0549",
     "source": "HRMS_EMPLOYEE",
     "source_type": "oracle_form",
     "category": "validation_rule",
     "rule": "WHEN-NEW-FORM-INSTANCE: Delete operations may be disabled based on user permissions"
   },
   {
-    "id": "BR-0501",
+    "id": "BR-0550",
     "source": "HRMS_EMPLOYEE",
     "source_type": "oracle_form",
     "category": "validation_rule",
     "rule": "KEY-EXIT: Manages transaction commit/rollback"
   },
   {
-    "id": "BR-0502",
+    "id": "BR-0551",
     "source": "HRMS_EMPLOYEE",
     "source_type": "oracle_form",
     "category": "validation_rule",
     "rule": "EMPLOYEE.WHEN-VALIDATE-ITEM: Calls PKG_VALIDATION.validate_email_format for server-side validation"
   },
   {
-    "id": "BR-0503",
+    "id": "BR-0552",
     "source": "HRMS_LEAVE",
     "source_type": "oracle_form",
     "category": "validation_rule",
     "rule": "WHEN-NEW-FORM-INSTANCE: Session must be valid before form operations are permitted"
   },
   {
-    "id": "BR-0504",
+    "id": "BR-0553",
     "source": "HRMS_MENU",
     "source_type": "oracle_form",
     "category": "validation_rule",
     "rule": "WHEN-NEW-FORM-INSTANCE: Requires VIEW permission on PAYROLL"
   },
   {
-    "id": "BR-0505",
+    "id": "BR-0554",
     "source": "HRMS_MENU",
     "source_type": "oracle_form",
     "category": "validation_rule",
     "rule": "WHEN-NEW-FORM-INSTANCE: Requires VIEW permission on ADMIN"
   },
   {
-    "id": "BR-0506",
+    "id": "BR-0555",
     "source": "HRMS_MENU",
     "source_type": "oracle_form",
     "category": "validation_rule",
     "rule": "WHEN-NEW-FORM-INSTANCE: Requires VIEW permission on REPORTS"
   },
   {
-    "id": "BR-0507",
+    "id": "BR-0556",
     "source": "HRMS_MENU",
     "source_type": "oracle_form",
     "category": "validation_rule",
     "rule": "MENU_CONTROL.WHEN-BUTTON-PRESSED: Requires VIEW permission on PAYROLL"
   },
   {
-    "id": "BR-0508",
+    "id": "BR-0557",
     "source": "HRMS_MENU",
     "source_type": "oracle_form",
     "category": "validation_rule",
     "rule": "MENU_CONTROL.WHEN-BUTTON-PRESSED: Requires VIEW permission on REPORTS"
   },
   {
-    "id": "BR-0509",
+    "id": "BR-0558",
     "source": "HRMS_PAYROLL",
     "source_type": "oracle_form",
     "category": "validation_rule",
     "rule": "WHEN-NEW-FORM-INSTANCE: Session must be valid before form operations are permitted"
   },
   {
-    "id": "BR-0510",
+    "id": "BR-0559",
     "source": "HRMS_PAYROLL",
     "source_type": "oracle_form",
     "category": "validation_rule",
     "rule": "WHEN-NEW-FORM-INSTANCE: Requires VIEW permission on PAYROLL"
   },
   {
-    "id": "BR-0511",
+    "id": "BR-0560",
     "source": "HRMS_PAYROLL",
     "source_type": "oracle_form",
     "category": "validation_rule",
     "rule": "PAYROLL_RUN.WHEN-BUTTON-PRESSED: Requires APPROVE permission on PAYROLL"
   },
   {
-    "id": "BR-0512",
+    "id": "BR-0561",
     "source": "HRMS_PERFORMANCE",
     "source_type": "oracle_form",
     "category": "validation_rule",
     "rule": "WHEN-NEW-FORM-INSTANCE: Session must be valid before form operations are permitted"
   },
   {
-    "id": "BR-0513",
+    "id": "BR-0562",
     "source": "HRMS_COMMON_LIB",
     "source_type": "pll_library",
     "category": "validation_rule",
     "rule": "Toolbar Query button behaviour depends on current form mode \u2014 pressing it once opens query mode ('NORMAL'), pressing it again while already in query-entry mode ('ENTER-QUERY') executes the query"
   },
   {
-    "id": "BR-0514",
+    "id": "BR-0563",
     "source": "HRMS_COMMON_LIB",
     "source_type": "pll_library",
     "category": "validation_rule",
     "rule": "A valid HRMS session ID must exist in the global context before any form operation is permitted \u2014 absence of a session ID means the user has not logged in"
   },
   {
-    "id": "BR-0515",
+    "id": "BR-0564",
     "source": "HRMS_COMMON_LIB",
     "source_type": "pll_library",
     "category": "validation_rule",
     "rule": "Abort form processing when no session exists; the user must authenticate before continuing"
   },
   {
-    "id": "BR-0516",
+    "id": "BR-0565",
     "source": "HRMS_COMMON_LIB",
     "source_type": "pll_library",
     "category": "validation_rule",
     "rule": "Even when a session ID is present, it must pass the PKG_SECURITY validity check \u2014 an ID that fails this check is treated as an expired session, blocking further use of the form"
   },
   {
-    "id": "BR-0517",
+    "id": "BR-0566",
     "source": "HRMS_COMMON_LIB",
     "source_type": "pll_library",
     "category": "validation_rule",
     "rule": "Abort form processing when the session has expired; the user must re-authenticate"
   },
   {
-    "id": "BR-0518",
+    "id": "BR-0567",
     "source": "HRMS_COMMON_LIB",
     "source_type": "pll_library",
     "category": "validation_rule",
     "rule": "A record group is only refreshed if it already exists in the form \u2014 attempting to populate a non-existent group would raise a runtime error"
   },
   {
-    "id": "BR-0519",
+    "id": "BR-0568",
     "source": "HRMS_COMMON_LIB.refresh_lov",
     "source_type": "pll_procedure",
     "category": "validation_rule",
     "rule": "A record group is only refreshed if it already exists in the form \u2014 attempting to populate a non-existent group would raise a runtime error"
   },
   {
-    "id": "BR-0520",
+    "id": "BR-0569",
     "source": "HRMS_VALIDATION_LIB",
     "source_type": "pll_library",
     "category": "business_rule",
     "rule": "Salary boundaries are determined by the employee's assigned job grade; the allowable minimum and maximum pay are read from the JOB_GRADES reference table for the given grade"
   },
   {
-    "id": "BR-0521",
+    "id": "BR-0570",
     "source": "HRMS_VALIDATION_LIB",
     "source_type": "pll_library",
     "category": "validation_rule",
     "rule": "Email address is not a required field; NULL is treated as valid and bypasses all format checks"
   },
   {
-    "id": "BR-0522",
+    "id": "BR-0571",
     "source": "HRMS_VALIDATION_LIB",
     "source_type": "pll_library",
     "category": "validation_rule",
     "rule": "Email must contain exactly one '@' symbol, which must not appear as the first or last character (both local-part and domain must be non-empty)"
   },
   {
-    "id": "BR-0523",
+    "id": "BR-0572",
     "source": "HRMS_VALIDATION_LIB",
     "source_type": "pll_library",
     "category": "validation_rule",
     "rule": "The domain portion of an email must contain at least one dot, it must not immediately follow '@', and it must not be the final character (a valid TLD must follow)"
   },
   {
-    "id": "BR-0524",
+    "id": "BR-0573",
     "source": "HRMS_VALIDATION_LIB",
     "source_type": "pll_library",
     "category": "validation_rule",
     "rule": "Phone number is not a required field; NULL is treated as valid"
   },
   {
-    "id": "BR-0525",
+    "id": "BR-0574",
     "source": "HRMS_VALIDATION_LIB",
     "source_type": "pll_library",
     "category": "validation_rule",
     "rule": "SSN is not a required field; NULL is treated as valid"
   },
   {
-    "id": "BR-0526",
+    "id": "BR-0575",
     "source": "HRMS_VALIDATION_LIB",
     "source_type": "pll_library",
     "category": "validation_rule",
     "rule": "Each of the three SSN segments must contain at least one non-zero digit: the area number (digits 1-3), the group number (digits 4-5), and the serial number (digits 6-9) must never be all zeros, in accordance with SSA issuance rules"
   },
   {
-    "id": "BR-0527",
+    "id": "BR-0576",
     "source": "HRMS_VALIDATION_LIB",
     "source_type": "pll_library",
     "category": "validation_rule",
     "rule": "A date value must not be in the future; only today's date or any prior date is accepted; NULL bypasses the check"
   },
   {
-    "id": "BR-0528",
+    "id": "BR-0577",
     "source": "HRMS_VALIDATION_LIB",
     "source_type": "pll_library",
     "category": "validation_rule",
     "rule": "Salary range validation is skipped when either the salary amount or the job grade identifier is absent; both values must be present for the range check to execute"
   },
   {
-    "id": "BR-0529",
+    "id": "BR-0578",
     "source": "HRMS_VALIDATION_LIB",
     "source_type": "pll_library",
     "category": "validation_rule",
     "rule": "An employee's salary must not fall below the minimum pay threshold defined for their job grade"
   },
   {
-    "id": "BR-0530",
+    "id": "BR-0579",
     "source": "HRMS_VALIDATION_LIB",
     "source_type": "pll_library",
     "category": "validation_rule",
     "rule": "An employee's salary must not exceed the maximum pay threshold defined for their job grade"
   },
   {
-    "id": "BR-0531",
+    "id": "BR-0580",
     "source": "HRMS_VALIDATION_LIB",
     "source_type": "pll_library",
     "category": "known_bug",
     "rule": "Only checks for one dot after @, rejects valid subdomains"
   },
   {
-    "id": "BR-0532",
+    "id": "BR-0581",
     "source": "HRMS_VALIDATION_LIB",
     "source_type": "pll_library",
     "category": "known_bug",
     "rule": "Uses a hard-coded cache that's populated at form startup"
   },
   {
-    "id": "BR-0533",
+    "id": "BR-0582",
     "source": "HRMS_VALIDATION_LIB.validate_email",
     "source_type": "pll_procedure",
     "category": "validation_rule",
     "rule": "Email address is not a required field; NULL is treated as valid and bypasses all format checks"
   },
   {
-    "id": "BR-0534",
+    "id": "BR-0583",
     "source": "HRMS_VALIDATION_LIB.validate_email",
     "source_type": "pll_procedure",
     "category": "validation_rule",
     "rule": "Email must contain exactly one '@' symbol, which must not appear as the first or last character (both local-part and domain must be non-empty)"
   },
   {
-    "id": "BR-0535",
+    "id": "BR-0584",
     "source": "HRMS_VALIDATION_LIB.validate_email",
     "source_type": "pll_procedure",
     "category": "validation_rule",
     "rule": "The domain portion of an email must contain at least one dot, it must not immediately follow '@', and it must not be the final character (a valid TLD must follow)"
   },
   {
-    "id": "BR-0536",
+    "id": "BR-0585",
     "source": "HRMS_VALIDATION_LIB.validate_email",
     "source_type": "pll_procedure",
     "category": "known_bug",
     "rule": "Only checks for one dot after @, rejects valid subdomains"
   },
   {
-    "id": "BR-0537",
+    "id": "BR-0586",
     "source": "HRMS_VALIDATION_LIB.validate_phone",
     "source_type": "pll_procedure",
     "category": "validation_rule",
     "rule": "Phone number is not a required field; NULL is treated as valid"
   },
   {
-    "id": "BR-0538",
+    "id": "BR-0587",
     "source": "HRMS_VALIDATION_LIB.validate_ssn",
     "source_type": "pll_procedure",
     "category": "validation_rule",
     "rule": "SSN is not a required field; NULL is treated as valid"
   },
   {
-    "id": "BR-0539",
+    "id": "BR-0588",
     "source": "HRMS_VALIDATION_LIB.validate_ssn",
     "source_type": "pll_procedure",
     "category": "validation_rule",
     "rule": "Each of the three SSN segments must contain at least one non-zero digit: the area number (digits 1-3), the group number (digits 4-5), and the serial number (digits 6-9) must never be all zeros, in accordance with SSA issuance rules"
   },
   {
-    "id": "BR-0540",
+    "id": "BR-0589",
     "source": "HRMS_VALIDATION_LIB.validate_date_not_future",
     "source_type": "pll_procedure",
     "category": "validation_rule",
     "rule": "A date value must not be in the future; only today's date or any prior date is accepted; NULL bypasses the check"
   },
   {
-    "id": "BR-0541",
+    "id": "BR-0590",
     "source": "HRMS_VALIDATION_LIB.validate_date_not_future",
     "source_type": "pll_procedure",
     "category": "known_bug",
     "rule": "Uses a hard-coded cache that's populated at form startup"
   },
   {
-    "id": "BR-0542",
+    "id": "BR-0591",
     "source": "HRMS_VALIDATION_LIB.validate_salary_range",
     "source_type": "pll_procedure",
     "category": "validation_rule",
     "rule": "Salary range validation is skipped when either the salary amount or the job grade identifier is absent; both values must be present for the range check to execute"
   },
   {
-    "id": "BR-0543",
+    "id": "BR-0592",
     "source": "HRMS_VALIDATION_LIB.validate_salary_range",
     "source_type": "pll_procedure",
     "category": "validation_rule",
     "rule": "An employee's salary must not fall below the minimum pay threshold defined for their job grade"
   },
   {
-    "id": "BR-0544",
+    "id": "BR-0593",
     "source": "HRMS_VALIDATION_LIB.validate_salary_range",
     "source_type": "pll_procedure",
     "category": "validation_rule",
     "rule": "An employee's salary must not exceed the maximum pay threshold defined for their job grade"
   },
   {
-    "id": "BR-0545",
+    "id": "BR-0594",
     "source": "TRG_SALARY_AUDIT",
     "source_type": "db_trigger",
     "category": "validation_rule",
     "rule": "When a new salary record is inserted, the audit log must capture employee ID, base salary, and effective date to establish the initial compensation record"
   },
   {
-    "id": "BR-0546",
+    "id": "BR-0595",
     "source": "TRG_SALARY_AUDIT",
     "source_type": "db_trigger",
     "category": "validation_rule",
     "rule": "When a salary record is updated, both the previous and new base salary and active status must be preserved in the audit trail to support compensation change reviews"
   },
   {
-    "id": "BR-0547",
+    "id": "BR-0596",
     "source": "TRG_SALARY_AUDIT",
     "source_type": "db_trigger",
     "category": "validation_rule",
     "rule": "When a salary record is deleted, the employee identity and last known salary must be preserved in the audit log to maintain a complete compensation history"
   },
   {
-    "id": "BR-0548",
+    "id": "BR-0597",
     "source": "TRG_SALARY_AUDIT",
     "source_type": "db_trigger",
     "category": "validation_rule",
     "rule": "Only STATUS column changes on leave requests are subject to audit tracking; updates to other fields (e.g. comments, dates) do not generate an audit record"
   },
   {
-    "id": "BR-0549",
+    "id": "BR-0598",
     "source": "TRG_SALARY_AUDIT",
     "source_type": "db_trigger",
     "category": "validation_rule",
     "rule": "Every structural change to a department record (creation, modification, or removal) must be captured in the audit log to support organisational governance and accountability"
   },
   {
-    "id": "BR-0550",
+    "id": "BR-0599",
     "source": "TRG_SALARY_AUDIT",
     "source_type": "db_trigger",
     "category": "validation_rule",
     "rule": "For department changes, the database session user (USER) is always recorded as the actor; there is no application-supplied MODIFIED_BY column on this table"
   },
   {
-    "id": "BR-0551",
+    "id": "BR-0600",
     "source": "TRG_DEPARTMENT_AUDIT",
     "source_type": "db_trigger",
     "category": "validation_rule",
     "rule": "Every structural change to a department record (creation, modification, or removal) must be captured in the audit log to support organisational governance and accountability"
   },
   {
-    "id": "BR-0552",
+    "id": "BR-0601",
     "source": "TRG_DEPARTMENT_AUDIT",
     "source_type": "db_trigger",
     "category": "validation_rule",
     "rule": "For department changes, the database session user (USER) is always recorded as the actor; there is no application-supplied MODIFIED_BY column on this table"
   },
   {
-    "id": "BR-0553",
+    "id": "BR-0602",
     "source": "TRG_EMP_BEFORE_INSERT",
     "source_type": "db_trigger",
     "category": "business_rule",
     "rule": "Only active employees (ACTIVE_FLAG = 'Y') are considered when checking email uniqueness; inactive or terminated employee records do not block reuse of an email address"
   },
   {
-    "id": "BR-0554",
+    "id": "BR-0603",
     "source": "TRG_EMP_BEFORE_INSERT",
     "source_type": "db_trigger",
     "category": "validation_rule",
     "rule": "CREATED_BY must be populated; defaults to the current database session user if not supplied by the caller"
   },
   {
-    "id": "BR-0555",
+    "id": "BR-0604",
     "source": "TRG_EMP_BEFORE_INSERT",
     "source_type": "db_trigger",
     "category": "validation_rule",
     "rule": "CREATED_DATE must be populated; defaults to the current system timestamp if not supplied by the caller"
   },
   {
-    "id": "BR-0556",
+    "id": "BR-0605",
     "source": "TRG_EMP_BEFORE_INSERT",
     "source_type": "db_trigger",
     "category": "validation_rule",
     "rule": "A new employee record is considered active by default unless ACTIVE_FLAG is explicitly set to a different value"
   },
   {
-    "id": "BR-0557",
+    "id": "BR-0606",
     "source": "TRG_EMP_BEFORE_INSERT",
     "source_type": "db_trigger",
     "category": "validation_rule",
     "rule": "A new employee record defaults to ACTIVE employment status unless an alternative status is explicitly provided on insert"
   },
   {
-    "id": "BR-0558",
+    "id": "BR-0607",
     "source": "TRG_EMP_BEFORE_INSERT",
     "source_type": "db_trigger",
     "category": "validation_rule",
     "rule": "Hire date cannot be more than 180 days in the future, preventing erroneous or speculative pre-dated hires beyond a 6-month planning horizon"
   },
   {
-    "id": "BR-0559",
+    "id": "BR-0608",
     "source": "TRG_EMP_BEFORE_INSERT",
     "source_type": "db_trigger",
     "category": "validation_rule",
     "rule": "Inserting an employee with a hire date more than 180 days in the future is not permitted"
   },
   {
-    "id": "BR-0560",
+    "id": "BR-0609",
     "source": "TRG_EMP_BEFORE_INSERT",
     "source_type": "db_trigger",
     "category": "validation_rule",
     "rule": "An email address already assigned to an active employee cannot be reused for a new employee record"
   },
   {
-    "id": "BR-0561",
+    "id": "BR-0610",
     "source": "TRG_EMP_BEFORE_INSERT",
     "source_type": "db_trigger",
     "category": "validation_rule",
     "rule": "Inserting an employee whose email is already in use by an active employee record is not permitted"
   },
   {
-    "id": "BR-0562",
+    "id": "BR-0611",
     "source": "TRG_EMP_BEFORE_INSERT",
     "source_type": "db_trigger",
     "category": "validation_rule",
     "rule": "A terminated employee cannot be directly reactivated by changing EMPLOYMENT_STATUS from TERMINATED to ACTIVE via a plain UPDATE; the formal rehire process (PKG_EMPLOYEE.rehire_employee) must be used instead"
   },
   {
-    "id": "BR-0563",
+    "id": "BR-0612",
     "source": "TRG_EMP_BEFORE_INSERT",
     "source_type": "db_trigger",
     "category": "validation_rule",
     "rule": "Bypassing the rehire process to reactivate a terminated employee is not permitted"
   },
   {
-    "id": "BR-0564",
+    "id": "BR-0613",
     "source": "TRG_EMP_BEFORE_INSERT",
     "source_type": "db_trigger",
     "category": "validation_rule",
     "rule": "Every change to an employee's EMPLOYMENT_STATUS must be recorded in the EMPLOYEE_HISTORY audit table with the old and new status values"
   },
   {
-    "id": "BR-0565",
+    "id": "BR-0614",
     "source": "TRG_EMP_BEFORE_INSERT",
     "source_type": "db_trigger",
     "category": "validation_rule",
     "rule": "Every change to an employee's department assignment (DEPT_ID) must be recorded in the EMPLOYEE_HISTORY audit table as a DEPARTMENT_CHANGE event; NULL department is treated as a distinct value to catch assignments to or from an unassigned state"
   },
   {
-    "id": "BR-0566",
+    "id": "BR-0615",
     "source": "TRG_EMP_BEFORE_INSERT",
     "source_type": "db_trigger",
     "category": "validation_rule",
     "rule": "Every change to an employee's job assignment (JOB_ID) must be recorded in the EMPLOYEE_HISTORY audit table as a JOB_CHANGE event; NULL job is treated as a distinct value to catch assignments to or from an unassigned state"
   },
   {
-    "id": "BR-0567",
+    "id": "BR-0616",
     "source": "TRG_EMP_BEFORE_INSERT",
     "source_type": "db_trigger",
     "category": "validation_rule",
     "rule": "Physical deletion of employee records is never permitted; callers must deactivate a record by setting ACTIVE_FLAG to 'N' or by running the formal termination process"
   },
   {
-    "id": "BR-0568",
+    "id": "BR-0617",
     "source": "TRG_EMP_BEFORE_INSERT",
     "source_type": "db_trigger",
     "category": "known_bug",
     "rule": "This actually prevents deletion, but Forms expects DELETE to succeed."
   },
   {
-    "id": "BR-0569",
+    "id": "BR-0618",
     "source": "TRG_EMP_BEFORE_UPDATE",
     "source_type": "db_trigger",
     "category": "validation_rule",
     "rule": "A terminated employee cannot be directly reactivated by changing EMPLOYMENT_STATUS from TERMINATED to ACTIVE via a plain UPDATE; the formal rehire process (PKG_EMPLOYEE.rehire_employee) must be used instead"
   },
   {
-    "id": "BR-0570",
+    "id": "BR-0619",
     "source": "TRG_EMP_BEFORE_UPDATE",
     "source_type": "db_trigger",
     "category": "validation_rule",
     "rule": "Bypassing the rehire process to reactivate a terminated employee is not permitted"
   },
   {
-    "id": "BR-0571",
+    "id": "BR-0620",
     "source": "TRG_EMP_BEFORE_UPDATE",
     "source_type": "db_trigger",
     "category": "validation_rule",
     "rule": "Every change to an employee's EMPLOYMENT_STATUS must be recorded in the EMPLOYEE_HISTORY audit table with the old and new status values"
   },
   {
-    "id": "BR-0572",
+    "id": "BR-0621",
     "source": "TRG_EMP_BEFORE_UPDATE",
     "source_type": "db_trigger",
     "category": "validation_rule",
     "rule": "Every change to an employee's department assignment (DEPT_ID) must be recorded in the EMPLOYEE_HISTORY audit table as a DEPARTMENT_CHANGE event; NULL department is treated as a distinct value to catch assignments to or from an unassigned state"
   },
   {
-    "id": "BR-0573",
+    "id": "BR-0622",
     "source": "TRG_EMP_BEFORE_UPDATE",
     "source_type": "db_trigger",
     "category": "validation_rule",
     "rule": "Every change to an employee's job assignment (JOB_ID) must be recorded in the EMPLOYEE_HISTORY audit table as a JOB_CHANGE event; NULL job is treated as a distinct value to catch assignments to or from an unassigned state"
   },
   {
-    "id": "BR-0574",
+    "id": "BR-0623",
     "source": "TRG_EMP_BEFORE_UPDATE",
     "source_type": "db_trigger",
     "category": "validation_rule",
     "rule": "Physical deletion of employee records is never permitted; callers must deactivate a record by setting ACTIVE_FLAG to 'N' or by running the formal termination process"
   },
   {
-    "id": "BR-0575",
+    "id": "BR-0624",
     "source": "TRG_EMP_BEFORE_UPDATE",
     "source_type": "db_trigger",
     "category": "known_bug",
     "rule": "This actually prevents deletion, but Forms expects DELETE to succeed."
   },
   {
-    "id": "BR-0576",
+    "id": "BR-0625",
     "source": "TRG_EMP_INSTEAD_OF_DELETE",
     "source_type": "db_trigger",
     "category": "validation_rule",
     "rule": "Physical deletion of employee records is never permitted; callers must deactivate a record by setting ACTIVE_FLAG to 'N' or by running the formal termination process"
   },
   {
-    "id": "BR-0577",
+    "id": "BR-0626",
     "source": "TRG_EMP_INSTEAD_OF_DELETE",
     "source_type": "db_trigger",
     "category": "known_bug",
     "rule": "This actually prevents deletion, but Forms expects DELETE to succeed."
   },
   {
-    "id": "BR-0578",
+    "id": "BR-0627",
     "source": "HRMS.DEPARTMENTS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "ACTIVE_FLAG IN ('Y', 'N'"
   },
   {
-    "id": "BR-0579",
+    "id": "BR-0628",
     "source": "HRMS.JOB_GRADES",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "MAX_SALARY >= MIN_SALARY"
   },
   {
-    "id": "BR-0580",
+    "id": "BR-0629",
     "source": "HRMS.EMPLOYEES",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "EMPLOYMENT_STATUS IN ('ACTIVE', 'ON_LEAVE', 'SUSPENDED', 'TERMINATED'"
   },
   {
-    "id": "BR-0581",
+    "id": "BR-0630",
     "source": "HRMS.EMPLOYEES",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "EMPLOYMENT_TYPE IN ('FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERN'"
   },
   {
-    "id": "BR-0582",
+    "id": "BR-0631",
     "source": "HRMS.EMPLOYEES",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "GENDER IN ('M', 'F', 'O'"
   },
   {
-    "id": "BR-0583",
+    "id": "BR-0632",
     "source": "HRMS.EMPLOYEE_HISTORY",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "CHANGE_TYPE IN (\n        'HIRE', 'TRANSFER', 'PROMOTION', 'DEMOTION', 'SALARY_CHANGE',\n        'TERMINATION', 'REHIRE', 'LEAVE_START', 'LEAVE_END', 'STATUS_CHANGE'\n    "
   },
   {
-    "id": "BR-0584",
+    "id": "BR-0633",
     "source": "HRMS.EMPLOYEE_DEPENDENTS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "RELATIONSHIP IN ('SPOUSE', 'CHILD', 'PARENT', 'DOMESTIC_PARTNER', 'OTHER'"
   },
   {
-    "id": "BR-0585",
+    "id": "BR-0634",
     "source": "HRMS.SALARY_RECORDS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "PAY_FREQUENCY IN ('WEEKLY', 'BIWEEKLY', 'SEMIMONTHLY', 'MONTHLY'"
   },
   {
-    "id": "BR-0586",
+    "id": "BR-0635",
     "source": "HRMS.SALARY_RECORDS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "SALARY_BASIS IN ('ANNUAL', 'HOURLY'"
   },
   {
-    "id": "BR-0587",
+    "id": "BR-0636",
     "source": "HRMS.PAY_ELEMENTS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "ELEMENT_TYPE IN ('EARNING', 'DEDUCTION', 'TAX', 'BENEFIT', 'REIMBURSEMENT'"
   },
   {
-    "id": "BR-0588",
+    "id": "BR-0637",
     "source": "HRMS.PAY_ELEMENTS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "CALCULATION_TYPE IN ('FLAT', 'PERCENTAGE', 'HOURS', 'FORMULA'"
   },
   {
-    "id": "BR-0589",
+    "id": "BR-0638",
     "source": "HRMS.PAY_PERIODS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "STATUS IN ('OPEN', 'PROCESSING', 'CLOSED', 'REVERSED'"
   },
   {
-    "id": "BR-0590",
+    "id": "BR-0639",
     "source": "HRMS.PAYROLL_RUNS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "RUN_TYPE IN ('REGULAR', 'SUPPLEMENTAL', 'BONUS', 'FINAL'"
   },
   {
-    "id": "BR-0591",
+    "id": "BR-0640",
     "source": "HRMS.PAYROLL_RUNS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "STATUS IN ('PENDING', 'CALCULATING', 'CALCULATED', 'APPROVED', 'PAID', 'REVERSED', 'ERROR'"
   },
   {
-    "id": "BR-0592",
+    "id": "BR-0641",
     "source": "HRMS.TAX_BRACKETS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "FILING_STATUS IN ('SINGLE', 'MARRIED_JOINT', 'MARRIED_SEPARATE', 'HEAD_OF_HOUSEHOLD'"
   },
   {
-    "id": "BR-0593",
+    "id": "BR-0642",
     "source": "HRMS.EMPLOYEE_BANK_ACCOUNTS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "ACCOUNT_TYPE IN ('CHECKING', 'SAVINGS'"
   },
   {
-    "id": "BR-0594",
+    "id": "BR-0643",
     "source": "HRMS.EMPLOYEE_BANK_ACCOUNTS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "DEPOSIT_TYPE IN ('FULL', 'PARTIAL_AMOUNT', 'PARTIAL_PERCENT', 'REMAINDER'"
   },
   {
-    "id": "BR-0595",
+    "id": "BR-0644",
     "source": "HRMS.LEAVE_TYPES",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "ACCRUAL_FREQUENCY IN ('MONTHLY', 'BIWEEKLY', 'ANNUAL', NULL"
   },
   {
-    "id": "BR-0596",
+    "id": "BR-0645",
     "source": "HRMS.LEAVE_REQUESTS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "STATUS IN ('PENDING', 'APPROVED', 'REJECTED', 'CANCELLED', 'TAKEN'"
   },
   {
-    "id": "BR-0597",
+    "id": "BR-0646",
     "source": "HRMS.LEAVE_REQUESTS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "END_DATE >= START_DATE"
   },
   {
-    "id": "BR-0598",
+    "id": "BR-0647",
     "source": "HRMS.LEAVE_REQUESTS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "HALF_DAY_PERIOD IN ('AM', 'PM', NULL"
   },
   {
-    "id": "BR-0599",
+    "id": "BR-0648",
     "source": "HRMS.REVIEW_CYCLES",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "STATUS IN ('DRAFT', 'OPEN', 'IN_PROGRESS', 'CALIBRATION', 'CLOSED'"
   },
   {
-    "id": "BR-0600",
+    "id": "BR-0649",
     "source": "HRMS.PERFORMANCE_REVIEWS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "STATUS IN ('NOT_STARTED', 'SELF_REVIEW', 'MANAGER_REVIEW', 'MEETING_SCHEDULED', 'COMPLETED', 'ACKNOWLEDGED'"
   },
   {
-    "id": "BR-0601",
+    "id": "BR-0650",
     "source": "HRMS.PERFORMANCE_REVIEWS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "OVERALL_RATING BETWEEN 1.0 AND 5.0"
   },
   {
-    "id": "BR-0602",
+    "id": "BR-0651",
     "source": "HRMS.PERFORMANCE_GOALS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "STATUS IN ('NOT_STARTED', 'IN_PROGRESS', 'COMPLETED', 'DEFERRED', 'CANCELLED'"
   },
   {
-    "id": "BR-0603",
+    "id": "BR-0652",
     "source": "HRMS.PERFORMANCE_GOALS",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "GOAL_CATEGORY IN ('BUSINESS', 'DEVELOPMENT', 'LEADERSHIP', 'INNOVATION', 'COMPLIANCE'"
   },
   {
-    "id": "BR-0604",
+    "id": "BR-0653",
     "source": "HRMS.AUDIT_LOG",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "ACTION_TYPE IN ('INSERT', 'UPDATE', 'DELETE'"
   },
   {
-    "id": "BR-0605",
+    "id": "BR-0654",
     "source": "HRMS.NOTIFICATION_QUEUE",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "STATUS IN ('PENDING', 'SENT', 'FAILED', 'CANCELLED'"
   },
   {
-    "id": "BR-0606",
+    "id": "BR-0655",
     "source": "HRMS.NOTIFICATION_QUEUE",
     "source_type": "ddl_table",
     "category": "check_constraint",
     "rule": "NOTIFICATION_TYPE IN ('EMAIL', 'IN_APP', 'SMS'"
   },
   {
-    "id": "BR-0607",
+    "id": "BR-0656",
     "source": "HRMS.SEQ_EMP_NUMBER",
     "source_type": "sequence",
     "category": "known_bug",
