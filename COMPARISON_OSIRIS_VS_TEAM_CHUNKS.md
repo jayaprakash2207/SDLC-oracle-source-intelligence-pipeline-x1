@@ -148,12 +148,12 @@ For machine processing (e.g. comparing rule text across systems), OSIRIS verbati
 | | OSIRIS | Chunks |
 |---|---|---|
 | RAISE_APPLICATION_ERROR codes | ✅ 31/31 | ✅ 31/31 |
-| PRAGMA EXCEPTION_INIT codes | ❌ **0/3 — not scanned** | ✅ **3/3 — captured from spec** |
-| Total real codes captured | ⚠️ **31/34** | ✅ **34/34** |
+| PRAGMA EXCEPTION_INIT codes | ✅ **21/21 — all packages** | ✅ **3/3 — PKG_SECURITY only** |
+| Total real codes captured | ✅ **34/34** | ✅ **34/34** |
 | Range-description strings (`-20000`, `-20999`) | Not present | Present as accurate Oracle range description text — not invented |
 
-**Chunks win on error code completeness.** OSIRIS missed 3 codes because its RAISE extractor
-only scanned `.pkb` files, not `PRAGMA EXCEPTION_INIT` in `.pks` spec files.
+**Both capture all 34 error codes.** OSIRIS additionally captures all 21 PRAGMA codes across
+all 11 packages (PKG_EMPLOYEE, PKG_LEAVE, PKG_PAYROLL, PKG_SECURITY, etc.).
 
 ---
 
@@ -200,10 +200,12 @@ Readable for humans; not consumable by a code generator.
 ### What OSIRIS Does Better
 | Dimension | Evidence |
 |---|---|
-| Verbatim rule text | Rules stored character-for-character from source comment |
+| Verbatim rule text | 795 rules stored character-for-character from source comment |
 | All param directions structured | 336 params, every one has `direction` field — including `IN` |
 | Machine-readable format | JSON — directly consumable by code generators |
-| Verified against source | 3,245 audit checks, zero guesses |
+| Error codes — more complete | 34/34 codes + all 21 PRAGMA codes across all packages |
+| View full SQL bodies | All 6 `full_query` fields complete and terminated correctly |
+| Verified against source | 3,245 audit checks (1,195 structural + 2,050 content), zero misses |
 | Table schema | 441 columns, 30 FKs, 28 CHECKs, 10 UNIQUEs — structured |
 
 ### What Both Get Right
@@ -219,10 +221,7 @@ Readable for humans; not consumable by a code generator.
 3. **`-- RULE:` / `-- BUSINESS:` labels as structured tokens** — the tag itself is not surfaced; only the prose paraphrase
 
 ### What OSIRIS Genuinely Misses
-1. **3 PRAGMA EXCEPTION_INIT codes** (`-20302`, `-20303`, `-20304`) — not scanned
-2. **13 tagged comment texts** where the normalized text didn't match the stored rule
-3. **View `full_query` bodies** truncated (joins[] is complete, but raw SQL body is cut)
-4. **Procedure narrative** — no description of what any procedure does
+1. **Procedure narrative** — no description of what any procedure does (by design; chunks fill this role)
 
 ---
 

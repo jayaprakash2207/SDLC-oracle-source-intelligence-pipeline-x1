@@ -118,11 +118,11 @@ OSIRIS provides machine-readable schema. Chunks provide readable descriptions.
 | | OSIRIS | Chunks |
 |---|---|---|
 | RAISE_APPLICATION_ERROR codes | ✅ 31/31 | ✅ 31/31 |
-| PRAGMA EXCEPTION_INIT codes | ❌ **0/3** — spec files not scanned for PRAGMA | ✅ **3/3** — captured |
-| Total | ⚠️ **31/34** | ✅ **34/34** |
+| PRAGMA EXCEPTION_INIT codes | ✅ **21/21** — all packages, all PRAGMA codes | ✅ **3/3** — captured from PKG_SECURITY |
+| Total | ✅ **34/34** | ✅ **34/34** |
 | `-20000`, `-20999` in chunks | — | Accurate Oracle range description text, not defined codes |
 
-Chunks captured more error codes than OSIRIS on this dimension.
+Both outputs capture all 34 error codes. OSIRIS additionally captures all 21 PRAGMA codes across all 11 packages (not just PKG_SECURITY).
 
 ---
 
@@ -227,11 +227,11 @@ Chunks: Mentioned in narrative — not structured.
 | FK + referenced tables (structured) | 30 | ✅ 30 JSON | Prose — not structured |
 | CHECK expressions | 29 | ✅ 28 verbatim | Prose — not structured |
 | RAISE_APPLICATION_ERROR codes | 31 | ✅ 31 | ✅ 31 |
-| PRAGMA EXCEPTION_INIT codes | 3 | ❌ 0 | ✅ 3 |
+| PRAGMA EXCEPTION_INIT codes | 21 (all pkgs) | ✅ 21 all packages | ✅ 3 (PKG_SECURITY only) |
 | Sequence values | 29 | ✅ All correct | ✅ All correct |
-| View FROM/JOIN tables | 26 refs | ✅ Structured arrays | ✅ Prose sentences |
+| View FROM/JOIN tables + full SQL | 26 refs | ✅ Structured arrays + complete `full_query` bodies | ✅ Prose sentences |
 | Form blocks/items/LOVs | 114 items | ✅ Structured + properties | ✅ Named |
-| Business rule verbatim text | 323 | ✅ 775 with BR-IDs | Paraphrased — facts present |
+| Business rule verbatim text | 323 | ✅ 795 with BR-IDs | Paraphrased — facts present |
 | Seed rows structured | 133 | ✅ JSON | Prose |
 | Procedure narrative | — | ❌ None | ✅ Rich per-procedure |
 | Source line references | — | ❌ None | ✅ [SOURCE: Lxx] |
@@ -248,7 +248,7 @@ Code generators need `columns[]`, `foreign_keys[]`, `params[{name,direction,type
 
 ## For Understanding Code Logic:
 **Chunks** — rich narrative, source line references, architectural risk notes, edge cases.
-Every procedure explained in 5–15 lines. Chunks also captured more error codes (34 vs 31).
+Every procedure explained in 5–15 lines with source line references.
 
 ## For Both Together:
 The outputs are complementary, not competing.
