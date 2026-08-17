@@ -272,12 +272,12 @@
       }
     ],
     "open_forms": [
-      "HRMS_PERFORMANCE",
-      "HRMS_EMPLOYEE",
-      "HRMS_PAYROLL",
+      "HRMS_LEAVE",
       "HRMS_ADMIN",
       "HRMS_REPORTS",
-      "HRMS_LEAVE"
+      "HRMS_PERFORMANCE",
+      "HRMS_PAYROLL",
+      "HRMS_EMPLOYEE"
     ],
     "show_windows": [
       "WIN_CHANGE_PWD"

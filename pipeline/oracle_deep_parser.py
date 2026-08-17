@@ -14,12 +14,7 @@ import json
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-SOURCE_DIR   = (Path(__file__).parent.parent
-                / "automated-reverse-engineering-pipeline-main"
-                / "automated-reverse-engineering-pipeline-main"
-                / "source"
-                / "ts-plsql-oracle-forms-hrms"
-                / "ts-plsql-oracle-forms-hrms-main")
+SOURCE_DIR   = Path(__file__).parent.parent / "source"
 
 OUTPUT_DIR   = Path(__file__).parent / "parser-output"
 PKG_DIR      = SOURCE_DIR / "plsql" / "packages"
@@ -523,6 +518,7 @@ def parse_pll_library(filepath: Path) -> dict:
         "functions": functions,
         "all_business_rules": extract_inline_comments(content, "BUSINESS"),
         "all_rules": extract_inline_comments(content, "RULE"),
+        "all_constraints": extract_inline_comments(content, "CONSTRAINT"),
         "all_validation_notes": extract_inline_comments(content, "VALIDATION"),
         "all_bugs": extract_inline_comments(content, "BUG"),
         "pkg_calls": list(set(re.findall(r"(PKG_\w+\.\w+)", content, re.IGNORECASE))),
@@ -1100,7 +1096,11 @@ def deep_parse_schema() -> dict:
                 continue
             m = m_dummy
             view_name = ("HRMS." + m.group(2)).upper()
-            body = m.group(3)
+            raw_body = m.group(3)
+            # Trim to first statement-terminating semicolon so we don't
+            # include COMMENT ON or subsequent view header lines.
+            semi_m = re.search(r";", raw_body)
+            body = raw_body[:semi_m.end()].strip() if semi_m else raw_body.strip()
             # Filter noise from FROM/JOIN captures
             raw_from = re.findall(r"\bFROM\s+((?:HRMS\.)?(\w+))", body, re.IGNORECASE)
             raw_join = re.findall(r"\bJOIN\s+((?:HRMS\.)?(\w+))", body, re.IGNORECASE)
@@ -1111,8 +1111,8 @@ def deep_parse_schema() -> dict:
                 "name": view_name,
                 "tables_used": tables_used,
                 "joins": joins_used,
-                "query_snippet": body.strip()[:800],
-                "full_query": body.strip(),
+                "query_snippet": body[:800],
+                "full_query": body,
             }
 
     seq_file = SCHEMA_DIR / "sequences" / "hrms_sequences.sql"
@@ -1163,6 +1163,7 @@ def deep_parse_schema() -> dict:
                 "table": ("HRMS." + m.group(5)).upper(),
                 "business_rules": extract_inline_comments(combined, "BUSINESS"),
                 "rules": extract_inline_comments(combined, "RULE"),
+                "constraints": extract_inline_comments(combined, "CONSTRAINT"),
                 "validation_notes": extract_inline_comments(combined, "VALIDATION"),
                 "bugs": extract_inline_comments(combined, "BUG"),
                 "raise_errors": extract_raise_application_errors(body),
@@ -1191,6 +1192,11 @@ def consolidate_business_rules(packages, forms, schema, pll_libs, seed_data) -> 
         rule_id += 1
 
     for pkg_name, pkg in packages.items():
+        spec = pkg.get("spec") or {}
+        for exc in spec.get("exceptions", []):
+            if exc.get("code"):
+                add(pkg_name, "plsql_package_spec", "error_rule",
+                    f"PRAGMA EXCEPTION_INIT {exc['name']} = {exc['code']}")
         body = pkg.get("body") or {}
         for r in body.get("business_rules", []):
             add(pkg_name, "plsql_package", "business_rule", r)
@@ -1231,6 +1237,8 @@ def consolidate_business_rules(packages, forms, schema, pll_libs, seed_data) -> 
             add(lib["name"], "pll_library", "business_rule", r)
         for r in lib.get("all_rules", []):
             add(lib["name"], "pll_library", "validation_rule", r)
+        for r in lib.get("all_constraints", []):
+            add(lib["name"], "pll_library", "constraint", r)
         for r in lib.get("all_validation_notes", []):
             add(lib["name"], "pll_library", "validation_note", r)
         for r in lib.get("all_bugs", []):
@@ -1246,6 +1254,8 @@ def consolidate_business_rules(packages, forms, schema, pll_libs, seed_data) -> 
             add(trig_name, "db_trigger", "business_rule", r)
         for r in trig.get("rules", []):
             add(trig_name, "db_trigger", "validation_rule", r)
+        for r in trig.get("constraints", []):
+            add(trig_name, "db_trigger", "constraint", r)
         for r in trig.get("validation_notes", []):
             add(trig_name, "db_trigger", "validation_note", r)
         for r in trig.get("bugs", []):
@@ -1263,7 +1273,9 @@ def consolidate_business_rules(packages, forms, schema, pll_libs, seed_data) -> 
     for seq in schema.get("sequences", []):
         for note in seq.get("notes", []):
             if "BUG" in note.upper():
-                add(seq["name"], "sequence", "known_bug", note)
+                # Strip "BUG:" prefix if present so the text matches source
+                clean = re.sub(r"^BUG:\s*", "", note, flags=re.IGNORECASE).strip()
+                add(seq["name"], "sequence", "known_bug", clean)
 
     return rules
 

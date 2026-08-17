@@ -2714,7 +2714,7 @@
         "SALARY_RECORDS"
       ],
       "query_snippet": "SELECT e.EMP_ID, e.EMP_NUMBER, e.FIRST_NAME, e.LAST_NAME,\n       e.FIRST_NAME || ' ' || e.LAST_NAME AS FULL_NAME,\n       e.EMAIL, e.PHONE_WORK, e.PHONE_MOBILE,\n       e.HIRE_DATE,\n       TRUNC(MONTHS_BETWEEN(SYSDATE, e.HIRE_DATE) / 12, 1) AS TENURE_YEARS,\n       e.EMPLOYMENT_TYPE, e.EMPLOYMENT_STATUS,\n       e.DEPT_ID, d.DEPT_NAME, d.DEPT_CODE, d.COST_CENTER,\n       e.JOB_ID, j.JOB_TITLE, j.JOB_CODE,\n       g.GRADE_ID, g.GRADE_NAME,\n       e.MANAGER_EMP_ID,\n       m.FIRST_NAME || ' ' || m.LAST_NAME AS MANAGER_NAME,\n       e.LOCATION_CODE,\n       l.LOCATION_NAME, l.CITY, l.STATE_PROVINCE, l.COUNTRY_CODE,\n       sr.BASE_SALARY AS CURRENT_SALARY,\n       sr.CURRENCY_CODE, sr.PAY_FREQUENCY\nFROM EMPLOYEES e\nJOIN DEPARTMENTS d ON e.DEPT_ID = d.DEPT_ID\nJOIN JOB_TITLES j ON e.JOB_ID = j.JOB_ID\nJOIN",
-      "full_query": "SELECT e.EMP_ID, e.EMP_NUMBER, e.FIRST_NAME, e.LAST_NAME,\n       e.FIRST_NAME || ' ' || e.LAST_NAME AS FULL_NAME,\n       e.EMAIL, e.PHONE_WORK, e.PHONE_MOBILE,\n       e.HIRE_DATE,\n       TRUNC(MONTHS_BETWEEN(SYSDATE, e.HIRE_DATE) / 12, 1) AS TENURE_YEARS,\n       e.EMPLOYMENT_TYPE, e.EMPLOYMENT_STATUS,\n       e.DEPT_ID, d.DEPT_NAME, d.DEPT_CODE, d.COST_CENTER,\n       e.JOB_ID, j.JOB_TITLE, j.JOB_CODE,\n       g.GRADE_ID, g.GRADE_NAME,\n       e.MANAGER_EMP_ID,\n       m.FIRST_NAME || ' ' || m.LAST_NAME AS MANAGER_NAME,\n       e.LOCATION_CODE,\n       l.LOCATION_NAME, l.CITY, l.STATE_PROVINCE, l.COUNTRY_CODE,\n       sr.BASE_SALARY AS CURRENT_SALARY,\n       sr.CURRENCY_CODE, sr.PAY_FREQUENCY\nFROM EMPLOYEES e\nJOIN DEPARTMENTS d ON e.DEPT_ID = d.DEPT_ID\nJOIN JOB_TITLES j ON e.JOB_ID = j.JOB_ID\nJOIN JOB_GRADES g ON j.GRADE_ID = g.GRADE_ID\nLEFT JOIN EMPLOYEES m ON e.MANAGER_EMP_ID = m.EMP_ID\nLEFT JOIN LOCATIONS l ON e.LOCATION_CODE = l.LOCATION_CODE\nLEFT JOIN SALARY_RECORDS sr ON e.EMP_ID = sr.EMP_ID\n    AND sr.ACTIVE_FLAG = 'Y'\n    AND sr.EFFECTIVE_DATE <= SYSDATE\n    AND (sr.END_DATE IS NULL OR sr.END_DATE > SYSDATE)\nWHERE e.EMPLOYMENT_STATUS = 'ACTIVE'\nAND e.ACTIVE_FLAG = 'Y';\n\nCOMMENT ON TABLE HRMS.VW_ACTIVE_EMPLOYEES IS\n    'Denormalized view of active employees with department, job, manager, location, and salary';\n\n-- -----------------------------------------------------------------------\n-- VW_ORG_HIERARCHY\n-- Hierarchical org chart using CONNECT BY\n-- WARNING: Performance degrades significantly with >500 employees\n-- -----------------------------------------------------------------------"
+      "full_query": "SELECT e.EMP_ID, e.EMP_NUMBER, e.FIRST_NAME, e.LAST_NAME,\n       e.FIRST_NAME || ' ' || e.LAST_NAME AS FULL_NAME,\n       e.EMAIL, e.PHONE_WORK, e.PHONE_MOBILE,\n       e.HIRE_DATE,\n       TRUNC(MONTHS_BETWEEN(SYSDATE, e.HIRE_DATE) / 12, 1) AS TENURE_YEARS,\n       e.EMPLOYMENT_TYPE, e.EMPLOYMENT_STATUS,\n       e.DEPT_ID, d.DEPT_NAME, d.DEPT_CODE, d.COST_CENTER,\n       e.JOB_ID, j.JOB_TITLE, j.JOB_CODE,\n       g.GRADE_ID, g.GRADE_NAME,\n       e.MANAGER_EMP_ID,\n       m.FIRST_NAME || ' ' || m.LAST_NAME AS MANAGER_NAME,\n       e.LOCATION_CODE,\n       l.LOCATION_NAME, l.CITY, l.STATE_PROVINCE, l.COUNTRY_CODE,\n       sr.BASE_SALARY AS CURRENT_SALARY,\n       sr.CURRENCY_CODE, sr.PAY_FREQUENCY\nFROM EMPLOYEES e\nJOIN DEPARTMENTS d ON e.DEPT_ID = d.DEPT_ID\nJOIN JOB_TITLES j ON e.JOB_ID = j.JOB_ID\nJOIN JOB_GRADES g ON j.GRADE_ID = g.GRADE_ID\nLEFT JOIN EMPLOYEES m ON e.MANAGER_EMP_ID = m.EMP_ID\nLEFT JOIN LOCATIONS l ON e.LOCATION_CODE = l.LOCATION_CODE\nLEFT JOIN SALARY_RECORDS sr ON e.EMP_ID = sr.EMP_ID\n    AND sr.ACTIVE_FLAG = 'Y'\n    AND sr.EFFECTIVE_DATE <= SYSDATE\n    AND (sr.END_DATE IS NULL OR sr.END_DATE > SYSDATE)\nWHERE e.EMPLOYMENT_STATUS = 'ACTIVE'\nAND e.ACTIVE_FLAG = 'Y';"
     },
     "HRMS.VW_ORG_HIERARCHY": {
       "name": "HRMS.VW_ORG_HIERARCHY",
@@ -2722,8 +2722,8 @@
         "EMPLOYEES"
       ],
       "joins": [],
-      "query_snippet": "SELECT EMP_ID, EMP_NUMBER, FIRST_NAME || ' ' || LAST_NAME AS EMP_NAME,\n       MANAGER_EMP_ID, DEPT_ID,\n       LEVEL AS ORG_LEVEL,\n       SYS_CONNECT_BY_PATH(FIRST_NAME || ' ' || LAST_NAME, ' > ') AS ORG_PATH,\n       CONNECT_BY_ISLEAF AS IS_LEAF\nFROM EMPLOYEES\nWHERE EMPLOYMENT_STATUS = 'ACTIVE'\nSTART WITH MANAGER_EMP_ID IS NULL\nCONNECT BY PRIOR EMP_ID = MANAGER_EMP_ID\nORDER SIBLINGS BY LAST_NAME;\n\n-- -----------------------------------------------------------------------\n-- VW_EMPLOYEE_COMPENSATION\n-- Current compensation details with compa-ratio calculation\n-- -----------------------------------------------------------------------",
-      "full_query": "SELECT EMP_ID, EMP_NUMBER, FIRST_NAME || ' ' || LAST_NAME AS EMP_NAME,\n       MANAGER_EMP_ID, DEPT_ID,\n       LEVEL AS ORG_LEVEL,\n       SYS_CONNECT_BY_PATH(FIRST_NAME || ' ' || LAST_NAME, ' > ') AS ORG_PATH,\n       CONNECT_BY_ISLEAF AS IS_LEAF\nFROM EMPLOYEES\nWHERE EMPLOYMENT_STATUS = 'ACTIVE'\nSTART WITH MANAGER_EMP_ID IS NULL\nCONNECT BY PRIOR EMP_ID = MANAGER_EMP_ID\nORDER SIBLINGS BY LAST_NAME;\n\n-- -----------------------------------------------------------------------\n-- VW_EMPLOYEE_COMPENSATION\n-- Current compensation details with compa-ratio calculation\n-- -----------------------------------------------------------------------"
+      "query_snippet": "SELECT EMP_ID, EMP_NUMBER, FIRST_NAME || ' ' || LAST_NAME AS EMP_NAME,\n       MANAGER_EMP_ID, DEPT_ID,\n       LEVEL AS ORG_LEVEL,\n       SYS_CONNECT_BY_PATH(FIRST_NAME || ' ' || LAST_NAME, ' > ') AS ORG_PATH,\n       CONNECT_BY_ISLEAF AS IS_LEAF\nFROM EMPLOYEES\nWHERE EMPLOYMENT_STATUS = 'ACTIVE'\nSTART WITH MANAGER_EMP_ID IS NULL\nCONNECT BY PRIOR EMP_ID = MANAGER_EMP_ID\nORDER SIBLINGS BY LAST_NAME;",
+      "full_query": "SELECT EMP_ID, EMP_NUMBER, FIRST_NAME || ' ' || LAST_NAME AS EMP_NAME,\n       MANAGER_EMP_ID, DEPT_ID,\n       LEVEL AS ORG_LEVEL,\n       SYS_CONNECT_BY_PATH(FIRST_NAME || ' ' || LAST_NAME, ' > ') AS ORG_PATH,\n       CONNECT_BY_ISLEAF AS IS_LEAF\nFROM EMPLOYEES\nWHERE EMPLOYMENT_STATUS = 'ACTIVE'\nSTART WITH MANAGER_EMP_ID IS NULL\nCONNECT BY PRIOR EMP_ID = MANAGER_EMP_ID\nORDER SIBLINGS BY LAST_NAME;"
     },
     "HRMS.VW_EMPLOYEE_COMPENSATION": {
       "name": "HRMS.VW_EMPLOYEE_COMPENSATION",
@@ -2736,8 +2736,8 @@
         "JOB_TITLES",
         "SALARY_RECORDS"
       ],
-      "query_snippet": "SELECT e.EMP_ID, e.EMP_NUMBER,\n       e.FIRST_NAME || ' ' || e.LAST_NAME AS EMP_NAME,\n       d.DEPT_NAME, j.JOB_TITLE, g.GRADE_NAME,\n       sr.BASE_SALARY,\n       g.MIN_SALARY AS GRADE_MIN,\n       g.MAX_SALARY AS GRADE_MAX,\n       (g.MIN_SALARY + g.MAX_SALARY) / 2 AS GRADE_MIDPOINT,\n       ROUND(sr.BASE_SALARY / ((g.MIN_SALARY + g.MAX_SALARY) / 2) * 100, 1) AS COMPA_RATIO,\n       sr.EFFECTIVE_DATE AS SALARY_EFFECTIVE_DATE,\n       sr.CHANGE_REASON AS LAST_CHANGE_REASON,\n       sr.CHANGE_PCT AS LAST_CHANGE_PCT\nFROM EMPLOYEES e\nJOIN DEPARTMENTS d ON e.DEPT_ID = d.DEPT_ID\nJOIN JOB_TITLES j ON e.JOB_ID = j.JOB_ID\nJOIN JOB_GRADES g ON j.GRADE_ID = g.GRADE_ID\nJOIN SALARY_RECORDS sr ON e.EMP_ID = sr.EMP_ID AND sr.ACTIVE_FLAG = 'Y'\nWHERE e.EMPLOYMENT_STATUS = 'ACTIVE';\n\n-- -------------------------",
-      "full_query": "SELECT e.EMP_ID, e.EMP_NUMBER,\n       e.FIRST_NAME || ' ' || e.LAST_NAME AS EMP_NAME,\n       d.DEPT_NAME, j.JOB_TITLE, g.GRADE_NAME,\n       sr.BASE_SALARY,\n       g.MIN_SALARY AS GRADE_MIN,\n       g.MAX_SALARY AS GRADE_MAX,\n       (g.MIN_SALARY + g.MAX_SALARY) / 2 AS GRADE_MIDPOINT,\n       ROUND(sr.BASE_SALARY / ((g.MIN_SALARY + g.MAX_SALARY) / 2) * 100, 1) AS COMPA_RATIO,\n       sr.EFFECTIVE_DATE AS SALARY_EFFECTIVE_DATE,\n       sr.CHANGE_REASON AS LAST_CHANGE_REASON,\n       sr.CHANGE_PCT AS LAST_CHANGE_PCT\nFROM EMPLOYEES e\nJOIN DEPARTMENTS d ON e.DEPT_ID = d.DEPT_ID\nJOIN JOB_TITLES j ON e.JOB_ID = j.JOB_ID\nJOIN JOB_GRADES g ON j.GRADE_ID = g.GRADE_ID\nJOIN SALARY_RECORDS sr ON e.EMP_ID = sr.EMP_ID AND sr.ACTIVE_FLAG = 'Y'\nWHERE e.EMPLOYMENT_STATUS = 'ACTIVE';\n\n-- -----------------------------------------------------------------------\n-- VW_LEAVE_SUMMARY\n-- Current year leave balances with utilization\n-- -----------------------------------------------------------------------"
+      "query_snippet": "SELECT e.EMP_ID, e.EMP_NUMBER,\n       e.FIRST_NAME || ' ' || e.LAST_NAME AS EMP_NAME,\n       d.DEPT_NAME, j.JOB_TITLE, g.GRADE_NAME,\n       sr.BASE_SALARY,\n       g.MIN_SALARY AS GRADE_MIN,\n       g.MAX_SALARY AS GRADE_MAX,\n       (g.MIN_SALARY + g.MAX_SALARY) / 2 AS GRADE_MIDPOINT,\n       ROUND(sr.BASE_SALARY / ((g.MIN_SALARY + g.MAX_SALARY) / 2) * 100, 1) AS COMPA_RATIO,\n       sr.EFFECTIVE_DATE AS SALARY_EFFECTIVE_DATE,\n       sr.CHANGE_REASON AS LAST_CHANGE_REASON,\n       sr.CHANGE_PCT AS LAST_CHANGE_PCT\nFROM EMPLOYEES e\nJOIN DEPARTMENTS d ON e.DEPT_ID = d.DEPT_ID\nJOIN JOB_TITLES j ON e.JOB_ID = j.JOB_ID\nJOIN JOB_GRADES g ON j.GRADE_ID = g.GRADE_ID\nJOIN SALARY_RECORDS sr ON e.EMP_ID = sr.EMP_ID AND sr.ACTIVE_FLAG = 'Y'\nWHERE e.EMPLOYMENT_STATUS = 'ACTIVE';",
+      "full_query": "SELECT e.EMP_ID, e.EMP_NUMBER,\n       e.FIRST_NAME || ' ' || e.LAST_NAME AS EMP_NAME,\n       d.DEPT_NAME, j.JOB_TITLE, g.GRADE_NAME,\n       sr.BASE_SALARY,\n       g.MIN_SALARY AS GRADE_MIN,\n       g.MAX_SALARY AS GRADE_MAX,\n       (g.MIN_SALARY + g.MAX_SALARY) / 2 AS GRADE_MIDPOINT,\n       ROUND(sr.BASE_SALARY / ((g.MIN_SALARY + g.MAX_SALARY) / 2) * 100, 1) AS COMPA_RATIO,\n       sr.EFFECTIVE_DATE AS SALARY_EFFECTIVE_DATE,\n       sr.CHANGE_REASON AS LAST_CHANGE_REASON,\n       sr.CHANGE_PCT AS LAST_CHANGE_PCT\nFROM EMPLOYEES e\nJOIN DEPARTMENTS d ON e.DEPT_ID = d.DEPT_ID\nJOIN JOB_TITLES j ON e.JOB_ID = j.JOB_ID\nJOIN JOB_GRADES g ON j.GRADE_ID = g.GRADE_ID\nJOIN SALARY_RECORDS sr ON e.EMP_ID = sr.EMP_ID AND sr.ACTIVE_FLAG = 'Y'\nWHERE e.EMPLOYMENT_STATUS = 'ACTIVE';"
     },
     "HRMS.VW_LEAVE_SUMMARY": {
       "name": "HRMS.VW_LEAVE_SUMMARY",
@@ -2750,8 +2750,8 @@
         "EMPLOYEES",
         "LEAVE_TYPES"
       ],
-      "query_snippet": "SELECT e.EMP_ID, e.EMP_NUMBER,\n       e.FIRST_NAME || ' ' || e.LAST_NAME AS EMP_NAME,\n       d.DEPT_NAME,\n       lt.LEAVE_TYPE_NAME,\n       lb.OPENING_BALANCE,\n       lb.ACCRUED,\n       lb.USED,\n       lb.ADJUSTMENT,\n       lb.PENDING,\n       lb.OPENING_BALANCE + lb.ACCRUED - lb.USED + lb.ADJUSTMENT AS AVAILABLE,\n       ROUND(lb.USED * 100 / NULLIF(lb.OPENING_BALANCE + lb.ACCRUED, 0), 1) AS UTILIZATION_PCT\nFROM LEAVE_BALANCES lb\nJOIN EMPLOYEES e ON lb.EMP_ID = e.EMP_ID\nJOIN DEPARTMENTS d ON e.DEPT_ID = d.DEPT_ID\nJOIN LEAVE_TYPES lt ON lb.LEAVE_TYPE_ID = lt.LEAVE_TYPE_ID\nWHERE lb.CALENDAR_YEAR = EXTRACT(YEAR FROM SYSDATE)\nAND e.EMPLOYMENT_STATUS = 'ACTIVE';\n\n-- -----------------------------------------------------------------------\n-- VW_PAYROLL_LATEST\n-- Latest payroll run details per empl",
-      "full_query": "SELECT e.EMP_ID, e.EMP_NUMBER,\n       e.FIRST_NAME || ' ' || e.LAST_NAME AS EMP_NAME,\n       d.DEPT_NAME,\n       lt.LEAVE_TYPE_NAME,\n       lb.OPENING_BALANCE,\n       lb.ACCRUED,\n       lb.USED,\n       lb.ADJUSTMENT,\n       lb.PENDING,\n       lb.OPENING_BALANCE + lb.ACCRUED - lb.USED + lb.ADJUSTMENT AS AVAILABLE,\n       ROUND(lb.USED * 100 / NULLIF(lb.OPENING_BALANCE + lb.ACCRUED, 0), 1) AS UTILIZATION_PCT\nFROM LEAVE_BALANCES lb\nJOIN EMPLOYEES e ON lb.EMP_ID = e.EMP_ID\nJOIN DEPARTMENTS d ON e.DEPT_ID = d.DEPT_ID\nJOIN LEAVE_TYPES lt ON lb.LEAVE_TYPE_ID = lt.LEAVE_TYPE_ID\nWHERE lb.CALENDAR_YEAR = EXTRACT(YEAR FROM SYSDATE)\nAND e.EMPLOYMENT_STATUS = 'ACTIVE';\n\n-- -----------------------------------------------------------------------\n-- VW_PAYROLL_LATEST\n-- Latest payroll run details per employee\n-- -----------------------------------------------------------------------"
+      "query_snippet": "SELECT e.EMP_ID, e.EMP_NUMBER,\n       e.FIRST_NAME || ' ' || e.LAST_NAME AS EMP_NAME,\n       d.DEPT_NAME,\n       lt.LEAVE_TYPE_NAME,\n       lb.OPENING_BALANCE,\n       lb.ACCRUED,\n       lb.USED,\n       lb.ADJUSTMENT,\n       lb.PENDING,\n       lb.OPENING_BALANCE + lb.ACCRUED - lb.USED + lb.ADJUSTMENT AS AVAILABLE,\n       ROUND(lb.USED * 100 / NULLIF(lb.OPENING_BALANCE + lb.ACCRUED, 0), 1) AS UTILIZATION_PCT\nFROM LEAVE_BALANCES lb\nJOIN EMPLOYEES e ON lb.EMP_ID = e.EMP_ID\nJOIN DEPARTMENTS d ON e.DEPT_ID = d.DEPT_ID\nJOIN LEAVE_TYPES lt ON lb.LEAVE_TYPE_ID = lt.LEAVE_TYPE_ID\nWHERE lb.CALENDAR_YEAR = EXTRACT(YEAR FROM SYSDATE)\nAND e.EMPLOYMENT_STATUS = 'ACTIVE';",
+      "full_query": "SELECT e.EMP_ID, e.EMP_NUMBER,\n       e.FIRST_NAME || ' ' || e.LAST_NAME AS EMP_NAME,\n       d.DEPT_NAME,\n       lt.LEAVE_TYPE_NAME,\n       lb.OPENING_BALANCE,\n       lb.ACCRUED,\n       lb.USED,\n       lb.ADJUSTMENT,\n       lb.PENDING,\n       lb.OPENING_BALANCE + lb.ACCRUED - lb.USED + lb.ADJUSTMENT AS AVAILABLE,\n       ROUND(lb.USED * 100 / NULLIF(lb.OPENING_BALANCE + lb.ACCRUED, 0), 1) AS UTILIZATION_PCT\nFROM LEAVE_BALANCES lb\nJOIN EMPLOYEES e ON lb.EMP_ID = e.EMP_ID\nJOIN DEPARTMENTS d ON e.DEPT_ID = d.DEPT_ID\nJOIN LEAVE_TYPES lt ON lb.LEAVE_TYPE_ID = lt.LEAVE_TYPE_ID\nWHERE lb.CALENDAR_YEAR = EXTRACT(YEAR FROM SYSDATE)\nAND e.EMPLOYMENT_STATUS = 'ACTIVE';"
     },
     "HRMS.VW_PAYROLL_LATEST": {
       "name": "HRMS.VW_PAYROLL_LATEST",
@@ -2765,7 +2765,7 @@
         "PAY_PERIODS"
       ],
       "query_snippet": "SELECT pd.EMP_ID, e.EMP_NUMBER,\n       e.FIRST_NAME || ' ' || e.LAST_NAME AS EMP_NAME,\n       pp.PERIOD_NAME,\n       SUM(CASE WHEN pd.ELEMENT_TYPE = 'EARNING' THEN pd.AMOUNT ELSE 0 END) AS GROSS_PAY,\n       SUM(CASE WHEN pd.ELEMENT_TYPE = 'TAX' THEN ABS(pd.AMOUNT) ELSE 0 END) AS TOTAL_TAXES,\n       SUM(CASE WHEN pd.ELEMENT_TYPE IN ('DEDUCTION','BENEFIT') THEN ABS(pd.AMOUNT) ELSE 0 END) AS TOTAL_DEDUCTIONS,\n       SUM(pd.AMOUNT) AS NET_PAY\nFROM PAYROLL_DETAILS pd\nJOIN EMPLOYEES e ON pd.EMP_ID = e.EMP_ID\nJOIN PAYROLL_RUNS pr ON pd.RUN_ID = pr.RUN_ID\nJOIN PAY_PERIODS pp ON pr.PERIOD_ID = pp.PERIOD_ID\nWHERE pr.RUN_ID = (\n    SELECT MAX(pr2.RUN_ID)\n    FROM PAYROLL_RUNS pr2\n    WHERE pr2.STATUS = 'APPROVED'\n)\nAND pd.STATUS != 'ERROR'\nGROUP BY pd.EMP_ID, e.EMP_NUMBER,\n         e.FIRST_NAME || ' ",
-      "full_query": "SELECT pd.EMP_ID, e.EMP_NUMBER,\n       e.FIRST_NAME || ' ' || e.LAST_NAME AS EMP_NAME,\n       pp.PERIOD_NAME,\n       SUM(CASE WHEN pd.ELEMENT_TYPE = 'EARNING' THEN pd.AMOUNT ELSE 0 END) AS GROSS_PAY,\n       SUM(CASE WHEN pd.ELEMENT_TYPE = 'TAX' THEN ABS(pd.AMOUNT) ELSE 0 END) AS TOTAL_TAXES,\n       SUM(CASE WHEN pd.ELEMENT_TYPE IN ('DEDUCTION','BENEFIT') THEN ABS(pd.AMOUNT) ELSE 0 END) AS TOTAL_DEDUCTIONS,\n       SUM(pd.AMOUNT) AS NET_PAY\nFROM PAYROLL_DETAILS pd\nJOIN EMPLOYEES e ON pd.EMP_ID = e.EMP_ID\nJOIN PAYROLL_RUNS pr ON pd.RUN_ID = pr.RUN_ID\nJOIN PAY_PERIODS pp ON pr.PERIOD_ID = pp.PERIOD_ID\nWHERE pr.RUN_ID = (\n    SELECT MAX(pr2.RUN_ID)\n    FROM PAYROLL_RUNS pr2\n    WHERE pr2.STATUS = 'APPROVED'\n)\nAND pd.STATUS != 'ERROR'\nGROUP BY pd.EMP_ID, e.EMP_NUMBER,\n         e.FIRST_NAME || ' ' || e.LAST_NAME,\n         pp.PERIOD_NAME;\n\n-- -----------------------------------------------------------------------\n-- VW_PENDING_APPROVALS\n-- Unified view of items pending approval across modules\n-- -----------------------------------------------------------------------"
+      "full_query": "SELECT pd.EMP_ID, e.EMP_NUMBER,\n       e.FIRST_NAME || ' ' || e.LAST_NAME AS EMP_NAME,\n       pp.PERIOD_NAME,\n       SUM(CASE WHEN pd.ELEMENT_TYPE = 'EARNING' THEN pd.AMOUNT ELSE 0 END) AS GROSS_PAY,\n       SUM(CASE WHEN pd.ELEMENT_TYPE = 'TAX' THEN ABS(pd.AMOUNT) ELSE 0 END) AS TOTAL_TAXES,\n       SUM(CASE WHEN pd.ELEMENT_TYPE IN ('DEDUCTION','BENEFIT') THEN ABS(pd.AMOUNT) ELSE 0 END) AS TOTAL_DEDUCTIONS,\n       SUM(pd.AMOUNT) AS NET_PAY\nFROM PAYROLL_DETAILS pd\nJOIN EMPLOYEES e ON pd.EMP_ID = e.EMP_ID\nJOIN PAYROLL_RUNS pr ON pd.RUN_ID = pr.RUN_ID\nJOIN PAY_PERIODS pp ON pr.PERIOD_ID = pp.PERIOD_ID\nWHERE pr.RUN_ID = (\n    SELECT MAX(pr2.RUN_ID)\n    FROM PAYROLL_RUNS pr2\n    WHERE pr2.STATUS = 'APPROVED'\n)\nAND pd.STATUS != 'ERROR'\nGROUP BY pd.EMP_ID, e.EMP_NUMBER,\n         e.FIRST_NAME || ' ' || e.LAST_NAME,\n         pp.PERIOD_NAME;"
     },
     "HRMS.VW_PENDING_APPROVALS": {
       "name": "HRMS.VW_PENDING_APPROVALS",
@@ -2796,6 +2796,7 @@
         "When a salary record is deleted, the employee identity and last known salary must be preserved in the audit log to maintain a complete compensation history",
         "Only STATUS column changes on leave requests are subject to audit tracking; updates to other fields (e.g. comments, dates) do not generate an audit record"
       ],
+      "constraints": [],
       "validation_notes": [
         "Salary record identifier is resolved from NEW on insert/update and from OLD on delete, ensuring the audit entry is always linked to the correct record regardless of DML operation",
         "If MODIFIED_BY is not explicitly populated on the salary row, the current database session user is recorded as the responsible actor so the audit trail always identifies who made the change"
@@ -2831,6 +2832,7 @@
       "rules": [
         "Only STATUS column changes on leave requests are subject to audit tracking; updates to other fields (e.g. comments, dates) do not generate an audit record"
       ],
+      "constraints": [],
       "validation_notes": [
         "If MODIFIED_BY is not populated on the leave request row, the current database session user is recorded as the responsible actor so workflow approval history is always attributable"
       ],
@@ -2864,6 +2866,7 @@
         "Every structural change to a department record (creation, modification, or removal) must be captured in the audit log to support organisational governance and accountability",
         "For department changes, the database session user (USER) is always recorded as the actor; there is no application-supplied MODIFIED_BY column on this table"
       ],
+      "constraints": [],
       "validation_notes": [
         "Department identifier is resolved from NEW on insert/update and from OLD on delete, ensuring the audit entry is always linked to the correct department record regardless of DML operation"
       ],
@@ -2901,6 +2904,9 @@
         "Inserting an employee with a hire date more than 180 days in the future is not permitted",
         "An email address already assigned to an active employee cannot be reused for a new employee record",
         "Inserting an employee whose email is already in use by an active employee record is not permitted"
+      ],
+      "constraints": [
+        "Maximum allowed future hire date is 180 days from the current date"
       ],
       "validation_notes": [],
       "bugs": [],
@@ -2942,6 +2948,7 @@
         "Every change to an employee's department assignment (DEPT_ID) must be recorded in the EMPLOYEE_HISTORY audit table as a DEPARTMENT_CHANGE event; NULL department is treated as a distinct value to catch assignments to or from an unassigned state",
         "Every change to an employee's job assignment (JOB_ID) must be recorded in the EMPLOYEE_HISTORY audit table as a JOB_CHANGE event; NULL job is treated as a distinct value to catch assignments to or from an unassigned state"
       ],
+      "constraints": [],
       "validation_notes": [
         "MODIFIED_BY defaults to the current database session user if not supplied, ensuring the audit trail is never blank"
       ],
@@ -2980,6 +2987,7 @@
       "rules": [
         "Physical deletion of employee records is never permitted; callers must deactivate a record by setting ACTIVE_FLAG to 'N' or by running the formal termination process"
       ],
+      "constraints": [],
       "validation_notes": [],
       "bugs": [
         "This actually prevents deletion, but Forms expects DELETE to succeed."

@@ -1876,11 +1876,11 @@
             "joins": []
           },
           "package_calls": [
-            "PKG_AUDIT",
             "PKG_PAYROLL",
-            "PKG_EMPLOYEE",
             "PKG_COMMON",
-            "PKG_NOTIFICATION"
+            "PKG_AUDIT",
+            "PKG_NOTIFICATION",
+            "PKG_EMPLOYEE"
           ],
           "if_conditions": [
             "p_first_name IS NULL OR p_last_name IS NULL",
@@ -2056,8 +2056,8 @@
             "joins": []
           },
           "package_calls": [
-            "PKG_AUDIT",
-            "PKG_COMMON"
+            "PKG_COMMON",
+            "PKG_AUDIT"
           ],
           "if_conditions": [
             "v_old_rec.EMPLOYMENT_STATUS != 'ACTIVE'",
@@ -2089,8 +2089,8 @@
             "joins": []
           },
           "package_calls": [
-            "PKG_AUDIT",
-            "PKG_PAYROLL"
+            "PKG_PAYROLL",
+            "PKG_AUDIT"
           ],
           "if_conditions": []
         },
@@ -2134,10 +2134,10 @@
             "joins": []
           },
           "package_calls": [
-            "PKG_AUDIT",
+            "PKG_NOTIFICATION",
             "PKG_PAYROLL",
             "PKG_COMMON",
-            "PKG_NOTIFICATION"
+            "PKG_AUDIT"
           ],
           "if_conditions": [
             "v_emp.EMPLOYMENT_STATUS = 'TERMINATED'",
@@ -2170,8 +2170,8 @@
             "joins": []
           },
           "package_calls": [
-            "PKG_AUDIT",
-            "PKG_PAYROLL"
+            "PKG_PAYROLL",
+            "PKG_AUDIT"
           ],
           "if_conditions": [
             "SQL%ROWCOUNT = 0"
@@ -2349,15 +2349,15 @@
         }
       ],
       "package_calls": [
-        "PKG_AUDIT",
         "PKG_PAYROLL",
-        "PKG_EMPLOYEE",
         "PKG_COMMON",
-        "PKG_NOTIFICATION"
+        "PKG_AUDIT",
+        "PKG_NOTIFICATION",
+        "PKG_EMPLOYEE"
       ],
       "sequences_used": [
-        "SEQ_EMPLOYEE",
-        "SEQ_EMP_HISTORY"
+        "SEQ_EMP_HISTORY",
+        "SEQ_EMPLOYEE"
       ],
       "pragma_autonomous": true,
       "uses_sys_context": false,
@@ -3289,8 +3289,8 @@
             "joins": []
           },
           "package_calls": [
-            "PKG_AUDIT",
-            "PKG_NOTIFICATION"
+            "PKG_NOTIFICATION",
+            "PKG_AUDIT"
           ],
           "if_conditions": [
             "v_leave_type.MIN_TENURE_DAYS > 0",
@@ -3336,8 +3336,8 @@
             "joins": []
           },
           "package_calls": [
-            "PKG_AUDIT",
-            "PKG_NOTIFICATION"
+            "PKG_NOTIFICATION",
+            "PKG_AUDIT"
           ],
           "if_conditions": [
             "v_request.STATUS != 'PENDING'"
@@ -3372,8 +3372,8 @@
             "joins": []
           },
           "package_calls": [
-            "PKG_AUDIT",
-            "PKG_NOTIFICATION"
+            "PKG_NOTIFICATION",
+            "PKG_AUDIT"
           ],
           "if_conditions": [
             "v_request.STATUS != 'PENDING'"
@@ -3627,13 +3627,13 @@
         }
       ],
       "package_calls": [
-        "PKG_AUDIT",
-        "PKG_NOTIFICATION"
+        "PKG_NOTIFICATION",
+        "PKG_AUDIT"
       ],
       "sequences_used": [
-        "SEQ_LEAVE_ACCRUAL",
         "SEQ_LEAVE_BALANCE",
-        "SEQ_LEAVE_REQUEST"
+        "SEQ_LEAVE_REQUEST",
+        "SEQ_LEAVE_ACCRUAL"
       ],
       "pragma_autonomous": false,
       "uses_sys_context": false,
@@ -5069,14 +5069,14 @@
         }
       ],
       "package_calls": [
-        "PKG_AUDIT",
-        "PKG_COMMON"
+        "PKG_COMMON",
+        "PKG_AUDIT"
       ],
       "sequences_used": [
         "SEQ_SALARY",
+        "SEQ_PAYROLL_RUN",
         "SEQ_PAYROLL_DETAIL",
-        "SEQ_PAY_PERIOD",
-        "SEQ_PAYROLL_RUN"
+        "SEQ_PAY_PERIOD"
       ],
       "pragma_autonomous": false,
       "uses_sys_context": false,
@@ -5788,12 +5788,12 @@
         }
       ],
       "package_calls": [
-        "PKG_AUDIT",
-        "PKG_NOTIFICATION"
+        "PKG_NOTIFICATION",
+        "PKG_AUDIT"
       ],
       "sequences_used": [
-        "SEQ_PERF_REVIEW",
         "SEQ_PERF_GOAL",
+        "SEQ_PERF_REVIEW",
         "SEQ_REVIEW_CYCLE"
       ],
       "pragma_autonomous": false,
@@ -6586,8 +6586,8 @@
             "joins": []
           },
           "package_calls": [
-            "PKG_AUDIT",
-            "PKG_EMPLOYEE"
+            "PKG_EMPLOYEE",
+            "PKG_AUDIT"
           ],
           "if_conditions": []
         },
@@ -6749,8 +6749,8 @@
         }
       ],
       "package_calls": [
-        "PKG_AUDIT",
-        "PKG_EMPLOYEE"
+        "PKG_EMPLOYEE",
+        "PKG_AUDIT"
       ],
       "sequences_used": [
         "SEQ_USER_SESSION"

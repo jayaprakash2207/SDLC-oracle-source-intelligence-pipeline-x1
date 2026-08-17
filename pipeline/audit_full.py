@@ -5,11 +5,7 @@ Every extractable fact from every source file verified against parser output.
 import json, re, xml.etree.ElementTree as ET
 from pathlib import Path
 
-SRC = Path(__file__).parent.parent / (
-    "automated-reverse-engineering-pipeline-main/"
-    "automated-reverse-engineering-pipeline-main/source/"
-    "ts-plsql-oracle-forms-hrms/ts-plsql-oracle-forms-hrms-main"
-)
+SRC = Path(__file__).parent.parent / "source"
 OUT = Path(__file__).parent / "parser-output"
 
 def r(p): return Path(p).read_text(encoding="utf-8", errors="ignore")

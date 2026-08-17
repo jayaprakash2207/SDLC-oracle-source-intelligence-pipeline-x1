@@ -15,8 +15,8 @@
         "style": "PL/SQL",
         "body": "DECLARE\n    v_session_id NUMBER;\nBEGIN\n    -- Validate session\n    v_session_id := TO_NUMBER(GET_APPLICATION_PROPERTY(USERNAME));\n    IF NOT PKG_SECURITY.is_session_valid(v_session_id) THEN\n        MESSAGE('Session expired. Please log in again.');\n        RAISE FORM_TRIGGER_FAILURE;\n    END IF;\n\n    -- Set window title\n    SET_WINDOW_PROPERTY(FORMS_MDI_WINDOW, TITLE,\n        'HRMS - Employee Maintenance [' || :GLOBAL.current_user || ']');\n\n    -- Restrict based on permissions\n    IF NOT PKG_SECURITY.has_permission(:GLOBAL.current_emp_id, 'EMPLOYEE', 'EDIT') THEN\n        SET_BLOCK_PROPERTY('EMPLOYEE', INSERT_ALLOWED, PROPERTY_FALSE);\n        SET_BLOCK_PROPERTY('EMPLOYEE', UPDATE_ALLOWED, PROPERTY_FALSE);\n        SET_BLOCK_PROPERTY('EMPLOYEE', DELETE_ALLOWED, PROPERTY_FALSE);\n    END IF;\n\n    -- Default query to active employees\n    SET_BLOCK_PROPERTY('EMPLOYEE', DEFAULT_WHERE,\n        'EMPLOYMENT_STATUS = ''ACTIVE'' AND ACTIVE_FLAG = ''Y''');\n\n    -- Initialize LOVs\n    POPULATE_GROUP('RG_DEPARTMENTS');\n    POPULATE_GROUP('RG_JOB_TITLES');\n    POPULATE_GROUP('RG_LOCATIONS');\n\n    GO_BLOCK('EMPLOYEE');\n    EXECUTE_QUERY;\nEND;",
         "pkg_calls": [
-          "PKG_SECURITY.has_permission",
-          "PKG_SECURITY.is_session_valid"
+          "PKG_SECURITY.is_session_valid",
+          "PKG_SECURITY.has_permission"
         ],
         "business_rules": [],
         "rules": [],
@@ -698,10 +698,10 @@
       }
     ],
     "all_package_calls": [
-      "PKG_SECURITY.has_permission",
-      "PKG_VALIDATION.validate_email_format",
+      "PKG_EMPLOYEE.generate_emp_number",
       "PKG_SECURITY.is_session_valid",
-      "PKG_EMPLOYEE.generate_emp_number"
+      "PKG_SECURITY.has_permission",
+      "PKG_VALIDATION.validate_email_format"
     ],
     "all_business_rules": [],
     "all_rules": [
@@ -1324,8 +1324,8 @@
         "style": "PL/SQL",
         "body": "DECLARE\n    v_session_id NUMBER;\nBEGIN\n    v_session_id := TO_NUMBER(GET_APPLICATION_PROPERTY(USERNAME));\n    IF NOT PKG_SECURITY.is_session_valid(v_session_id) THEN\n        MESSAGE('Session expired. Please log in again.');\n        RAISE FORM_TRIGGER_FAILURE;\n    END IF;\n\n    -- Payroll module requires elevated permissions\n    IF NOT PKG_SECURITY.has_permission(:GLOBAL.current_emp_id, 'PAYROLL', 'VIEW') THEN\n        MESSAGE('You do not have permission to access the Payroll module.');\n        RAISE FORM_TRIGGER_FAILURE;\n    END IF;\n\n    SET_WINDOW_PROPERTY(FORMS_MDI_WINDOW, TITLE,\n        'HRMS - Payroll Processing [' || :GLOBAL.current_user || ']');\n\n    GO_BLOCK('PAY_PERIOD');\n    SET_BLOCK_PROPERTY('PAY_PERIOD', DEFAULT_WHERE,\n        'STATUS = ''OPEN'' ORDER BY PERIOD_START_DATE DESC');\n    EXECUTE_QUERY;\nEND;",
         "pkg_calls": [
-          "PKG_SECURITY.has_permission",
-          "PKG_SECURITY.is_session_valid"
+          "PKG_SECURITY.is_session_valid",
+          "PKG_SECURITY.has_permission"
         ],
         "business_rules": [],
         "rules": [],
@@ -1545,11 +1545,11 @@
     ],
     "alerts": [],
     "all_package_calls": [
-      "PKG_SECURITY.has_permission",
-      "PKG_PAYROLL.calculate_payroll",
       "PKG_PAYROLL.approve_payroll",
-      "PKG_PAYROLL.create_payroll_run",
-      "PKG_SECURITY.is_session_valid"
+      "PKG_SECURITY.is_session_valid",
+      "PKG_PAYROLL.calculate_payroll",
+      "PKG_SECURITY.has_permission",
+      "PKG_PAYROLL.create_payroll_run"
     ],
     "all_business_rules": [],
     "all_rules": [

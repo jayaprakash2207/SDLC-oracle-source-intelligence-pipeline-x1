@@ -31,10 +31,10 @@
           "PKG_COMMON.log_error"
         ],
         "forms_calls": [
-          "RAISE",
-          "message",
+          "MESSAGE",
           "FORM_TRIGGER_FAILURE",
-          "MESSAGE"
+          "RAISE",
+          "message"
         ],
         "format_masks": [],
         "buffer_caps": {
@@ -85,8 +85,8 @@
         "bugs": [],
         "pkg_calls": [],
         "forms_calls": [
-          "EXECUTE_QUERY",
-          "ENTER_QUERY"
+          "ENTER_QUERY",
+          "EXECUTE_QUERY"
         ],
         "format_masks": [],
         "buffer_caps": {},
@@ -213,9 +213,9 @@
           "PKG_SECURITY.is_session_valid"
         ],
         "forms_calls": [
-          "RAISE",
+          "MESSAGE",
           "FORM_TRIGGER_FAILURE",
-          "MESSAGE"
+          "RAISE"
         ],
         "format_masks": [],
         "buffer_caps": {},
@@ -340,6 +340,7 @@
       "Abort form processing when the session has expired; the user must re-authenticate",
       "A record group is only refreshed if it already exists in the form \u2014 attempting to populate a non-existent group would raise a runtime error"
     ],
+    "all_constraints": [],
     "all_validation_notes": [
       "Falls back to the Oracle database session user when no HRMS application user is set in the global context, ensuring error logs always have a user identity",
       "Falls back to the Oracle database session user when the HRMS application-level global user is not populated, so every operation has a traceable user identity"
@@ -506,6 +507,10 @@
       "Salary range validation is skipped when either the salary amount or the job grade identifier is absent; both values must be present for the range check to execute",
       "An employee's salary must not fall below the minimum pay threshold defined for their job grade",
       "An employee's salary must not exceed the maximum pay threshold defined for their job grade"
+    ],
+    "all_constraints": [
+      "A valid US phone number must contain exactly 10 digits (local format, no country code) or 11 digits (including the leading country code digit); any other digit count is rejected",
+      "A valid SSN must consist of exactly 9 numeric digits after stripping formatting characters (dashes)"
     ],
     "all_validation_notes": [
       "uses stale data."
