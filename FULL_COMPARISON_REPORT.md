@@ -91,17 +91,22 @@
 
 ---
 
-## 5. RAISE_APPLICATION_ERROR Codes
+## 5. Error Codes (RAISE_APPLICATION_ERROR + PRAGMA EXCEPTION_INIT)
 
-**Source truth: 31 error codes**
+**Source truth: 34 error codes total**
+- 31 via `RAISE_APPLICATION_ERROR()` in `.pkb` + trigger files
+- 3 additional via `PRAGMA EXCEPTION_INIT` in `PKG_SECURITY.pks`:
+  `-20302` (`e_account_locked`), `-20303` (`e_session_expired`), `-20304` (`e_insufficient_priv`)
 
 | | OSIRIS | Chunks |
 |---|---|---|
-| Real codes captured | **31 / 31 (100%)** | 31 / 31 (100%) |
-| Fake/invented codes | **0** | **5 fake codes** |
-| Fake codes | None | `-20000`, `-20302`, `-20303`, `-20304`, `-20999` |
+| Real codes captured | ⚠️ **31 / 34** — missing 3 PRAGMA codes | ✅ **34 / 34** |
+| Fake/invented codes | ✅ **0** | ⚠️ `-20000` and `-20999` appear as Oracle range description text — not defined codes |
+| PRAGMA EXCEPTION_INIT scanned? | ❌ No | ✅ Yes (captured from spec file) |
 
-**Winner: OSIRIS — both captured all real codes, but chunks invented 5 that don't exist.**
+**Winner: Chunks — captured all 34 codes including PRAGMA-defined ones. OSIRIS missed 3 because it only scanned `.pkb` files, not `.pks` spec files for PRAGMA codes.**
+
+**Note on `-20000`/`-20999` in chunks:** These appear in the sentence `"Custom exception handling uses error codes in the range -20000 to -20999"` — accurate description of Oracle's range, not invented codes.
 
 ---
 
@@ -111,14 +116,16 @@
 
 | | OSIRIS | Chunks |
 |---|---|---|
-| Count | **29 / 29** | 29 mentioned |
+| Count | **29 / 29** | **29 / 29** |
 | Fake sequences | 0 | 0 |
-| START WITH values | **All correct** | Mixed — some wrong |
-| Example: SEQ_EMPLOYEE START WITH | **10000 (correct)** | Got `100` (wrong) |
-| Example: SEQ_EMP_HISTORY START WITH | **1 (correct)** | Got `100` (wrong) |
+| START WITH values | **All 29 correct** | **All 29 correct** |
+| Example: SEQ_EMPLOYEE START WITH | **10000** ✅ | **10000** ✅ |
+| Example: SEQ_EMP_NUMBER START WITH | **1000** ✅ | **1000** ✅ |
 | Structured | Yes — JSON | No — embedded in text |
 
-**Winner: OSIRIS — exact values correct. Chunks have wrong START WITH for at least 2 sequences.**
+**Winner: Tie on correctness. OSIRIS wins on structure (JSON vs narrative text).**
+
+*Note: An earlier version of this report incorrectly stated chunks had wrong sequence values. This was caused by a regex false match in the analysis script — `SEQ_JOB_TITLE START WITH 100` was being attributed to the next sequence. Direct reading of Chunk_15_Output.md confirms all values are correct.*
 
 ---
 
@@ -252,10 +259,11 @@ OSIRIS has full FROM/JOIN table lists in `joins[]` for every view.
 | FK constraints | 30 | 30/30 **100%** | Not structured |
 | CHECK constraints | 29 | 28/29 **97%** | Not structured |
 | Tagged rules (all types) | 323 | 310/323 **96%** | 30/323 **9%** |
-| RAISE error codes (real) | 31 | 31/31 **100%** | 31/31 **100%** |
-| RAISE error codes (fake) | 0 | 0 **clean** | 5 **invented** |
+| RAISE_APPLICATION_ERROR codes | 31 | 31/31 **100%** | 31/31 **100%** |
+| PRAGMA EXCEPTION_INIT codes | 3 | **0/3 missing** | **3/3 100%** |
+| Invented codes | 0 | 0 **clean** | 0 (range-text strings, not invented) |
 | Sequence counts | 29 | 29/29 **100%** | 29/29 **100%** |
-| Sequence START WITH values | 29 | 29/29 **100%** | ~27/29 **93%** (2 wrong) |
+| Sequence START WITH values | 29 | 29/29 **100%** | 29/29 **100%** (prev report was wrong) |
 | Form blocks/items/LOVs | 114 items | 114/114 **100%** | 114/114 **100%** |
 | Form item properties | All | **Full detail** | Partial narrative |
 | View FROM/JOIN tables | 26 | 26/26 **100%** | 0/26 **0%** |

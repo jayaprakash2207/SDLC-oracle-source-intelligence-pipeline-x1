@@ -16,7 +16,8 @@
 | Sequence names | ✅ 100% | All 29 named |
 | Sequence START WITH / INCREMENT BY values | ✅ Correct where checked | Not fully audited |
 | RAISE error codes (real) | ✅ 31/31 | All real codes present |
-| **RAISE error codes (invented)** | ❌ **5 fake codes** | Not in source |
+| **RAISE error codes (real)** | ✅ **34 / 34** | All real codes captured (incl. PRAGMA EXCEPTION_INIT) |
+| **Range-text strings misread as codes** | ⚠️ `-20000`, `-20999` appear in range description text | Not defined codes — just Oracle range boundary mention |
 | Form block names | ✅ 100% | All 6 forms, all blocks |
 | Form item names | ✅ 100% | All 114 items |
 | View FROM/JOIN table names | ✅ 100% | All 6 views |
@@ -130,24 +131,45 @@ Source has 36 `-- CONSTRAINT:` tagged comments. Chunks captured only **3**.
 
 ---
 
-## Gap 6 — 5 Invented / Hallucinated Error Codes
+## Gap 6 — Error Codes: Correction to Earlier Report
 
-The chunks contain **5 error codes that do not exist anywhere in the source:**
+**Previous report said 5 fake codes — this was wrong. Corrected findings:**
 
-| Fake Code | Status |
+Source has **34 error codes** total:
+- 31 via `RAISE_APPLICATION_ERROR()` in `.pkb` + trigger files
+- 3 additional via `PRAGMA EXCEPTION_INIT` in `PKG_SECURITY.pks`:
+  `-20302` (`e_account_locked`), `-20303` (`e_session_expired`), `-20304` (`e_insufficient_priv`)
+
+Chunks captured all **34 real codes correctly**.
+
+The 2 strings that look like codes in chunk text:
+| String | What it actually is |
 |---|---|
-| `-20000` | ❌ Not in source |
-| `-20302` | ❌ Not in source |
-| `-20303` | ❌ Not in source |
-| `-20304` | ❌ Not in source |
-| `-20999` | ❌ Not in source |
+| `-20000` | Appears in: `"error codes in the range -20000 to -20999"` — Oracle range description, not a defined code |
+| `-20999` | Same range description sentence — not a defined code |
 
-Real source has exactly 31 codes: `-20001` through `-20504` and `-20900`.
-The chunks have 36 — 31 real + 5 invented.
+**These are not hallucinations.** They are accurate descriptions of Oracle's custom error code range.
+The chunks correctly captured more error codes than OSIRIS (34 vs 31) because they included
+the PRAGMA EXCEPTION_INIT codes from the spec files.
 
 ---
 
-## Gap 7 — Not Machine-Readable
+## Gap 7 — Sequence Values: Correction to Earlier Report
+
+**Previous report said sequence values were wrong — this was wrong. Corrected findings:**
+
+All 29 sequence values in the chunks are **correct**. Direct reading of `Chunk_15_Output.md` confirms:
+- `SEQ_EMPLOYEE: START WITH 10000` ✅
+- `SEQ_EMP_NUMBER: START WITH 1000` ✅
+- `SEQ_DEPARTMENT: START WITH 100` ✅
+- All others: START WITH 1 ✅
+
+The error in the previous analysis was a regex false match — `SEQ_JOB_TITLE START WITH 100`
+was being incorrectly attributed to the next sequence in the text.
+
+---
+
+## Gap 8 — Not Machine-Readable
 
 The chunk output is **free-text markdown**. There is no structured data format.
 
@@ -163,7 +185,7 @@ The chunk output is **free-text markdown**. There is no structured data format.
 
 ---
 
-## Gap 8 — Zero Verification Against Source
+## Gap 9 — Zero Verification Against Source
 
 No audit script was run on the chunk outputs. There is **no proof** that:
 - The exact values (column types, sequence numbers, error codes) match source

@@ -26,21 +26,22 @@ fact word-for-word against the source.
 
 ## Test Results — Facts vs Source (42 files)
 
-### Test 1: RAISE_APPLICATION_ERROR Codes
+### Test 1: Error Codes (RAISE_APPLICATION_ERROR + PRAGMA EXCEPTION_INIT)
 
-Source has exactly **31 error codes** across packages + triggers.
+Source has **34 error codes** total:
+- 31 via `RAISE_APPLICATION_ERROR()` in `.pkb` and trigger files
+- 3 additional via `PRAGMA EXCEPTION_INIT` in `.pks` spec files:
+  `-20302` (`e_account_locked`), `-20303` (`e_session_expired`), `-20304` (`e_insufficient_priv`) — all in `PKG_SECURITY.pks`
 
-| | Count | Fake codes invented |
+| | Real codes captured | Fake codes invented |
 |---|---|---|
-| **OSIRIS** | ✅ **31 / 31** | ✅ Zero |
-| **Team Chunks** | ❌ 31 real + 13 fake | ❌ Yes |
+| **OSIRIS** | ⚠️ **31 / 34** — missing `-20302`, `-20303`, `-20304` (PRAGMA EXCEPTION_INIT not scanned) | ✅ Zero |
+| **Team Chunks** | ✅ **34 / 34** | ⚠️ 2 range-description strings (`-20000`, `-20999` appear as range text `"codes in the range -20000 to -20999"`, not as defined codes) |
 
-**Fake codes found in team output (do not exist in source):**
-`-200`, `-2000`, `-20000`, `-2001`, `-2025`, `-202`, `-203`, `-204`, `-208`,
-`-20302`, `-20303`, `-20304`, `-20999`
-
-These were hallucinated by the AI. If used in forward engineering, the new system
-would implement error handling for errors that never existed.
+**Note on `-20000` and `-20999` in chunks:** These appear in the phrase
+`"Custom exception handling uses error codes in the range -20000 to -20999"` — they describe
+the Oracle custom error range, not actual defined codes. They are not hallucinated values,
+just range boundary mentions in explanatory text.
 
 ---
 
@@ -50,8 +51,8 @@ Source has exactly **29 sequences** in `schema/sequences/hrms_sequences.sql`.
 
 | | Count | Accurate? |
 |---|---|---|
-| **OSIRIS** | ✅ **29 / 29** | ✅ Exact — START WITH + INCREMENT BY + CACHE verified |
-| **Team Chunks** | ❌ **40** | ❌ 11 extra sequences that don't exist in source |
+| **OSIRIS** | ✅ **29 / 29** | ✅ Exact — START WITH + INCREMENT BY + CACHE all correct |
+| **Team Chunks** | ✅ **29 / 29** | ✅ All values correct — verified by direct reading of Chunk_15_Output.md |
 
 Example — `SEQ_EMPLOYEE` exact value check:
 
@@ -61,7 +62,7 @@ Example — `SEQ_EMPLOYEE` exact value check:
 | OSIRIS | ✅ `10000` | ✅ `1` | ✅ `NOCACHE` |
 | Team Chunks | ✅ `10000` | ✅ `1` | ✅ `NOCACHE` |
 
-*(Team chunks got the values right for sequences that exist — but invented 11 extra ones)*
+Both outputs captured all 29 sequences with correct values.
 
 ---
 
@@ -122,12 +123,11 @@ Forward engineering generates API contracts, service code, DB migrations, and
 architecture documents directly from the extracted facts. If the input contains
 invented facts:
 
-- **Fake error codes** → new system implements error handling for errors that never existed
-- **Fake sequences** → DB migration scripts create objects that don't correspond to anything real
-- **Unverified rule text** → business logic in the new system may not match the actual Oracle rules
+- **Missing PRAGMA error codes** → OSIRIS missed `-20302`, `-20303`, `-20304` because it only scanned `RAISE_APPLICATION_ERROR()` calls, not `PRAGMA EXCEPTION_INIT` in spec files
+- **Unverified rule text** → chunk business logic in the new system may not match the actual Oracle rules since 91% of tagged comments were not captured verbatim
 
-OSIRIS output is safe to use as the **single source of truth** because every fact
-in it is proven to come from a literal line in the actual source code.
+OSIRIS output is the best source of truth for **structured facts** (columns, types, params, rules).
+Team chunks captured error codes more completely but lack structured format and rule text coverage.
 
 ---
 
@@ -135,8 +135,8 @@ in it is proven to come from a literal line in the actual source code.
 
 | Dimension | OSIRIS | Team Chunks |
 |---|---|---|
-| RAISE error codes | ✅ 31/31 exact | ❌ 13 fake codes invented |
-| Sequences | ✅ 29/29 exact | ❌ 11 fake sequences invented |
+| RAISE + PRAGMA error codes | ⚠️ 31/34 (missing 3 PRAGMA codes) | ✅ 34/34 real codes + 2 range-text strings |
+| Sequences | ✅ 29/29 exact values | ✅ 29/29 exact values |
 | Tables | ✅ 30/30 with full column detail | ⚠️ 30/30 count, limited detail |
 | Business rules | ✅ 775 structured + verified | ⚠️ ~307 unverified narrative lines |
 | Invented facts | ✅ **None** | ❌ **Yes — proven** |

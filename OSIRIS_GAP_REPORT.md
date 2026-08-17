@@ -14,7 +14,8 @@
 | Table constraints (PK/FK/UK/CHECK) | ✅ 100% | All FKs have referenced tables |
 | Sequences | ✅ 100% | All 29 with exact START WITH + INCREMENT BY |
 | Triggers | ✅ 100% | All 6 triggers captured |
-| RAISE error codes | ✅ 100% | All 31 codes across packages + triggers |
+| RAISE error codes (RAISE_APPLICATION_ERROR) | ✅ 31/31 | All RAISE codes captured |
+| PRAGMA EXCEPTION_INIT codes | ❌ **0/3 missing** | `-20302`, `-20303`, `-20304` not scanned |
 | Param directions (IN/OUT/IN OUT) | ✅ 100% | All 11 packages |
 | Form blocks | ✅ 100% | All 6 forms, all blocks |
 | Form items | ✅ 100% | All 114 items across 6 forms |
@@ -128,6 +129,29 @@ The complete list is in `joins[]`. The `tables_used[]` field appears to only cap
 
 ---
 
+## Gap 6 — 3 PRAGMA EXCEPTION_INIT Codes Missing
+
+**Location:** `PKG_SECURITY.pks` — spec file
+**Impact:** 3 exception codes defined via `PRAGMA EXCEPTION_INIT` not captured in `plsql_deep.json`
+
+| Exception Name | Code | Defined In |
+|---|---|---|
+| `e_account_locked` | `-20302` | `PKG_SECURITY.pks` line ~15 |
+| `e_session_expired` | `-20303` | `PKG_SECURITY.pks` line ~16 |
+| `e_insufficient_priv` | `-20304` | `PKG_SECURITY.pks` line ~17 |
+
+**Root cause:** The spec parser (`deep_parse_pks`) scans for `PRAGMA EXCEPTION_INIT` to map
+exception names to error codes, but it stores these in the `exceptions[]` list under the
+exception name — not as a separate error code. The RAISE code extractor only looks at
+`RAISE_APPLICATION_ERROR()` calls in `.pkb` files, so these 3 PRAGMA-defined codes are
+never added to the raise_errors output.
+
+**Fix needed:** In `deep_parse_pks()`, extract the numeric code from each
+`PRAGMA EXCEPTION_INIT(name, code)` and include it in the exception entry so downstream
+consumers know the actual Oracle error number.
+
+---
+
 ## What Is 100% Correct
 
 Everything verified by the 3,245-check audit:
@@ -171,6 +195,7 @@ Everything verified by the 3,245-check audit:
 | Priority | Gap | Fix |
 |----------|-----|-----|
 | 🔴 HIGH | View `full_query` truncated for all 6 views | Fix query capture regex in `deep_parse_schema()` — increase capture or remove boundary limit |
+| 🔴 HIGH | 3 PRAGMA EXCEPTION_INIT codes missing (`-20302`, `-20303`, `-20304`) | In `deep_parse_pks()` extract numeric code from each PRAGMA EXCEPTION_INIT and store in exception entry |
 | 🟡 MED | 9 missing `-- RULE:` comments | Check PLL rule extractor for multi-line rule text; check `PKG_COMMON`/`PKG_EMPLOYEE`/`PKG_PAYROLL`/`PKG_REPORTING` bodies |
 | 🟡 MED | 3 missing `-- CONSTRAINT:` comments | Check trigger + VALIDATION_LIB constraint extraction and text normalization |
 | 🟡 MED | 1 missing `-- BUSINESS:` comment | Check `PKG_EMPLOYEE.pkb` BUSINESS extractor |
@@ -180,6 +205,11 @@ Everything verified by the 3,245-check audit:
 
 ## Overall Assessment
 
-OSIRIS is **~99.5% accurate**. The core data — all procedures, functions, params, tables, columns, constraints, sequences, triggers, form items, LOVs, seed data, and 775 business rules — is 100% correct and verified.
+OSIRIS is **~99% accurate**. The core data — all procedures, functions, params, tables, columns, constraints, sequences, triggers, form items, LOVs, seed data, and 775 business rules — is correct and verified.
 
-The 13 missing tagged comment texts and the view `full_query` truncation are real gaps but do not affect the structured fact output used for forward engineering.
+Real gaps identified:
+- 3 PRAGMA EXCEPTION_INIT error codes missing (`-20302`, `-20303`, `-20304`)
+- 13 missing tagged comment texts (9 RULE, 3 CONSTRAINT, 1 BUSINESS)
+- View `full_query` bodies truncated for all 6 views
+
+These do not affect the structured schema, param, or rule output used for forward engineering, but should be fixed before the error code list is used for exception handling design.
