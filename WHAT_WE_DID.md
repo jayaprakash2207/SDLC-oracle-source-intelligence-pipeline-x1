@@ -47,6 +47,255 @@ Two audit scripts verify the output is 100% accurate:
 
 ---
 
+## How the Parser Works — Step by Step
+
+The parser has 8 independent extraction engines, one per file type.
+Every engine reads its source files directly and writes structured JSON.
+Nothing is inferred — every fact comes from a literal line in the source.
+
+```
+oracle_deep_parser.py
+│
+├── 1. PL/SQL Package Spec Parser   (.pks files)
+├── 2. PL/SQL Package Body Parser   (.pkb files)
+├── 3. DDL Schema Parser            (tables, views, sequences)
+├── 4. Trigger Parser               (.sql trigger files)
+├── 5. Oracle Forms XML Parser      (.xml files)
+├── 6. PLL Library Parser           (.pll.sql files)
+├── 7. Menu Module Parser           (.mmb.sql file)
+├── 8. Seed Data Parser             (.sql seed files)
+│
+└── Business Rules Consolidator     (collects from all 8 above)
+```
+
+---
+
+### Engine 1 — PL/SQL Package Spec Parser (`.pks`)
+
+**Input:** 11 `.pks` files (package specifications)  
+**What it reads:** The public contract of each package — what procedures and
+functions exist, what parameters they take, what they return.
+
+**How it works:**
+1. Finds `CREATE OR REPLACE PACKAGE HRMS.PKG_xxx AS` to get the package name
+2. For each `PROCEDURE name(...)` — uses a **balanced-parentheses extractor**
+   to capture the full parameter block even when params span multiple lines or
+   contain nested function calls like `DEFAULT EXTRACT(YEAR FROM SYSDATE)`
+3. For each parameter — strips inline `-- comments` first, then splits on `,`
+   and matches `param_name  IN|OUT|IN OUT  TYPE` to get name + direction + type
+4. For each `FUNCTION name(...) RETURN type` — same param extraction + return type
+5. Finds `e_xxx EXCEPTION` declarations and maps them to their
+   `PRAGMA EXCEPTION_INIT(e_xxx, -20xxx)` error codes
+6. Finds `TYPE xxx IS RECORD|REF CURSOR|TABLE` definitions
+7. Finds `g_xxx` global variable declarations
+8. Reads `-- Dependencies:`, `-- Called by:`, `-- Known issues:` header comments
+
+**Output fields:** `procedures[]`, `functions[]`, `exceptions[]`, `types[]`,
+`global_variables[]`, `dependencies`, `callers`, `known_issues`
+
+---
+
+### Engine 2 — PL/SQL Package Body Parser (`.pkb`)
+
+**Input:** 11 `.pkb` files (package body implementations)  
+**What it reads:** The actual logic — business rules buried in comments,
+constants, error codes, SQL operations, cross-package calls.
+
+**How it works:**
+1. Finds `CREATE OR REPLACE PACKAGE BODY HRMS.PKG_xxx AS`
+2. Splits the file into per-procedure body sections by finding all
+   `PROCEDURE name` and `FUNCTION name` positions and slicing between them
+3. For each tagged comment in the body — extracts verbatim text:
+   - `-- BUSINESS:` → business rules
+   - `-- RULE:` → validation rules
+   - `-- VALIDATION:` → validation notes
+   - `-- CONSTRAINT:` → system constraints
+   - `-- BUG:` → known defects
+4. For constants — two regex patterns:
+   - `name CONSTANT TYPE := value` (standard)
+   - `c_name RAW(N) := value` (no CONSTANT keyword, e.g. `c_encryption_key`)
+5. For RAISE errors — three patterns to avoid message bleed:
+   - Single-line: `RAISE_APPLICATION_ERROR(-20xxx, 'message')`
+   - Concatenated: `RAISE_APPLICATION_ERROR(-20xxx, 'text' ||`
+   - Multi-line: error code on one line, message on next indented line
+6. For SQL operations — `FROM`, `JOIN`, `INSERT INTO`, `UPDATE`, `DELETE FROM`
+   all filtered through `_SQL_NOISE` set to remove keyword false positives
+7. Infers behavioral rules from code patterns:
+   - `PRAGMA AUTONOMOUS_TRANSACTION` → audit isolation rule
+   - `SYS_CONTEXT('USERENV','IP_ADDRESS')` → IP capture rule
+   - `UTL_SMTP.` → email delivery rule
+   - Dynamic SQL + user input → SQL injection bug
+   - `EXCEPTION WHEN OTHERS THEN NULL` → silent swallow bug
+8. Detects `DBMS_CRYPTO`, `UTL_FILE`, `UTL_SMTP`, `DBMS_OUTPUT` usage
+9. Finds all `SEQ_xxx.NEXTVAL` sequence usage
+10. Finds all `PKG_xxx.procedure` cross-package calls
+
+**Output fields:** `constants[]`, `business_rules[]`, `rules[]`,
+`validation_notes[]`, `constraints[]`, `bugs[]`, `raise_errors[]`,
+`sql{}`, `procedures[]` (each with own rules/SQL/raises), `pragma_autonomous`,
+`utl_packages_used[]`, `dbms_packages_used[]`
+
+---
+
+### Engine 3 — DDL Schema Parser
+
+**Input:** `schema/tables/*.sql`, `schema/views/hrms_views.sql`,
+`schema/sequences/hrms_sequences.sql`
+
+**Tables — how it works:**
+1. Finds each `CREATE TABLE HRMS.tablename (...)` block
+2. Parses the body **line by line** (not with a single regex) to avoid the
+   column absorption bug — each line is matched independently
+3. For each non-constraint line — matches `COLUMN_NAME TYPE(size)` pattern
+   using a whitelist of known Oracle types (NUMBER, VARCHAR2, CHAR, DATE, etc.)
+4. Captures `DEFAULT value` and `NOT NULL` flags per column
+5. Detects `GENERATED ALWAYS AS (...) VIRTUAL` columns
+6. On `CONSTRAINT` lines — routes to the right handler:
+   - `PRIMARY KEY (cols)` → pk list
+   - `UNIQUE (cols)` → unique constraint with name
+   - `FOREIGN KEY (col) REFERENCES table(col)` → FK with constraint name + referenced table
+   - `CHECK (expression)` → check constraint expression verbatim
+
+**Views — how it works:**
+1. Splits file on `CREATE OR REPLACE VIEW` boundaries (not lazy regex)
+   so each view gets its **complete body** including UNION ALL sections
+2. From each view body — extracts all `FROM table` and `JOIN table` references
+   using a noise filter to skip aliases and keywords
+
+**Sequences — how it works:**
+1. Scans for `CREATE SEQUENCE name START WITH n INCREMENT BY n [CACHE n|NOCACHE]`
+2. Captures all three numeric values
+3. Reads up to 4 comment lines above each sequence as notes
+
+---
+
+### Engine 4 — Trigger Parser
+
+**Input:** `plsql/triggers/trg_employees.sql`, `trg_audit.sql`
+
+**How it works:**
+1. Finds each `CREATE OR REPLACE TRIGGER name BEFORE|AFTER|INSTEAD OF event ON table`
+2. Slices body between consecutive trigger headers
+3. Collects header comments (lines above CREATE) and appends to body for rule extraction
+4. Extracts BUSINESS/RULE/VALIDATION/BUG tagged comments from combined text
+5. Applies same RAISE error extractor as package bodies
+6. Detects `PRAGMA AUTONOMOUS_TRANSACTION` and `SYS_CONTEXT` usage
+7. Extracts inline JSON construction patterns from audit trigger bodies
+8. Finds all `PKG_xxx.procedure` calls
+
+---
+
+### Engine 5 — Oracle Forms XML Parser
+
+**Input:** 6 `.xml` Oracle Forms export files
+
+**How it works:**
+Python's `xml.etree.ElementTree` parses the XML tree. Then:
+
+1. **Form level** — reads `Name`, `Title`, `FirstNavigationBlock`, `MenuModule`
+2. **Libraries** — finds all `<AttachedLibrary Name="..."/>` elements
+3. **Canvases** — for each `<Canvas>` finds all `<TabPage Name="" Label=""/>`
+4. **Blocks** — for each `<Block>` reads:
+   - `DMLDataTargetName` (which table it reads/writes)
+   - `DefaultWhere`, `OrderByClause`
+   - `RecordsDisplayed`, insert/update/delete/query permissions
+5. **Items** — for each `<Item>` reads all key attributes:
+   - `ItemType`, `DataType`, `MaximumLength`, `RequiredItem`
+   - `ColumnName`, `CanvasName`, `TabPageName`
+   - `FormatMask` (e.g. `$999,999,990.00`, `MM/DD/YYYY`, `990.00%`)
+   - `PrimaryKey`, `DatabaseItem`, `LOV`
+   - `ListItemElement` children → poplist label/value pairs
+6. **Triggers** — for each `<Trigger>` reads `TriggerText` element body,
+   then extracts PKG calls, BUSINESS/RULE comments, RAISE errors
+7. **LOVs** — `<LOV>` with `Name`, `Title`, `RecordGroup`,
+   and all `<ColumnMapping ReturnItem="..."/>` children
+8. **Record Groups** — `QueryText` attribute or `<RecordGroupQuery>` child text
+9. **Relations** — `DeleteRecordBehavior`, `AutoQuery`, `Deferred`, `JoinCondition`
+10. **Windows** — `Name`, `Title`, `Width`, `Height`
+11. **Alerts** — `Name`, `AlertStyle`, `Message`, `Button1Label`, `Button2Label`, `Button3Label`
+
+---
+
+### Engine 6 — PLL Library Parser
+
+**Input:** `forms/libraries/HRMS_COMMON_LIB.pll.sql`,
+`forms/libraries/HRMS_VALIDATION_LIB.pll.sql`
+
+**How it works:**
+1. Finds each `PROCEDURE name(...) IS` or `FUNCTION name(...) RETURN type IS`
+   using multiline regex anchored at start of line
+2. Slices body between consecutive procedure/function positions
+3. From each body — extracts:
+   - BUSINESS/RULE/VALIDATION/BUG tagged comments
+   - Oracle Forms built-in calls (COMMIT_FORM, EXIT_FORM, GO_BLOCK, etc.)
+   - `TO_CHAR(value, 'mask')` format mask patterns
+   - `v_xxx VARCHAR2(N)` buffer size declarations
+   - `NVL(:GLOBAL.current_user, USER)` fallback patterns
+   - `WHEN exception THEN action` exception handling
+   - Cross-package calls `PKG_xxx.procedure`
+4. Reads `-- Dependencies:` and `-- Attached by:` header metadata
+
+---
+
+### Engine 7 — Menu Module Parser
+
+**Input:** `forms/menus/HRMS_MENU.mmb.sql`
+
+**How it works:**
+The entire menu structure is encoded in SQL comment lines (`--` prefix).
+The actual compiled `.mmb` binary cannot be read as text.
+
+1. Strips `--` prefix from every line to reveal the tree structure:
+   ```
+     ├── File
+     │   ├── Save                 (COMMIT_FORM)
+     │   └── Exit                 (EXIT_FORM)
+     ├── Modules
+     │   ├── Employee Management  (OPEN_FORM('HRMS_EMPLOYEE'))
+   ```
+2. Lines matching `^\s+[├└]──\s+word$` with no `(action)` = top-level menu header
+3. Lines matching `[├└]──  label  (action)` with 2+ spaces before `(` = menu item
+   — greedy `.+` captures action including nested parens like `OPEN_FORM('...')`
+4. Lines matching `(requires WORD permission)` = permission-guarded item
+5. Extracts all `OPEN_FORM('...')` targets, `SHOW_WINDOW('...')` calls,
+   `SHOW_ALERT('...')` calls, `WEB.SHOW_DOCUMENT('...')` calls
+6. Finds `PKG_SECURITY.has_permission` guard calls
+
+---
+
+### Engine 8 — Seed Data Parser
+
+**Input:** `data/seed/reference_data.sql`, `data/seed/employee_data.sql`
+
+**How it works:**
+1. Finds each `INSERT INTO table (col1, col2, ...) VALUES (val1, val2, ...);`
+2. Parses the VALUES list with a **character-by-character state machine**
+   that tracks quote depth and parenthesis depth — this correctly handles:
+   - Quoted strings with embedded commas: `'Smith, John'`
+   - Oracle function calls: `TO_DATE('2024-01-01', 'YYYY-MM-DD')`
+   - Nested expressions: `NVL(value, default)`
+3. Maps each value to its column name
+4. Groups rows by table name
+5. Finds `UPDATE table SET ... WHERE ...` statements (e.g. manager assignments
+   in DEPARTMENTS that can only be set after all employees are inserted)
+
+---
+
+### Business Rules Consolidator
+
+After all 8 engines run, the consolidator:
+1. Collects every rule from every source
+2. Assigns a unique ID: `BR-0001` through `BR-0775`
+3. Tags each with: `source` (e.g. `HRMS.PKG_EMPLOYEE`),
+   `source_type` (e.g. `plsql_procedure`), `category` (e.g. `business_rule`)
+4. Writes `business_rules.json` — the single file that feeds all document agents
+
+**Categories captured:**
+`business_rule`, `validation_rule`, `validation_note`, `error_rule`,
+`constraint`, `check_constraint`, `unique_constraint`, `known_bug`
+
+---
+
 ## The Journey — Problems Faced and How We Fixed Them
 
 ### Problem 1: Wrong ground truth
