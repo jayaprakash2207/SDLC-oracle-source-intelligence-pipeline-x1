@@ -1,367 +1,279 @@
-# What We Did — Graphify + Oracle Parser
+# What We Did — Oracle HRMS Deep Parser
 **Project:** Oracle HRMS Reverse Engineering — Source Code Extraction Phase  
-**Date:** 2026-08-13  
-**Folder:** `graphify + oracle parser/`
+**Date:** 2026-08-17  
+**GitHub:** https://github.com/jayaprakash2207/SDLC-oracle-source-intelligence-pipeline-x1
 
 ---
 
 ## The Goal
 
-Before the AI pipeline can generate 25 enterprise documents, it needs to deeply understand
-the legacy Oracle HRMS source code. The source has 42 files written in Oracle-specific
-formats — DDL SQL, PL/SQL packages, database triggers, and Oracle Forms XML. No general-purpose
-tool can fully read all of these. So we built a 3-layer extraction system to achieve 100%
-file coverage and extract every business rule, validation, constraint, and structure from
-every single file.
+Extract 100% of every business rule, validation, constraint, structure, and fact
+from 42 Oracle HRMS source files so that AI agents can generate 25 accurate
+forward-engineering documents without missing anything.
 
 ---
 
-## The Source Code We Worked With
+## Source Files — What We Worked With
 
-Located at:
 ```
 source/ts-plsql-oracle-forms-hrms/ts-plsql-oracle-forms-hrms-main/
 ```
 
-| Folder | Files | What They Contain |
+| Folder | Files | Content |
 |---|---|---|
-| `schema/tables/` | 4 `.sql` files | DDL — CREATE TABLE statements for all 30 tables |
-| `schema/views/` | 1 `.sql` file | 6 database views |
-| `schema/sequences/` | 1 `.sql` file | Auto-increment sequences |
-| `plsql/packages/` | 22 files (`.pks` + `.pkb`) | 11 PL/SQL packages — all business logic |
-| `plsql/triggers/` | 2 `.sql` files | 5 database triggers |
-| `forms/xml-exports/` | 6 `.xml` files | Oracle Forms — all screens and UI logic |
-| `forms/libraries/` | 2 `.sql` files | Shared form libraries |
-| `forms/menus/` | 1 `.sql` file | Menu definitions |
-| `data/seed/` | 2 `.sql` files | Reference and employee seed data |
-| `README.md` | 1 file | Project documentation |
+| `schema/tables/` | 4 `.sql` | CREATE TABLE — 30 tables |
+| `schema/views/` | 1 `.sql` | 6 database views |
+| `schema/sequences/` | 1 `.sql` | 29 sequences |
+| `plsql/packages/` | 22 `.pks`+`.pkb` | 11 PL/SQL packages |
+| `plsql/triggers/` | 2 `.sql` | 6 database triggers |
+| `forms/xml-exports/` | 6 `.xml` | Oracle Forms screens |
+| `forms/libraries/` | 2 `.sql` | PLL shared libraries |
+| `forms/menus/` | 1 `.sql` | HRMS_MENU module |
+| `data/seed/` | 2 `.sql` | 133 seed data rows |
+| `README.md` | 1 | Project docs |
 | **Total** | **42 files** | |
 
 ---
 
-## Step 1 — Graphify (Knowledge Graph from SQL Files)
+## What We Built
 
-### What is Graphify?
-Graphify (`pip install graphifyy`) is an open-source tool that reads source code and builds
-a **knowledge graph** — a network of nodes (things) and edges (relationships between them).
-It is designed for AI coding assistants so they can understand a codebase structurally.
+`oracle_deep_parser.py` — a single Python script that reads every line of every
+source file and extracts structured intelligence. No external dependencies —
+runs on Python stdlib only (`re`, `xml.etree.ElementTree`, `json`, `pathlib`).
 
-### What We Did
-1. Installed `graphifyy` (v0.9.1 was already present — upgraded to v0.9.41)
-2. Discovered that `.sql` files were being silently skipped — the SQL tree-sitter parser
-   was a separate optional install (`graphifyy[sql]`)
-3. Installed `pip install "graphifyy[sql]"` which added `tree-sitter-sql` (v0.3.11)
-4. Had to copy source files to `C:\oracle-hrms-src` (no spaces in path) because
-   Windows path-with-spaces caused graphify's temp file writer to crash
-5. Ran `python -m graphify update . --force` from the clean path
-6. Copied output to `graphify + oracle parser/graphify-out/`
+Two audit scripts verify the output is 100% accurate:
+- `audit.py` — structural audit (names, types, directions, constraints)
+- `audit_full.py` — content audit (rule text, values, queries, properties)
 
-### What Graphify Produced
+---
 
-| Metric | Result |
+## The Journey — Problems Faced and How We Fixed Them
+
+### Problem 1: Wrong ground truth
+**What happened:** Initial verification compared parser output against 19 teammate-generated
+chunk scan files — not the actual Oracle source code.  
+**Result:** False 79.3% coverage number. The chunks themselves had errors.  
+**Fix:** Threw out the chunk comparison entirely. Rewrote verification to compare
+directly against the 42 source files line by line. This is the only correct approach.
+
+---
+
+### Problem 2: Column-type boundary bug (adjacent column absorbed)
+**What happened:** Regex `(\w+)\s+(TYPE[^,]+)` was greedy — when parsing column
+definitions like:
+```sql
+DEPT_ID    NUMBER(10)    NOT NULL,
+DEPT_CODE  VARCHAR2(20)  NOT NULL,
+```
+The type for `DEPT_ID` would absorb `DEPT_CODE` into its type string.  
+**Fix:** Switched to line-by-line parsing. Each line is parsed independently.
+Type regex stops at end of line, never crosses the comma boundary.
+
+---
+
+### Problem 3: SQL keywords injected as fake table names
+**What happened:** `FROM\s+(\w+)` regex matched SQL keywords like `IN`, `IS`,
+`UPDATE`, `THE`, `P_DATE` and added them to `selects_from` lists.  
+**Fix:** Added `_SQL_NOISE` set of ~80 known SQL keywords and short tokens.
+Any captured table name is filtered against this set before being stored.
+
+---
+
+### Problem 4: Inline comments parsed as parameter names
+**What happened:** `format_name` in PKG_COMMON has this signature:
+```sql
+FUNCTION format_name(
+    p_first_name IN VARCHAR2,
+    p_last_name  IN VARCHAR2,
+    p_format     IN VARCHAR2 DEFAULT 'FL'  -- FL=First Last, LF=Last, First
+) RETURN VARCHAR2;
+```
+The `-- FL=First Last, LF=Last, First` comment was being split on commas,
+making `LF=Last` and `First` appear as parameter names.  
+**Fix:** `_parse_params()` now strips `--[^\n]*` before splitting on commas.
+
+---
+
+### Problem 5: UNIQUE constraints not extracted
+**What happened:** DDL parser only looked for PRIMARY KEY and FOREIGN KEY.
+`CONSTRAINT UK_DEPT_CODE UNIQUE (DEPT_CODE)` was completely missed.  
+**Fix:** Added `UNIQUE\s*\(([^)]+)\)` regex inside the constraint-line handler.
+Now extracts all 10 unique constraints with their names and column lists.
+
+---
+
+### Problem 6: Trigger RAISE_APPLICATION_ERROR codes not captured
+**What happened:** RAISE error extraction was applied to package bodies but
+not to trigger files. Errors -20501 to -20504 in `trg_employees.sql` were missed.  
+**Fix:** Applied `extract_raise_application_errors()` to trigger body text.
+All 4 trigger errors now captured alongside 34 package errors (38 total).
+
+---
+
+### Problem 7: `leave_utilization_report` missing from PKG_REPORTING
+**What happened:** The procedure has a parameter with a nested function call:
+```sql
+PROCEDURE leave_utilization_report(
+    p_year IN NUMBER DEFAULT EXTRACT(YEAR FROM SYSDATE),
+    ...
+);
+```
+The regex `([^)]*)` stopped at the `)` inside `EXTRACT(...)`,
+so the outer `)` never matched and the whole procedure was skipped.  
+**Fix:** Replaced simple `([^)]*)` regex with a balanced-parentheses parser
+(`_extract_param_block`) that counts depth and stops only at the matching
+outer `)`.
+
+---
+
+### Problem 8: `c_encryption_key` not captured (no CONSTANT keyword)
+**What happened:** Standard constant extraction looks for `CONSTANT` keyword:
+```sql
+c_session_timeout_min CONSTANT NUMBER := 30;          -- captured
+c_encryption_key RAW(32) := UTL_RAW.CAST_TO_RAW(...)  -- missed
+```
+**Fix:** Added a second regex for `c_` prefixed `RAW(N)` variables without
+the CONSTANT keyword. Also captures the preceding `-- VULNERABILITY:` comment.
+
+---
+
+### Problem 9: XML FormatMask, TabPage, RecordsDisplayed, Alert buttons not extracted
+**What happened:** Oracle Forms XML parser was not reading these attributes:
+```xml
+<Item Name="BASE_SALARY" FormatMask="$999,999,990.00"/>
+<TabPage Name="TP_PERSONAL" Label="Personal Information"/>
+<Block Name="EMPLOYEE" RecordsDisplayed="1"/>
+<Alert Name="ALT_CONFIRM_EXIT" Button1Label="Save" Button2Label="Discard"/>
+```
+**Fix:** Added explicit attribute reads for all four. Result:
+28 format masks, 16 tab pages, 12 RecordsDisplayed values, 3 alerts with buttons.
+
+---
+
+### Problem 10: Menu parser captured 0 items
+**What happened:** The entire menu structure in `HRMS_MENU.mmb.sql` is inside
+SQL comment lines (all lines start with `--`). The regex matched against raw
+lines and never found the `├──` tree characters.  
+**Fix:** Strip `--` prefix from every line before tree-parsing.
+Result: 7 menus, 31 items all captured.
+
+---
+
+### Problem 11: Modules menu still 0 items (nested parentheses)
+**What happened:** After the `--` fix, items like:
+```
+├── Employee Management  (OPEN_FORM('HRMS_EMPLOYEE'))
+```
+still didn't match because `([^)]+)` stops at the first `)` inside
+`OPEN_FORM('HRMS_EMPLOYEE')`, leaving the outer `)` unmatched.  
+**Fix:** Changed action capture to greedy `.+` anchored at end-of-line.
+All 6 Modules items now captured.
+
+---
+
+### Problem 12: RAISE error message bleed (multi-line regex)
+**What happened:** `re.DOTALL` in RAISE error extraction caused the message
+string to bleed across hundreds of lines of surrounding code.  
+**Fix:** Removed `re.DOTALL`. Three separate patterns: single-line literals,
+concatenated messages, and multi-line where code and message are on separate lines.
+
+---
+
+### Problem 13: Parameter directions (IN/OUT/IN OUT) not captured
+**What happened:** `_parse_params()` only returned names, not directions or types.  
+**Fix:** Upgraded to return `{name, direction, type}` dicts.
+Regex `(\w+)\s+(IN\s+OUT|IN|OUT)\s+([\w%()]+)` captures all three fields.
+
+---
+
+### Problem 14: FK constraints not verified for accuracy
+**What happened:** FK names existed in output but referenced table names
+were not verified against source.  
+**Fix:** Added FK accuracy check to `audit.py`: every constraint name AND
+referenced table must match exactly.
+
+---
+
+### Problem 15: `VW_PENDING_APPROVALS` body truncated (UNION ALL missed)
+**What happened:** View body regex `(.*?)(?=CREATE|\Z)` with lazy `.*?`
+stopped at only 226 characters — before the `FROM` clause. The entire
+UNION ALL second SELECT was missed (LEAVE_REQUESTS, PERFORMANCE_REVIEWS,
+LEAVE_TYPES, REVIEW_CYCLES, EMPLOYEES all missing).  
+**Fix:** Split view file on `CREATE` boundaries first, then match each block
+greedily — capturing full body including UNION ALL sections.
+
+---
+
+### Problem 16: `-- VALIDATION:` comments not captured (27 missed)
+**What happened:** Parser extracted BUSINESS/RULE/BUG/CONSTRAINT tags
+but not VALIDATION. 27 comments across 8 packages, 2 trigger files,
+and 1 PLL library were completely missed.  
+**Fix:** Added VALIDATION to every tag extraction call and to the
+business rules consolidator as `validation_note` category.
+Rules count: 721 → **775**.
+
+---
+
+## Final Output — `parser-output/`
+
+| File | Contents |
 |---|---|
-| Nodes | 74 |
-| Edges | 71 |
-| Communities | 15 |
-| Files scanned | 14 (SQL + README) |
-| Files skipped | 28 (`.pkb`, `.pks`, `.xml` — not supported) |
-
-**Communities found:**
-- Community 3 — Core Tables: `HRMS.EMPLOYEES`, `HRMS.DEPARTMENTS`, `HRMS.LOCATIONS`, `HRMS.JOB_GRADES`, `HRMS.JOB_TITLES` + 3 more
-- Community 2 — Payroll Tables: `HRMS.PAYROLL_RUNS`, `HRMS.SALARY_RECORDS`, `HRMS.PAY_ELEMENTS` + 6 more
-- Community 5 — Leave Tables: `HRMS.LEAVE_REQUESTS`, `HRMS.LEAVE_BALANCES`, `HRMS.LEAVE_TYPES` + 2 more
-- Community 4 — Performance Tables: `HRMS.PERFORMANCE_REVIEWS`, `HRMS.AUDIT_LOG` + 6 more
-- Community 6 — Views: `HRMS.VW_PAYROLL_LATEST`, `HRMS.VW_ACTIVE_EMPLOYEES` + 5 more
-
-**Most connected nodes (core of the system):**
-1. `HRMS.VW_ACTIVE_EMPLOYEES` — 7 edges
-2. `HRMS.VW_EMPLOYEE_COMPENSATION` — 6 edges
-3. `HRMS.VW_PENDING_APPROVALS` — 6 edges
-
-**Surprising connection found:**
-- `HRMS.VW_PAYROLL_LATEST` reads from `EMPLOYEES` — bridges payroll community to employee community
-
-**Output files:**
-- `graphify-out/graph.json` — full graph (nodes + edges)
-- `graphify-out/graph.html` — interactive visual graph (open in browser)
-- `graphify-out/GRAPH_REPORT.md` — human-readable summary
-- `graphify-out/manifest.json` — list of every file scanned
-
-### Why Graphify Didn't Work at First
-Three problems were discovered and fixed:
-1. **Old version (0.9.1)** — silently skipped all `.sql` files with no warning. Fixed by upgrading to 0.9.41
-2. **Missing SQL plugin** — `tree-sitter-sql` was not installed. The new version warned us. Fixed by `pip install "graphifyy[sql]"`
-3. **Windows path with spaces** — `c:\rev-eng1 test oracle new\...` caused temp file crash. Fixed by running from `C:\oracle-hrms-src`
+| `plsql_deep.json` | 11 packages — procedures, functions, params with IN/OUT, constants, raise errors, rules |
+| `forms_deep.json` | 6 forms — blocks, items, format masks, tab pages, alerts, LOVs, relations |
+| `pll_deep.json` | 2 PLL libraries — HRMS_COMMON_LIB + HRMS_VALIDATION_LIB |
+| `menu_deep.json` | HRMS_MENU — 7 menus, 31 items, OPEN_FORM calls |
+| `schema_deep.json` | 30 tables, 6 views (full SQL incl UNION ALL), 6 triggers, 29 sequences |
+| `seed_deep.json` | 133 seed rows with all column values |
+| `business_rules.json` | 775 rules BR-0001 to BR-0775 |
+| `DEEP_REPORT.md` | Human-readable full summary |
 
 ---
 
-## Step 2 — Oracle Parser (PL/SQL Packages + Oracle Forms)
+## Verification — How We Proved 100%
 
-### Why We Needed This
-Graphify does not support `.pkb`, `.pks` (PL/SQL package) or Oracle Forms `.xml` files.
-These 28 files contain **the most important content** — all the business logic, procedures,
-functions, form screens, and validation rules. Without them the graph was only 33% complete.
-
-### What We Built
-`oracle_parser.py` — a custom Python parser using regex and Python's built-in XML parser (`xml.etree.ElementTree`).
-
-### How It Works — PL/SQL Parser
-For each `.pks` (package spec) file:
-- Extracts the package name (`CREATE OR REPLACE PACKAGE HRMS.PKG_xxx AS`)
-- Lists all `PROCEDURE` and `FUNCTION` signatures
-- Reads `-- Dependencies:` and `-- Called by:` comment headers
-- Reads `-- Known issues:` block
-- Extracts custom exception definitions and `PRAGMA EXCEPTION_INIT` codes
-- Extracts `TYPE` definitions (record types, cursor types, table types)
-
-For each `.pkb` (package body) file:
-- Extracts procedure/function implementations
-- Finds all `FROM / JOIN / INTO / UPDATE` table references → which tables each package touches
-- Finds all `PKG_xxx.procedure` cross-package calls
-- Finds all `RAISE` statements
-
-### How It Works — Oracle Forms XML Parser
-For each `.xml` Oracle Forms export:
-- Parses `<FormModule>` attributes (name, title, first block, menu module)
-- Finds all `<AttachedLibrary>` — which shared libraries the form uses
-- Finds all `<Block>` — data blocks with their `DMLDataTargetName` (which table they read/write)
-- Finds all `<Item>` within each block — form fields
-- Finds all `<Trigger>` — both form-level and block-level event handlers
-- Finds all `<LOV>` — list of values (dropdowns)
-- Finds all `<Canvas>` and `<Window>` definitions
-- Extracts all `PKG_xxx.procedure` calls from trigger body text
-
-### What It Produced
-
-**PL/SQL Packages (11 packages, 235 nodes):**
-
-| Package | Procedures | Functions | Tables Accessed | Dependencies |
-|---|---|---|---|---|
-| PKG_AUDIT | 2 | 1 | 1 | None (base) |
-| PKG_COMMON | 3 | 14 | 6 | None (base) |
-| PKG_EMPLOYEE | 7 | 10 | 19 | PKG_COMMON, PKG_AUDIT, PKG_NOTIFICATION, PKG_PAYROLL |
-| PKG_INTEGRATION | 4 | 1 | 5 | PKG_COMMON, PKG_PAYROLL, PKG_EMPLOYEE |
-| PKG_LEAVE | 10 | 3 | 14 | PKG_EMPLOYEE, PKG_COMMON, PKG_AUDIT, PKG_NOTIFICATION |
-| PKG_NOTIFICATION | 4 | 0 | 3 | PKG_COMMON |
-| PKG_PAYROLL | 9 | 7 | 17 | PKG_EMPLOYEE, PKG_COMMON, PKG_AUDIT, PKG_NOTIFICATION |
-| PKG_PERFORMANCE | 8 | 4 | 6 | PKG_EMPLOYEE, PKG_COMMON, PKG_AUDIT, PKG_NOTIFICATION |
-| PKG_REPORTING | 8 | 0 | 7 | PKG_EMPLOYEE, PKG_PAYROLL, PKG_COMMON |
-| PKG_SECURITY | 2 | 6 | 4 | PKG_COMMON, PKG_AUDIT |
-| PKG_VALIDATION | 0 | 8 | 4 | PKG_COMMON |
-
-**Oracle Forms (6 forms, 45 nodes):**
-
-| Form | Blocks | Items | Triggers | Package Calls |
-|---|---|---|---|---|
-| HRMS_EMPLOYEE | 2 | 38 | 3 | PKG_SECURITY, PKG_EMPLOYEE + 2 more |
-| HRMS_LEAVE | 3 | 24 | 1 | PKG_SECURITY, PKG_LEAVE + 1 more |
-| HRMS_LOGIN | 1 | 5 | 1 | PKG_SECURITY |
-| HRMS_MENU | 1 | 8 | 1 | PKG_SECURITY, PKG_COMMON |
-| HRMS_PAYROLL | 2 | 17 | 1 | PKG_SECURITY, PKG_PAYROLL + 3 more |
-| HRMS_PERFORMANCE | 3 | 22 | 1 | PKG_PERFORMANCE |
-
-**Combined graph after Step 2:**
-- 74 (graphify) + 235 (PL/SQL) + 45 (Forms) = **338 total nodes**
-- 71 (graphify) + 307 (PL/SQL) + 73 (Forms) = **451 total edges**
-
-**Output files:**
-- `graphify-out/oracle_plsql_graph.json`
-- `graphify-out/oracle_forms_graph.json`
-- `graphify-out/oracle_combined_graph.json`
-- `graphify-out/ORACLE_PARSER_REPORT.md`
-
----
-
-## Step 3 — Deep Parser (Full Business Logic Extraction)
-
-### Why We Needed This
-Step 2 told us **what exists** (package names, procedure names, form blocks).
-Step 3 extracts **what the code actually does** — the business rules written inside
-procedure bodies, the constraints embedded in comments, the validation logic,
-the known bugs, the error codes, and the full trigger bodies.
-
-### What We Built
-`oracle_deep_parser.py` — a deep extraction engine using regex + sqlparse + XML parsing
-that reads every line of every file and extracts structured intelligence.
-
-### How It Works
-
-**PL/SQL Deep Parser — Package Spec (`.pks`)**
-- Extracts full procedure signatures with all parameter names and directions (IN/OUT)
-- Extracts full function signatures with return types
-- Extracts exception definitions with their `-20xxx` error codes via `PRAGMA EXCEPTION_INIT`
-- Extracts `TYPE` definitions with their kind (RECORD, REF CURSOR, TABLE)
-- Reads `-- Dependencies:`, `-- Called by:`, `-- Known issues:` comment blocks
-
-**PL/SQL Deep Parser — Package Body (`.pkb`)**
-- Reads every `-- BUSINESS:` comment → business rules
-- Reads every `-- RULE:` comment → validation rules
-- Reads every `-- CONSTRAINT:` comment → system constraints
-- Reads every `-- BUG:` comment → known defects
-- Extracts all `CONSTANT` declarations with their values and meanings
-- Extracts all `RAISE_APPLICATION_ERROR(-20xxx, 'message')` calls → error catalogue
-- Extracts per-procedure: SQL operations (SELECT FROM, INSERT INTO, UPDATE, DELETE FROM)
-- Extracts per-procedure: IF conditions (validation logic)
-- Extracts per-procedure: cross-package calls
-- Extracts sequences used (`SEQ_xxx.NEXTVAL`)
-
-**DDL Deep Parser — Schema Tables**
-- Extracts every `CREATE TABLE` block
-- For each table: all column names and data types
-- PRIMARY KEY constraint columns
-- FOREIGN KEY constraints with referenced table and columns
-- CHECK constraints (embedded business rules at database level)
-
-**DDL Deep Parser — Views**
-- Extracts every `CREATE OR REPLACE VIEW` block
-- Which tables each view reads from and joins
-- Query snippet (first 300 chars) for context
-
-**DDL Deep Parser — Database Triggers**
-- Extracts trigger name, timing (BEFORE/AFTER/INSTEAD OF), events (INSERT/UPDATE/DELETE)
-- Which table the trigger fires on
-- All `-- BUSINESS:` and `-- RULE:` comments inside the trigger body
-- All package calls made from the trigger
-
-**Oracle Forms Deep Parser**
-- Full trigger body text extracted (not just the trigger name)
-- Per-block: `DEFAULT_WHERE` clause and `ORDER BY` clause
-- Per-item: data type, max length, required flag, mapped column name
-- Record groups with their full SQL query text (these power the LOV dropdowns)
-- All `-- BUSINESS:` and `-- RULE:` comments inside trigger bodies
-- All `RAISE_APPLICATION_ERROR` calls inside form triggers
-
-**Business Rules Consolidator**
-- Collects every rule from every source (packages, forms, triggers, DDL)
-- Assigns a unique ID: `BR-0001` through `BR-0581`
-- Tags each rule with source file, source type, and category
-
-### What It Produced
-
-| Category | Count |
-|---|---|
-| Business rules | 101 |
-| Validation rules | 376 |
-| Constraints | 33 |
-| Known bugs | 5 |
-| Error codes | 37 |
-| Check constraints | 29 |
-| **Total rules extracted** | **581** |
-
-**Tables extracted:**
-30 tables with full column definitions, PKs, FKs, and check constraints including:
-`HRMS.EMPLOYEES`, `HRMS.DEPARTMENTS`, `HRMS.PAYROLL_RUNS`, `HRMS.SALARY_RECORDS`,
-`HRMS.LEAVE_REQUESTS`, `HRMS.PERFORMANCE_REVIEWS`, `HRMS.AUDIT_LOG` and 23 more.
-
-**Views extracted:**
-`HRMS.VW_ACTIVE_EMPLOYEES`, `HRMS.VW_ORG_HIERARCHY`, `HRMS.VW_EMPLOYEE_COMPENSATION`,
-`HRMS.VW_LEAVE_SUMMARY`, `HRMS.VW_PAYROLL_LATEST`, `HRMS.VW_PENDING_APPROVALS`
-
-**DB Triggers extracted:**
-`TRG_EMP_BEFORE_INSERT`, `TRG_EMP_BEFORE_UPDATE`, `TRG_EMP_INSTEAD_OF_DELETE`,
-`TRG_SALARY_AUDIT`, `TRG_DEPARTMENT_AUDIT`
-
-**Example business rules extracted:**
-- `PKG_EMPLOYEE` — "Only departments flagged as active (ACTIVE_FLAG = 'Y') are valid for employee assignment"
-- `PKG_PAYROLL` — "Social Security wage base 2024 is $168,600; earnings above this are exempt from SS tax"
-- `PKG_PAYROLL` — "Employee Medicare tax rate is 1.45% on all wages with no cap"
-- `PKG_PAYROLL` — "Additional 0.9% Medicare surtax applies to annual earnings above $200,000"
-- `PKG_COMMON` — "Fiscal year begins October 1; dates in October or later belong to the following calendar year"
-- `PKG_COMMON` — "Only system parameters with EDITABLE_FLAG = 'Y' may be modified"
-
-**Example known bugs extracted:**
-- `PKG_EMPLOYEE.generate_emp_number` — "Race condition under concurrent inserts — no SELECT FOR UPDATE"
-- `PKG_EMPLOYEE.get_org_chart` — "Recursive SQL times out for deep hierarchies"
-
-**Output files:**
-- `graphify-out/deep/plsql_deep.json` — full PL/SQL extraction
-- `graphify-out/deep/forms_deep.json` — full Oracle Forms extraction
-- `graphify-out/deep/schema_deep.json` — full DDL extraction
-- `graphify-out/deep/business_rules.json` — all 581 rules with IDs
-- `graphify-out/deep/DEEP_REPORT.md` — full human-readable report
-
----
-
-## Final Coverage Summary
-
-| File Type | Files | Step | Status |
-|---|---|---|---|
-| DDL Tables (`.sql`) | 4 | Graphify + Deep Parser | 100% |
-| Views (`.sql`) | 1 | Graphify + Deep Parser | 100% |
-| Sequences (`.sql`) | 1 | Graphify | 100% |
-| DB Triggers (`.sql`) | 2 | Deep Parser | 100% |
-| PL/SQL Package Specs (`.pks`) | 11 | Oracle Parser + Deep Parser | 100% |
-| PL/SQL Package Bodies (`.pkb`) | 11 | Oracle Parser + Deep Parser | 100% |
-| Oracle Forms XML (`.xml`) | 6 | Oracle Parser + Deep Parser | 100% |
-| Forms Libraries (`.sql`) | 2 | Graphify | 100% |
-| Forms Menus (`.sql`) | 1 | Graphify | 100% |
-| Seed Data (`.sql`) | 2 | Graphify | 100% |
-| README (`.md`) | 1 | Graphify | 100% |
-| **Total** | **42 files** | | **100%** |
-
----
-
-## What This Enables
-
-All output files in `graphify-out/` and `graphify-out/deep/` now contain the complete
-structured intelligence of the Oracle HRMS system. This will be used to generate the
-8 agent input files that feed into the main pipeline:
-
-| Agent File | Source Data |
-|---|---|
-| `BA_Structural_Scout.md` | Business rules + package structure + form structure |
-| `BA_Deep_Analyst.md` | Deep business rules (BR-0001 to BR-0581) + validation rules |
-| `DA_Data_Extractor.md` | schema_deep.json — 30 tables, columns, PKs, FKs |
-| `DA_Data_Reviewer.md` | Views, check constraints, FK relationships |
-| `TA_Stack_Scout.md` | Package dependencies, sequences, trigger architecture |
-| `TA_Deep_Analyst.md` | Error codes, known bugs, constants, technical constraints |
-| `AA_App_Extractor.md` | forms_deep.json — 6 forms, blocks, items, LOVs |
-| `AA_Quality_Review.md` | Known bugs, validation rules, error handling patterns |
-
-Once these 8 files are generated, `python fresh_run_template.py` will produce all 25
-enterprise forward-engineering documents from the Oracle HRMS source.
-
----
-
-## Tools and Libraries Used
-
-| Tool | Version | Purpose |
+| Audit | Checks | Result |
 |---|---|---|
-| `graphifyy` | 0.9.41 | Knowledge graph from SQL source files |
-| `tree-sitter-sql` | 0.3.11 | SQL AST parser used by graphify |
-| `tree-sitter` | 0.25.2 | Underlying AST parser engine |
-| `sqlparse` | 0.5.5 | SQL parsing support |
-| `antlr4-python3-runtime` | 4.13.2 | Grammar parser runtime |
-| `xml.etree.ElementTree` | stdlib | Oracle Forms XML parsing |
-| `re` (regex) | stdlib | PL/SQL pattern extraction |
-| Python | 3.12 | Runtime |
+| `audit.py` — structural | 1,195 | 100% |
+| `audit_full.py` — content | 2,050 | 100% |
+| **Combined** | **3,245** | **100%** |
+
+**`audit.py` checks:** package/procedure/function names, parameter names+directions+types,
+table+column names, FK names+referenced tables, CHECK expressions word-for-word,
+UNIQUE constraint names, sequences, triggers, RAISE error codes, form blocks/alerts/tab pages/
+format masks, menu items, PLL procedures, seed row count.
+
+**`audit_full.py` checks:** BUSINESS/RULE/VALIDATION/BUG comment text verbatim,
+constant values, view FROM+JOIN tables including UNION ALL, seed row column values,
+form item properties (data_type, max_length, required, format_mask, column mapping),
+poplist values, block relation attributes, LOV column mappings, record group query tables,
+sequence START WITH + INCREMENT BY values, form trigger PKG calls.
 
 ---
 
-## Files in This Folder
+## Rule Breakdown (775 total)
 
-```
-graphify + oracle parser/
-  oracle_parser.py              — Step 2: Oracle PL/SQL + Forms parser
-  oracle_deep_parser.py         — Step 3: Deep business logic extractor
-  WHAT_WE_DID.md                — This document
-  graphify-out/
-    graph.json                  — Graphify knowledge graph
-    graph.html                  — Interactive visual graph (open in browser)
-    graph.manifest.json         — Files scanned by graphify
-    GRAPH_REPORT.md             — Graphify summary report
-    oracle_plsql_graph.json     — PL/SQL package graph nodes + edges
-    oracle_forms_graph.json     — Oracle Forms graph nodes + edges
-    oracle_combined_graph.json  — Everything merged into one graph
-    ORACLE_PARSER_REPORT.md     — Oracle parser summary report
-    deep/
-      plsql_deep.json           — Full deep PL/SQL extraction
-      forms_deep.json           — Full deep Oracle Forms extraction
-      schema_deep.json          — Full DDL tables, views, triggers
-      business_rules.json       — All 581 rules with IDs (BR-0001 to BR-0581)
-      DEEP_REPORT.md            — Full human-readable deep report
-```
+| Category | Count | Description |
+|---|---|---|
+| validation_rule | 491 | Inferred from code patterns + RULE comments |
+| business_rule | 106 | BUSINESS comments verbatim |
+| validation_note | 54 | VALIDATION comments verbatim |
+| error_rule | 38 | RAISE_APPLICATION_ERROR codes + messages |
+| constraint | 33 | CONSTRAINT comments |
+| check_constraint | 28 | Database-level CHECK expressions |
+| known_bug | 15 | BUG comments |
+| unique_constraint | 10 | UNIQUE constraint definitions |
+| **Total** | **775** | |
 
 ---
 
-*Generated: 2026-08-13 | Oracle HRMS Reverse Engineering Pipeline*
+## Tools Used
+
+| Tool | Purpose |
+|---|---|
+| `xml.etree.ElementTree` (stdlib) | Oracle Forms XML parsing |
+| `re` regex (stdlib) | PL/SQL / DDL pattern extraction |
+| Python 3.12 | Runtime — zero external dependencies |
+
+---
+
+*Last updated: 2026-08-17 | Oracle HRMS Reverse Engineering Pipeline*
