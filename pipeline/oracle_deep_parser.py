@@ -66,9 +66,10 @@ def extract_inline_comments(content: str, tag: str) -> list:
     return [m.group(1).strip() for m in pattern.finditer(content)]
 
 def extract_all_tagged_comments(content: str) -> list:
-    """Extract every tagged comment: BUSINESS, RULE, CONSTRAINT, BUG, VALIDATION, NOTE, WARNING, VULNERABILITY, WEAKNESS."""
+    """Extract every tagged comment: BUSINESS, RULE, CONSTRAINT, BUG, VALIDATION, NOTE, WARNING, VULNERABILITY, WEAKNESS, LEGACY, TODO, ISSUE."""
     results = []
-    for tag in ("BUSINESS", "RULE", "CONSTRAINT", "BUG", "VALIDATION", "NOTE", "WARNING", "VULNERABILITY", "WEAKNESS"):
+    for tag in ("BUSINESS", "RULE", "CONSTRAINT", "BUG", "VALIDATION", "NOTE", "WARNING",
+                "VULNERABILITY", "WEAKNESS", "LEGACY", "TODO", "ISSUE"):
         for m in re.finditer(r"--\s*" + tag + r":?\s*(.+)", content, re.IGNORECASE):
             results.append({"tag": tag, "text": m.group(1).strip()})
     return results
@@ -242,8 +243,8 @@ def infer_behavioral_rules(proc_name: str, body: str) -> list:
     return rules
 
 def _parse_params(params_raw: str) -> list:
-    """Parse parameter list — returns list of {name, direction, type} dicts.
-    Strips inline comments before parsing. Handles IN/OUT/IN OUT directions."""
+    """Parse parameter list — returns list of {name, direction, type, default?} dicts.
+    Strips inline comments before parsing. Handles IN/OUT/IN OUT directions and DEFAULT values."""
     cleaned = re.sub(r"--[^\n]*", "", params_raw)
     params = []
     for p in cleaned.split(","):
@@ -256,16 +257,31 @@ def _parse_params(params_raw: str) -> list:
             p, re.IGNORECASE
         )
         if m:
-            params.append({
+            entry = {
                 "name": m.group(1),
                 "direction": re.sub(r"\s+", " ", m.group(2).upper()),
                 "type": m.group(3).upper(),
-            })
+            }
+            # Extract DEFAULT value: NULL, SYSDATE, USER, quoted string, or number
+            dflt = re.search(
+                r"\bDEFAULT\s+(NULL|SYSDATE|USER|'[^']*'|[\w.]+)",
+                p, re.IGNORECASE
+            )
+            if dflt:
+                entry["default"] = dflt.group(1)
+            params.append(entry)
         else:
-            # No direction keyword — just capture name
+            # No direction keyword — just capture name + possible default
             tok = p.split()[0].strip()
             if tok and re.match(r"^\w+$", tok):
-                params.append({"name": tok, "direction": "IN", "type": ""})
+                entry = {"name": tok, "direction": "IN", "type": ""}
+                dflt = re.search(
+                    r"\bDEFAULT\s+(NULL|SYSDATE|USER|'[^']*'|[\w.]+)",
+                    p, re.IGNORECASE
+                )
+                if dflt:
+                    entry["default"] = dflt.group(1)
+                params.append(entry)
     return params
 
 
@@ -299,6 +315,9 @@ def deep_parse_pkb(filepath: Path) -> dict:
 
     pkg_vulnerabilities = extract_inline_comments(content, "VULNERABILITY")
     pkg_weaknesses = extract_inline_comments(content, "WEAKNESS")
+    pkg_todos = extract_inline_comments(content, "TODO")
+    pkg_legacy = extract_inline_comments(content, "LEGACY")
+    pkg_issues = extract_inline_comments(content, "ISSUE")
 
     # Per-procedure extraction
     procedures = _extract_proc_bodies(content)
@@ -316,6 +335,9 @@ def deep_parse_pkb(filepath: Path) -> dict:
         "bugs": pkg_bugs,
         "vulnerabilities": pkg_vulnerabilities,
         "weaknesses": pkg_weaknesses,
+        "todos": pkg_todos,
+        "legacy_notes": pkg_legacy,
+        "issues": pkg_issues,
         "raise_errors": extract_raise_application_errors(content),
         "sql": extract_sql_tables(content),
         "procedures": procedures,
@@ -336,14 +358,16 @@ def _extract_proc_bodies(content: str) -> list:
         re.IGNORECASE
     )
     positions = list(header_re.finditer(content))
+    # Collect all occurrences, keeping the LAST (full implementation) for each name
+    # Forward declarations appear first with empty bodies; implementations come last
+    seen = {}
     for i, m in enumerate(positions):
         name = m.group(1)
         start = m.start()
         end = positions[i+1].start() if i+1 < len(positions) else len(content)
         body = content[start:end]
-
         rules = extract_inline_comments(body, "RULE") + infer_behavioral_rules(name, body)
-        results.append({
+        entry = {
             "name": name,
             "business_rules": extract_inline_comments(body, "BUSINESS"),
             "rules": rules,
@@ -353,8 +377,18 @@ def _extract_proc_bodies(content: str) -> list:
             "sql": extract_sql_tables(body),
             "package_calls": list(set(re.findall(r"(PKG_\w+)\.\w+", body, re.IGNORECASE))),
             "if_conditions": re.findall(r"IF\s+(.+?)\s+THEN", body, re.IGNORECASE)[:8],
-        })
-    return results
+        }
+        # Always overwrite — later occurrence is the full implementation
+        seen[name.upper()] = entry
+    # Return in declaration order (preserve original position order)
+    order = []
+    seen_order = set()
+    for m in positions:
+        key = m.group(1).upper()
+        if key not in seen_order:
+            seen_order.add(key)
+            order.append(seen[key])
+    return order
 
 
 def deep_parse_pks(filepath: Path) -> dict:
@@ -403,9 +437,23 @@ def deep_parse_pks(filepath: Path) -> dict:
         if next_tok.startswith("("):
             params_raw = _extract_param_block(content, m.end())
             params = _parse_params(params_raw)
+            # Find closing paren position so we search for RETURN after all params
+            paren_start = after.find("(")
+            depth = 0
+            close_pos = paren_start
+            for ci, ch in enumerate(after[paren_start:]):
+                if ch == "(": depth += 1
+                elif ch == ")":
+                    depth -= 1
+                    if depth == 0:
+                        close_pos = paren_start + ci
+                        break
+            # Search for RETURN in the 200 chars following the closing paren
+            post_params = after[close_pos:close_pos + 200]
         else:
             params = []
-        ret_m = re.search(r"\bRETURN\s+(\w+)", after[:400], re.IGNORECASE)
+            post_params = after[:200]
+        ret_m = re.search(r"\bRETURN\s+(\w+)", post_params, re.IGNORECASE)
         returns = ret_m.group(1) if ret_m else ""
         functions.append({"name": name, "params": params, "returns": returns})
 
@@ -664,16 +712,17 @@ def parse_sequences(filepath: Path) -> list:
         if m:
             name = ("HRMS." + m.group(2)).upper()
             cache = m.group(5).strip() if m.group(5) else "NOCACHE"
-            # Grab comments from up to 4 preceding lines
+            # Grab comments from up to 6 preceding lines (handles multi-line BUG comments)
             notes = []
-            for j in range(max(0, i-4), i):
+            for j in range(max(0, i-6), i):
                 s = lines[j].strip().lstrip("-").strip()
                 if s and not s.startswith("=") and not s.startswith("CREATE"):
                     notes.append(s)
-            # Also capture NOTE: and WARNING: tagged comments from preceding lines
-            preceding_block = "\n".join(lines[max(0, i-4):i])
+            # Capture NOTE:, WARNING:, and BUG: tagged comments from preceding lines
+            preceding_block = "\n".join(lines[max(0, i-6):i])
             tagged_notes = extract_inline_comments(preceding_block, "NOTE")
             tagged_warnings = extract_inline_comments(preceding_block, "WARNING")
+            tagged_bugs = extract_inline_comments(preceding_block, "BUG")
             sequences.append({
                 "name": name,
                 "start_with": int(m.group(3)),
@@ -682,6 +731,7 @@ def parse_sequences(filepath: Path) -> list:
                 "notes": notes,
                 "tagged_notes": tagged_notes,
                 "tagged_warnings": tagged_warnings,
+                "tagged_bugs": tagged_bugs,
             })
     return sequences
 
@@ -733,7 +783,13 @@ def parse_seed_file(filepath: Path) -> dict:
         if current.strip():
             values.append(current.strip().strip("'"))
 
-        row = {columns[i]: (values[i] if i < len(values) else "") for i in range(len(columns))}
+        def _clean_val(v):
+            v = v.strip()
+            if v.upper() == "NULL":
+                return None
+            return v.strip("'")
+
+        row = {columns[i]: (_clean_val(values[i]) if i < len(values) else None) for i in range(len(columns))}
         if table_name not in tables:
             tables[table_name] = {"rows": [], "columns": columns}
         tables[table_name]["rows"].append(row)
@@ -1086,8 +1142,8 @@ def _parse_ddl_columns(body: str) -> tuple:
         )
         col_type = type_m.group(1).strip() if type_m else col_m.group(2).strip()
 
-        # DEFAULT value
-        default_m = re.search(r"\bDEFAULT\s+(SYSDATE|'[^']*'|[YN]|[0-9]+(?:\.[0-9]+)?)\b",
+        # DEFAULT value — matches SYSDATE, quoted strings, numbers, Y/N, other keywords
+        default_m = re.search(r"\bDEFAULT\s+(SYSDATE|USER|SYSTIMESTAMP|'[^']*'|[0-9]+(?:\.[0-9]+)?|\w+)",
                                stripped, re.IGNORECASE)
         default_val = default_m.group(1) if default_m else None
 
@@ -1218,12 +1274,17 @@ def deep_parse_schema() -> dict:
                 if len(p) > 5:
                     audit_patterns.append(p)
 
+            # FOR EACH ROW — appears on the line immediately after the ON <table> clause
+            trig_header_text = content[m.end():body_start + 100]
+            for_each_row = bool(re.search(r"\bFOR\s+EACH\s+ROW\b", trig_header_text, re.IGNORECASE))
+
             triggers[trig_name] = {
                 "name": trig_name,
                 "file": trig_file.name,
                 "timing": m.group(2).upper(),
                 "events": m.group(3).strip().upper(),
                 "table": ("HRMS." + m.group(5)).upper(),
+                "for_each_row": for_each_row,
                 "business_rules": extract_inline_comments(combined, "BUSINESS"),
                 "rules": extract_inline_comments(combined, "RULE"),
                 "constraints": extract_inline_comments(combined, "CONSTRAINT"),
@@ -1281,6 +1342,12 @@ def consolidate_business_rules(packages, forms, schema, pll_libs, seed_data) -> 
             add(pkg_name, "plsql_package", "vulnerability", r)
         for r in body.get("weaknesses", []):
             add(pkg_name, "plsql_package", "weakness", r)
+        for r in body.get("todos", []):
+            add(pkg_name, "plsql_package", "deferred_todo", r)
+        for r in body.get("legacy_notes", []):
+            add(pkg_name, "plsql_package", "legacy_note", r)
+        for r in body.get("issues", []):
+            add(pkg_name, "plsql_package", "known_issue", r)
         for proc in body.get("procedures", []):
             for r in proc.get("business_rules", []):
                 add(f"{pkg_name}.{proc['name']}", "plsql_procedure", "business_rule", r)
@@ -1357,6 +1424,8 @@ def consolidate_business_rules(packages, forms, schema, pll_libs, seed_data) -> 
             if "BUG" in note.upper():
                 clean = re.sub(r"^BUG:\s*", "", note, flags=re.IGNORECASE).strip()
                 add(seq["name"], "sequence", "known_bug", clean)
+        for r in seq.get("tagged_bugs", []):
+            add(seq["name"], "sequence", "known_bug", r)
         for r in seq.get("tagged_notes", []):
             add(seq["name"], "sequence", "note", r)
         for r in seq.get("tagged_warnings", []):
