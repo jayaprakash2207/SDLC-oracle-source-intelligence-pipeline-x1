@@ -61,12 +61,38 @@ def extract_inline_comments(content: str, tag: str) -> list:
     return [m.group(1).strip() for m in pattern.finditer(content)]
 
 def extract_all_tagged_comments(content: str) -> list:
-    """Extract every tagged comment: BUSINESS, RULE, CONSTRAINT, BUG, VALIDATION, NOTE."""
+    """Extract every tagged comment: BUSINESS, RULE, CONSTRAINT, BUG, VALIDATION, NOTE, WARNING."""
     results = []
-    for tag in ("BUSINESS", "RULE", "CONSTRAINT", "BUG", "VALIDATION", "NOTE"):
+    for tag in ("BUSINESS", "RULE", "CONSTRAINT", "BUG", "VALIDATION", "NOTE", "WARNING"):
         for m in re.finditer(r"--\s*" + tag + r":?\s*(.+)", content, re.IGNORECASE):
             results.append({"tag": tag, "text": m.group(1).strip()})
     return results
+
+
+def _extract_check_constraints(body: str) -> list:
+    """Extract CHECK constraint expressions using balanced-paren matching.
+    Handles multi-line IN(...) lists that break single-line regex."""
+    checks = []
+    for m in re.finditer(r"CONSTRAINT\s+\w+\s+CHECK\s*\(", body, re.IGNORECASE):
+        depth, buf, i = 0, [], m.end() - 1
+        while i < len(body):
+            ch = body[i]
+            if ch == "(":
+                depth += 1
+                if depth > 1:
+                    buf.append(ch)
+            elif ch == ")":
+                depth -= 1
+                if depth == 0:
+                    break
+                buf.append(ch)
+            else:
+                buf.append(ch)
+            i += 1
+        expr = re.sub(r"\s+", " ", "".join(buf)).strip()
+        if expr:
+            checks.append(expr)
+    return checks
 
 def extract_raise_application_errors(content: str) -> list:
     results = []
@@ -276,6 +302,8 @@ def deep_parse_pkb(filepath: Path) -> dict:
         "rules": extract_inline_comments(content, "RULE") + pkg_rules,
         "validation_notes": extract_inline_comments(content, "VALIDATION"),
         "constraints": extract_inline_comments(content, "CONSTRAINT"),
+        "notes": extract_inline_comments(content, "NOTE"),
+        "warnings": extract_inline_comments(content, "WARNING"),
         "bugs": pkg_bugs,
         "raise_errors": extract_raise_application_errors(content),
         "sql": extract_sql_tables(content),
@@ -521,6 +549,8 @@ def parse_pll_library(filepath: Path) -> dict:
         "all_constraints": extract_inline_comments(content, "CONSTRAINT"),
         "all_validation_notes": extract_inline_comments(content, "VALIDATION"),
         "all_bugs": extract_inline_comments(content, "BUG"),
+        "all_notes": extract_inline_comments(content, "NOTE"),
+        "all_warnings": extract_inline_comments(content, "WARNING"),
         "pkg_calls": list(set(re.findall(r"(PKG_\w+\.\w+)", content, re.IGNORECASE))),
     }
 
@@ -629,12 +659,18 @@ def parse_sequences(filepath: Path) -> list:
                 s = lines[j].strip().lstrip("-").strip()
                 if s and not s.startswith("=") and not s.startswith("CREATE"):
                     notes.append(s)
+            # Also capture NOTE: and WARNING: tagged comments from preceding lines
+            preceding_block = "\n".join(lines[max(0, i-4):i])
+            tagged_notes = extract_inline_comments(preceding_block, "NOTE")
+            tagged_warnings = extract_inline_comments(preceding_block, "WARNING")
             sequences.append({
                 "name": name,
                 "start_with": int(m.group(3)),
                 "increment_by": int(m.group(4)),
                 "cache": cache,
                 "notes": notes,
+                "tagged_notes": tagged_notes,
+                "tagged_warnings": tagged_warnings,
             })
     return sequences
 
@@ -954,9 +990,12 @@ def _parse_ddl_columns(body: str) -> tuple:
     Parse column definitions from a CREATE TABLE body.
     Returns (columns_list, pk_list, fk_list, uk_list, check_list).
     Line-by-line to avoid cross-line type merging.
+    Uses balanced-paren extractor for CHECK constraints to handle multi-line IN() lists.
     """
     columns = []
-    pks, fks, uks, checks = [], [], [], []
+    pks, fks, uks = [], [], []
+    # Use balanced-paren extractor for all CHECK constraints (handles multi-line)
+    checks = _extract_check_constraints(body)
     seen_names = set()
 
     # First pass: collect virtual column expressions
@@ -1002,10 +1041,7 @@ def _parse_ddl_columns(body: str) -> tuple:
                     "references": ("HRMS." + fk_m.group(4)).upper(),
                     "ref_columns": fk_m.group(5).strip(),
                 })
-            # CHECK
-            chk_m = re.search(r"CHECK\s*\((.+)\)", stripped, re.IGNORECASE)
-            if chk_m:
-                checks.append(chk_m.group(1).strip())
+            # CHECK constraints collected upfront via balanced-paren extractor
             continue
 
         # Skip lines that are clearly not column definitions
@@ -1107,12 +1143,28 @@ def deep_parse_schema() -> dict:
             tbl_noise = {"DUAL","WHERE","ON","AND","OR","SELECT","WITH","AS"}
             tables_used = sorted({t[1].upper() for t in raw_from if t[1].upper() not in tbl_noise})
             joins_used  = sorted({t[1].upper() for t in raw_join if t[1].upper() not in tbl_noise})
+            # Extract WARNING/NOTE from lines immediately preceding CREATE OR REPLACE VIEW
+            # in the FULL file — split puts those lines in the previous block, so scan
+            # up to 10 lines before the CREATE position in the original content.
+            short_name = m.group(2)
+            create_pos = re.search(
+                r"CREATE\s+OR\s+REPLACE\s+VIEW\s+(?:HRMS\.)?" + re.escape(short_name) + r"\s+AS",
+                content, re.IGNORECASE
+            )
+            view_warnings, view_notes = [], []
+            if create_pos:
+                pre_lines = content[:create_pos.start()].splitlines()[-10:]
+                pre_text = "\n".join(pre_lines)
+                view_warnings = extract_inline_comments(pre_text, "WARNING")
+                view_notes = extract_inline_comments(pre_text, "NOTE")
             views[view_name] = {
                 "name": view_name,
                 "tables_used": tables_used,
                 "joins": joins_used,
                 "query_snippet": body[:800],
                 "full_query": body,
+                "warnings": view_warnings,
+                "notes": view_notes,
             }
 
     seq_file = SCHEMA_DIR / "sequences" / "hrms_sequences.sql"
@@ -1166,6 +1218,8 @@ def deep_parse_schema() -> dict:
                 "constraints": extract_inline_comments(combined, "CONSTRAINT"),
                 "validation_notes": extract_inline_comments(combined, "VALIDATION"),
                 "bugs": extract_inline_comments(combined, "BUG"),
+                "notes": extract_inline_comments(combined, "NOTE"),
+                "warnings": extract_inline_comments(combined, "WARNING"),
                 "raise_errors": extract_raise_application_errors(body),
                 "pkg_calls": list(set(re.findall(r"(PKG_\w+\.\w+)", body, re.IGNORECASE))),
                 "pragma_autonomous": bool(re.search(r"PRAGMA\s+AUTONOMOUS_TRANSACTION", body, re.IGNORECASE)),
@@ -1206,6 +1260,10 @@ def consolidate_business_rules(packages, forms, schema, pll_libs, seed_data) -> 
             add(pkg_name, "plsql_package", "validation_note", r)
         for r in body.get("constraints", []):
             add(pkg_name, "plsql_package", "constraint", r)
+        for r in body.get("notes", []):
+            add(pkg_name, "plsql_package", "note", r)
+        for r in body.get("warnings", []):
+            add(pkg_name, "plsql_package", "warning", r)
         for r in body.get("bugs", []):
             add(pkg_name, "plsql_package", "known_bug", r)
         for proc in body.get("procedures", []):
@@ -1243,6 +1301,10 @@ def consolidate_business_rules(packages, forms, schema, pll_libs, seed_data) -> 
             add(lib["name"], "pll_library", "validation_note", r)
         for r in lib.get("all_bugs", []):
             add(lib["name"], "pll_library", "known_bug", r)
+        for r in lib.get("all_notes", []):
+            add(lib["name"], "pll_library", "note", r)
+        for r in lib.get("all_warnings", []):
+            add(lib["name"], "pll_library", "warning", r)
         for proc in lib.get("procedures", []) + lib.get("functions", []):
             for r in proc.get("rules", []):
                 add(f"{lib['name']}.{proc['name']}", "pll_procedure", "validation_rule", r)
@@ -1260,6 +1322,10 @@ def consolidate_business_rules(packages, forms, schema, pll_libs, seed_data) -> 
             add(trig_name, "db_trigger", "validation_note", r)
         for r in trig.get("bugs", []):
             add(trig_name, "db_trigger", "known_bug", r)
+        for r in trig.get("notes", []):
+            add(trig_name, "db_trigger", "note", r)
+        for r in trig.get("warnings", []):
+            add(trig_name, "db_trigger", "warning", r)
         for e in trig.get("raise_errors", []):
             add(trig_name, "db_trigger", "error_rule", f"Error {e['code']}: {e['message']}")
 
@@ -1273,9 +1339,18 @@ def consolidate_business_rules(packages, forms, schema, pll_libs, seed_data) -> 
     for seq in schema.get("sequences", []):
         for note in seq.get("notes", []):
             if "BUG" in note.upper():
-                # Strip "BUG:" prefix if present so the text matches source
                 clean = re.sub(r"^BUG:\s*", "", note, flags=re.IGNORECASE).strip()
                 add(seq["name"], "sequence", "known_bug", clean)
+        for r in seq.get("tagged_notes", []):
+            add(seq["name"], "sequence", "note", r)
+        for r in seq.get("tagged_warnings", []):
+            add(seq["name"], "sequence", "warning", r)
+
+    for view_name, view in schema.get("views", {}).items():
+        for r in view.get("warnings", []):
+            add(view_name, "db_view", "warning", r)
+        for r in view.get("notes", []):
+            add(view_name, "db_view", "note", r)
 
     return rules
 

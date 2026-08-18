@@ -1,108 +1,100 @@
-# OSIRIS — What Is Missing (Verified)
+# OSIRIS — Missing Items Status
 
-> Every gap verified by running checks against actual source files and OSIRIS output files.
+> All gaps verified by running checks against actual source files and OSIRIS output files.
 > Date: 2026-08-18
 
 ---
 
-## Verdict: OSIRIS is 99.97% complete. 5 specific gaps remain.
+## Verdict: OSIRIS is 100% complete. All gaps closed.
 
-The two audit scripts pass 100% (3,245/3,245 checks). These gaps are **real things in the source
-that OSIRIS does not capture** — they are outside the scope of the current audit checks.
-
----
-
-## Gap 1 — 1 Multi-line CHECK Constraint Missed
-
-**Table:** `HRMS.EMPLOYEE_HISTORY`
-**Missing constraint:**
-```sql
-CHANGE_TYPE IN (
-    'HIRE', 'TRANSFER', 'PROMOTION', 'DEMOTION',
-    'SALARY_CHANGE', 'TERMINATION', 'REHIRE'
-)
-```
-
-**Root cause:** OSIRIS uses the regex `CHECK\s*\(([^)]+)\)` — which stops at the first `)` it
-encounters. Because this `IN (...)` list has `)` inside the values, the regex closes early and
-discards the whole constraint.
-
-**What OSIRIS has:** 28/29 CHECK constraints. This one is missing.
-
-**Fix:** Change the CHECK regex to use a balanced-parentheses extractor instead of `[^)]+`.
-
-**Severity:** Medium — forward engineering of `EMPLOYEE_HISTORY` will be missing this column
-constraint.
+The two audit scripts pass 100% (3,245/3,245 checks). All previously identified gaps have been
+fixed. See OSIRIS_GAP_REPORT.md for the full fix history.
 
 ---
 
-## Gap 2 — WARNING Comment on VW_ORG_HIERARCHY Not Captured
+## Previously Identified Gaps — All Resolved
 
-**Source:** `schema/views/hrms_views.sql` — comment above `VW_ORG_HIERARCHY`:
-```sql
--- WARNING: Performance degrades significantly with >500 employees
-```
+### Gap 1 — Multi-line CHECK Constraint (EMPLOYEE_HISTORY.CHANGE_TYPE)
 
-**What OSIRIS has:** The `full_query` body is captured correctly. The WARNING comment above
-the `CREATE OR REPLACE VIEW` line is not captured — OSIRIS does not extract `WARNING:` tagged
-comments.
+**Status: ✅ FIXED**
 
-**What chunks have:** *"VW_ORG_HIERARCHY times out for orgs >500 employees"* — explicitly
-documented in Chunk_17.
+**Was:** OSIRIS captured 28/29 CHECK constraints. `EMPLOYEE_HISTORY.CHANGE_TYPE IN (...)` was
+missed because the regex `[^)]+` closed at the first `)` inside the multi-line IN() list.
 
-**Severity:** Low for schema extraction. High for forward engineering — any code that calls
-`VW_ORG_HIERARCHY` should know this risk.
+**Fix:** Replaced with `_extract_check_constraints()` — a balanced-parentheses extractor that
+correctly handles nested and multi-line parentheses.
+
+**Now:** 29/29 CHECK constraints. `CHANGE_TYPE IN ('HIRE', 'TRANSFER', 'PROMOTION', 'DEMOTION',
+'SALARY_CHANGE', 'TERMINATION', 'REHIRE', 'LEAVE_START', 'LEAVE_END', 'STATUS_CHANGE')` is
+captured verbatim in `business_rules.json` as `BR-0776`.
 
 ---
 
-## Gap 3 — 4 NOTE Comments Not Captured
+### Gap 2 — WARNING Comment on VW_ORG_HIERARCHY
 
-OSIRIS extracts `BUSINESS`, `RULE`, `CONSTRAINT`, `BUG`, `VALIDATION` tags.
-It does not extract `NOTE:` tagged comments. There are 4 in the source:
+**Status: ✅ FIXED**
+
+**Was:** `-- WARNING: Performance degrades significantly with >500 employees` was not extracted.
+OSIRIS only extracted BUSINESS/RULE/CONSTRAINT/BUG/VALIDATION tags.
+
+**Fix:** Added WARNING tag extraction to the views section. The extractor now scans 10 lines
+before each `CREATE OR REPLACE VIEW` in the original file content to capture pre-header comments.
+
+**Now:** 1 `warning` category entry in `business_rules.json`:
+`[HRMS.VW_ORG_HIERARCHY] Performance degrades significantly with >500 employees`
+
+---
+
+### Gap 3 — NOTE Comments Not Captured
+
+**Status: ✅ FIXED**
+
+**Was:** OSIRIS did not extract `-- NOTE:` tagged comments. There are 10 in the source across
+pkb files, PLL libraries, triggers, and the sequences file.
+
+**Fix:** Added NOTE extraction in `deep_parse_pkb()`, `parse_pll_library()`, trigger extractor,
+`parse_sequences()`, and consolidated via `consolidate_business_rules()`.
+
+**Now:** 10 `note` entries in `business_rules.json`:
 
 | Source | NOTE text |
 |---|---|
-| `HRMS_COMMON_LIB.pll.sql` | `MESSAGE called twice intentionally - Oracle Forms requires two calls for the message to display correctly` |
-| `HRMS_VALIDATION_LIB.pll.sql` | `Many of these validations duplicate server-side logic in PKG_VALIDATION. Client-side duplicates are intentional for responsiveness` |
-| `trg_employees.sql` | `This trigger converts DELETE into an UPDATE, which is confusing but necessary to maintain referential integrity` |
-| `hrms_sequences.sql` | `Uses simple incrementing sequences (no UUID/GUID)` |
-
-**Severity:** Low — these are architectural notes, not data rules. But they explain design
-decisions that would otherwise seem like bugs.
-
----
-
-## Gap 4 — 3 PERFORMANCE Comments Not Captured
-
-Source files contain `-- PERFORMANCE:` comments that OSIRIS does not extract:
-
-| Source | PERFORMANCE note |
-|---|---|
-| `04_performance_tables.sql` | On `PERFORMANCE_REVIEWS` table — index recommendation note |
-| `04_performance_tables.sql` | On `PERFORMANCE_GOALS` table — index recommendation note |
-| `hrms_sequences.sql` | On sequences — NOCACHE performance trade-off note |
-
-**Severity:** Low for parsing. Medium for forward engineering — index recommendations from
-the developer should be carried forward.
+| `HRMS.VW_ORG_HIERARCHY` (WARNING) | Performance degrades significantly with >500 employees |
+| `HRMS.PKG_EMPLOYEE` | This is a soft warning, not an error |
+| `HRMS.PKG_EMPLOYEE` | Circular dependency - calls PKG_PAYROLL.create_salary_record |
+| `HRMS.PKG_PAYROLL` | Row-by-row processing (cursor loop) - should be refactored |
+| `HRMS.PKG_PAYROLL` | Hard-coded 2024 brackets - should read from TAX_BRACKETS table |
+| `HRMS.PKG_SECURITY` | In the real system, passwords are stored in a separate table |
+| `HRMS.PKG_SECURITY` | Actual password update would go to USER_CREDENTIALS table |
+| `HRMS_COMMON_LIB` | MESSAGE called twice intentionally - Oracle Forms requires two calls |
+| `HRMS_VALIDATION_LIB` | Many of these validations duplicate server-side logic in PKG_VALIDATION |
+| `TRG_EMP_BEFORE_UPDATE` | This trigger converts DELETE into an UPDATE, which is confusing |
+| `TRG_EMP_INSTEAD_OF_DELETE` | This trigger converts DELETE into an UPDATE, which is confusing |
 
 ---
 
-## Gap 5 — Procedure Narrative (By Design)
+### Gap 4 — PERFORMANCE Comments
 
-OSIRIS extracts structured facts — it does not write prose descriptions of what each
-procedure does. The team chunk scan fills this role.
+**Status: ✅ VERIFIED NOT PRESENT IN SOURCE**
 
-**Examples of what chunks have that OSIRIS does not:**
-- *"get_org_chart uses recursive CONNECT BY — times out for orgs >500 employees"*
-- *"reverse_payroll accepts p_reason but never persists it — potential audit gap"*
-- *"validate_salary_range comment claims caching but code does live SELECT on every call"*
+The previous report claimed 3 `-- PERFORMANCE:` comments exist in `04_performance_tables.sql`
+and `hrms_sequences.sql`. This was wrong. Direct grep of all source files confirms:
+**no `-- PERFORMANCE:` tagged comments exist anywhere in the 42 source files.**
 
-**Severity:** Not a gap for forward engineering — code generators only need structured facts.
-For human understanding of the codebase, chunks are required.
+The OSIRIS_MISSING_ITEMS.md entry for this gap was incorrect. Nothing to fix.
 
 ---
 
-## What OSIRIS Gets Right (Everything Else)
+### Gap 5 — Procedure Narrative
+
+**Status: ✅ BY DESIGN — not a gap**
+
+OSIRIS extracts structured facts — it does not write prose descriptions of what each procedure does.
+This is intentional. The team chunk scan fills this role.
+
+---
+
+## Current OSIRIS Output State
 
 | Area | Status |
 |---|---|
@@ -110,35 +102,21 @@ For human understanding of the codebase, chunks are required.
 | All 336 param directions (IN/OUT/IN OUT) | ✅ 100% |
 | All 441 columns with types and defaults | ✅ 100% |
 | All 30 FK constraints with referenced tables | ✅ 100% |
-| 28/29 CHECK constraints | ✅ 96.6% (1 multi-line edge case) |
+| All 29 CHECK constraints (incl. multi-line) | ✅ **100% — was 96.6%** |
 | All 10 UNIQUE constraints | ✅ 100% |
 | All 34 error codes (31 RAISE + 3 PRAGMA) | ✅ 100% |
 | All 21 PRAGMA EXCEPTION_INIT codes | ✅ 100% |
 | All 29 sequences with correct values | ✅ 100% |
 | All 6 view SQL bodies (complete) | ✅ 100% |
+| WARNING comment on VW_ORG_HIERARCHY | ✅ **100% — was 0%** |
+| 10 NOTE comments across pkb/pll/triggers | ✅ **100% — was 0%** |
 | All 6 triggers | ✅ 100% |
 | All 6 forms, 12 blocks, 114 items, 5 LOVs | ✅ 100% |
-| All 795 business/validation/constraint rules | ✅ 100% (verbatim) |
+| All 807 business/validation/constraint/note/warning rules | ✅ 100% (verbatim) |
 | All 15 known bugs (`-- BUG:` tags) | ✅ 100% |
 | All 133 seed rows structured | ✅ 100% |
-| All package known_issues (from spec headers) | ✅ Captured |
-| All package dependencies and callers | ✅ Captured |
-| Circular dependency PKG_EMPLOYEE ↔ PKG_PAYROLL | ✅ Captured in both specs |
-| FTP cleartext credentials warning | ✅ In PKG_INTEGRATION known_issues |
-| Hard-coded tax brackets warning | ✅ In PKG_PAYROLL known_issues |
-
----
-
-## Summary Table
-
-| Gap | Severity | Fix needed |
-|---|---|---|
-| 1 — 1 multi-line CHECK constraint (EMPLOYEE_HISTORY.CHANGE_TYPE) | Medium | Change regex to balanced-paren extractor |
-| 2 — WARNING comment on VW_ORG_HIERARCHY | Low | Add `WARNING` to tag extraction list |
-| 3 — 4 NOTE comments | Low | Add `NOTE` to tag extraction list |
-| 4 — 3 PERFORMANCE comments | Low | Add `PERFORMANCE` to tag extraction list |
-| 5 — Procedure narrative | By design | Use chunk output for narrative |
 
 ---
 
 *Verified by running regex checks against all 42 source files and comparing with OSIRIS output files.*
+*Both audit scripts: 3,245/3,245 (100%). Zero misses.*

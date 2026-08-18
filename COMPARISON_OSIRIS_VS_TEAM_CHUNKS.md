@@ -191,7 +191,6 @@ Readable for humans; not consumable by a code generator.
 ### What the Chunks Do Better
 | Dimension | Evidence |
 |---|---|
-| Error code completeness | 34/34 vs OSIRIS 31/34 — chunks captured PRAGMA codes |
 | Procedure narrative | 5–15 line walkthrough per procedure with edge cases, data flow |
 | Source line references | Every claim tagged with `[SOURCE: Lxx-Lxx]` |
 | Deep code logic | Even exact Oracle expressions (`SUBSTR(v_digits,1,3)` invalid if `'000'`) |
@@ -200,20 +199,22 @@ Readable for humans; not consumable by a code generator.
 ### What OSIRIS Does Better
 | Dimension | Evidence |
 |---|---|
-| Verbatim rule text | 795 rules stored character-for-character from source comment |
+| Verbatim rule text | 807 rules stored character-for-character from source comment |
 | All param directions structured | 336 params, every one has `direction` field — including `IN` |
 | Machine-readable format | JSON — directly consumable by code generators |
 | Error codes — more complete | 34/34 codes + all 21 PRAGMA codes across all packages |
 | View full SQL bodies | All 6 `full_query` fields complete and terminated correctly |
+| NOTE + WARNING comments | All 10 NOTE and 1 WARNING extracted (pkb/pll/triggers/views/sequences) |
+| CHECK constraints | All 29 verbatim including multi-line IN() lists |
 | Verified against source | 3,245 audit checks (1,195 structural + 2,050 content), zero misses |
-| Table schema | 441 columns, 30 FKs, 28 CHECKs, 10 UNIQUEs — structured |
+| Table schema | 441 columns, 30 FKs, 29 CHECKs, 10 UNIQUEs — structured |
 
 ### What Both Get Right
 - All 30 table names
 - All 29 sequence names and values
 - All 6 form names, 14 blocks, 114 items
 - All view FROM/JOIN tables (different format, same information)
-- All 31 RAISE_APPLICATION_ERROR codes
+- All 34 error codes (31 RAISE + 3 PRAGMA)
 
 ### What Chunks Genuinely Miss (not just format difference)
 1. **`IN` directions in body-file chunks** — `OUT` is preserved, `IN` is dropped from body chunks' signature headers. Spec chunks have both. OSIRIS has both.

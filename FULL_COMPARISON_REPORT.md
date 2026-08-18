@@ -66,7 +66,7 @@ body chunks drop `IN` keywords. Spec chunk (Chunk_13) is the reliable reference 
 | Table names | ✅ 30/30 | ✅ 30/30 |
 | Columns | ✅ 441/441 structured JSON | Present in prose — not structured |
 | FK names + referenced tables | ✅ 30/30 structured | Present in prose — not structured |
-| CHECK expressions | ✅ 28/29 verbatim | Present in prose — not structured |
+| CHECK expressions | ✅ 29/29 verbatim | Present in prose — not structured |
 | UNIQUE constraints | ✅ 10/10 structured | Present in prose — not structured |
 
 OSIRIS provides machine-readable schema. Chunks provide readable descriptions.
@@ -103,7 +103,7 @@ OSIRIS provides machine-readable schema. Chunks provide readable descriptions.
 - For human reading: both work
 - For machine comparison (e.g. diff against another system's rules): OSIRIS verbatim is reliable
 
-**OSIRIS count: 775 rules with BR-IDs (verbatim text)**
+**OSIRIS count: 807 rules with BR-IDs (verbatim text) — includes note and warning categories**
 **Chunks: all facts present — expressed as readable prose**
 
 ---
@@ -225,13 +225,15 @@ Chunks: Mentioned in narrative — not structured.
 | Table names | 30 | ✅ 30 | ✅ 30 |
 | Columns (structured) | 441 | ✅ 441 JSON | Prose — not structured |
 | FK + referenced tables (structured) | 30 | ✅ 30 JSON | Prose — not structured |
-| CHECK expressions | 29 | ✅ 28 verbatim | Prose — not structured |
+| CHECK expressions | 29 | ✅ **29 verbatim** | Prose — not structured |
 | RAISE_APPLICATION_ERROR codes | 31 | ✅ 31 | ✅ 31 |
 | PRAGMA EXCEPTION_INIT codes | 21 (all pkgs) | ✅ 21 all packages | ✅ 3 (PKG_SECURITY only) |
 | Sequence values | 29 | ✅ All correct | ✅ All correct |
 | View FROM/JOIN tables + full SQL | 26 refs | ✅ Structured arrays + complete `full_query` bodies | ✅ Prose sentences |
+| View WARNING comments | 1 | ✅ **Captured** | ✅ Captured in prose |
 | Form blocks/items/LOVs | 114 items | ✅ Structured + properties | ✅ Named |
-| Business rule verbatim text | 323 | ✅ 795 with BR-IDs | Paraphrased — facts present |
+| Business rule verbatim text | 323 | ✅ **807 with BR-IDs** | Paraphrased — facts present |
+| NOTE comments | 10 | ✅ **All 10 captured** | ✅ Captured in prose |
 | Seed rows structured | 133 | ✅ JSON | Prose |
 | Procedure narrative | — | ❌ None | ✅ Rich per-procedure |
 | Source line references | — | ❌ None | ✅ [SOURCE: Lxx] |

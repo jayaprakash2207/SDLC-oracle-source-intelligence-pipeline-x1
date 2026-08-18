@@ -70,7 +70,7 @@
 | HRMS.PERFORMANCE_REVIEWS | 21 | 3 | 2 |
 | HRMS.PAYROLL_RUNS | 19 | 1 | 2 |
 | HRMS.LEAVE_REQUESTS | 20 | 3 | 3 |
-| HRMS.EMPLOYEE_HISTORY | 18 | 1 | 0 |
+| HRMS.EMPLOYEE_HISTORY | 18 | 1 | **1** |
 | HRMS.LEAVE_TYPES | 18 | 0 | 1 |
 | HRMS.EMPLOYEE_BANK_ACCOUNTS | 17 | 1 | 2 |
 | HRMS.PAY_ELEMENTS | 17 | 0 | 2 |
@@ -96,7 +96,7 @@
 | HRMS.LOOKUP_VALUES | 9 | 0 | 0 |
 | HRMS.USER_SESSIONS | 9 | 1 | 0 |
 | HRMS.HOLIDAYS | 8 | 0 | 0 |
-| **TOTAL** | **441** | **30** | **28** |
+| **TOTAL** | **441** | **30** | **29** |
 
 **10 UNIQUE constraints also captured across relevant tables.**
 
@@ -203,7 +203,7 @@ OSIRIS captures all 34 plus 17 additional PRAGMA codes from other packages.
 
 ---
 
-### 2.9 — Business Rules (795 total)
+### 2.9 — Business Rules (807 total)
 
 | Category | Count | Description |
 |---|---|---|
@@ -212,10 +212,12 @@ OSIRIS captures all 34 plus 17 additional PRAGMA codes from other packages.
 | error_rule | 55 | RAISE_APPLICATION_ERROR + PRAGMA codes |
 | validation_note | 54 | `-- VALIDATION:` notes |
 | constraint | 36 | `-- CONSTRAINT:` comment text |
-| check_constraint | 28 | DDL CHECK expressions |
+| check_constraint | 29 | DDL CHECK expressions (incl. multi-line) |
 | known_bug | 15 | `-- BUG:` comment text |
+| note | 10 | `-- NOTE:` comments across pkb/pll/triggers/sequences |
 | unique_constraint | 10 | DDL UNIQUE constraint definitions |
-| **TOTAL** | **795** | |
+| warning | 1 | `-- WARNING:` comment on VW_ORG_HIERARCHY |
+| **TOTAL** | **807** | |
 
 ---
 
@@ -357,7 +359,7 @@ OSIRIS ran 3,245 checks.
 | View FROM/JOIN tables | 26 refs | ✅ Structured `joins[]` arrays | ✅ Prose sentences |
 | View full SQL bodies | 6 | ✅ Complete `full_query` | Described — not complete SQL |
 | Form blocks/items/LOVs | 114 items | ✅ Structured + all properties | ✅ Named |
-| Verbatim rule text | 795 | ✅ 795 with BR-IDs | Paraphrased |
+| Verbatim rule text | 807 | ✅ **807 with BR-IDs** | Paraphrased |
 | Constraint text | 36 | ✅ 36 verbatim | Prose |
 | Seed rows (structured) | 133 | ✅ JSON | Prose |
 | Procedure narrative | — | ❌ None | ✅ Rich per-procedure |
@@ -408,7 +410,7 @@ All files in `output/` — generated 2026-08-17, verified 100%.
 | `plsql_deep.json` | 232 KB | 11 packages, 117 procs, 336 params, 17 exceptions, 19 constants |
 | `schema_deep.json` | 91 KB | 30 tables, 6 views, 6 triggers, 29 sequences |
 | `forms_deep.json` | 64 KB | 6 forms, 12 blocks, 114 items, 5 LOVs, record groups, relations |
-| `business_rules.json` | 205 KB | 795 rules with BR-IDs, source, category |
+| `business_rules.json` | 205 KB | 807 rules with BR-IDs, source, category |
 | `pll_deep.json` | 17 KB | 2 libraries, 22 procedures/functions |
 | `menu_deep.json` | 7 KB | Full menu tree, all items and actions |
 | `seed_deep.json` | 68 KB | 133 rows structured as `{column: value}` per row |

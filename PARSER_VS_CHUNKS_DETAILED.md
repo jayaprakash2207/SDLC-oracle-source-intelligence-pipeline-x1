@@ -100,7 +100,7 @@ This is one of the most important gaps in the chunks.
 | DEFAULT values | ✅ Captured | Present in prose |
 | PRIMARY KEY | ✅ Structured | Named in prose |
 | FOREIGN KEYS | ✅ 30/30 with referenced table + column | Named in prose |
-| CHECK constraints | ✅ 28 verbatim expressions | Named in prose |
+| CHECK constraints | ✅ **29 verbatim expressions** | Named in prose |
 | UNIQUE constraints | ✅ 10 structured | Named in prose |
 | Machine-readable | ✅ Yes — JSON arrays | ❌ No — prose |
 
@@ -122,8 +122,10 @@ From Chunk_16:
 | `-- CONSTRAINT:` text | ✅ 36 verbatim | ✅ Present in prose |
 | `-- BUG:` text | ✅ 15 verbatim | ✅ Present — often more detail added |
 | `-- VALIDATION:` text | ✅ 54 verbatim | ✅ Present — paraphrased |
+| `-- NOTE:` text | ✅ **10 verbatim** | ✅ Present in prose |
+| `-- WARNING:` text | ✅ **1 verbatim** | ✅ Present in prose |
 | Tag labels surfaced | ✅ Yes — stored in `category` field | ❌ No — prose only, no tag labels |
-| Machine-readable | ✅ Yes — BR-0001 to BR-0795 with IDs | ❌ No |
+| Machine-readable | ✅ Yes — BR-0001 to BR-0807 with IDs | ❌ No |
 
 **Key difference:** OSIRIS stores the exact developer comment text. Chunks paraphrase the same fact. For human reading both work. For machine comparison or compliance doc generation, OSIRIS verbatim text is required.
 
@@ -165,7 +167,7 @@ Both correct. OSIRIS is structured; chunks are prose.
 | Filter conditions | ✅ Captured in `full_query` | ✅ Described in prose |
 | Computed columns | Captured in `full_query` | ✅ Explicitly named and explained |
 | UNION ALL structure | ✅ In `full_query` | ✅ Both branches explained |
-| Performance warnings | ❌ Not captured | ✅ *"VW_ORG_HIERARCHY times out for orgs >500 employees"* |
+| Performance warnings | ✅ **Captured** — `[HRMS.VW_ORG_HIERARCHY] warning` in business_rules.json | ✅ *"VW_ORG_HIERARCHY times out for orgs >500 employees"* |
 
 **Chunk_17 goes deeper on views:** It explains the UNION ALL structure of `VW_PENDING_APPROVALS`, names computed columns like `TENURE_YEARS`, `COMPA_RATIO`, `AVAILABLE`, and documents the performance risk of `VW_ORG_HIERARCHY`.
 
@@ -349,11 +351,11 @@ Flagged in Chunk_13: PKG_EMPLOYEE calls PKG_PAYROLL (for salary records on termi
 |---|---|---|---|
 | Procedure/function names | ✅ 117 | ✅ 115 | Tie |
 | Param directions | ✅ 336 structured | ⚠️ Spec chunks full; body chunks drop IN | OSIRIS |
-| Table schema (structured) | ✅ 441 cols, 30 FKs, 28 CHECKs | Prose only | OSIRIS |
+| Table schema (structured) | ✅ 441 cols, 30 FKs, 29 CHECKs | Prose only | OSIRIS |
 | Error codes | ✅ 34/34 + 17 extra PRAGMA | ✅ 34/34 | OSIRIS (more complete) |
 | Sequences | ✅ 29 structured | ✅ 29 prose | Tie |
 | View SQL bodies | ✅ Complete SQL | Described | OSIRIS |
-| Business rules (verbatim) | ✅ 795 verbatim with IDs | Paraphrased | OSIRIS |
+| Business rules (verbatim) | ✅ **807** verbatim with IDs | Paraphrased | OSIRIS |
 | Procedure narrative | ❌ None | ✅ Rich per-procedure | Chunks |
 | Source line references | ❌ None | ✅ Every claim | Chunks |
 | Architecture risks | ❌ None | ✅ Present | Chunks |

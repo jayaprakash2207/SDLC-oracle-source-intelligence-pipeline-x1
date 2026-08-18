@@ -285,14 +285,14 @@ The actual compiled `.mmb` binary cannot be read as text.
 
 After all 8 engines run, the consolidator:
 1. Collects every rule from every source
-2. Assigns a unique ID: `BR-0001` through `BR-0775`
+2. Assigns a unique ID: `BR-0001` through `BR-0807`
 3. Tags each with: `source` (e.g. `HRMS.PKG_EMPLOYEE`),
    `source_type` (e.g. `plsql_procedure`), `category` (e.g. `business_rule`)
 4. Writes `business_rules.json` — the single file that feeds all document agents
 
 **Categories captured:**
 `business_rule`, `validation_rule`, `validation_note`, `error_rule`,
-`constraint`, `check_constraint`, `unique_constraint`, `known_bug`
+`constraint`, `check_constraint`, `unique_constraint`, `known_bug`, `note`, `warning`
 
 ---
 
@@ -463,6 +463,35 @@ Rules count: 721 → **775**.
 
 ---
 
+### Problem 17: Multi-line CHECK constraint missed (EMPLOYEE_HISTORY.CHANGE_TYPE)
+**What happened:** `_parse_ddl_columns()` used `CHECK\s*\(([^)]+)\)` to extract
+CHECK expressions. The `[^)]+` pattern stops at the first `)` it encounters. The
+`CHANGE_TYPE IN ('HIRE', 'TRANSFER', ...)` list spans multiple lines and contains
+nested `)` characters inside the IN list, so the regex closed early and discarded
+the entire constraint. Result: 28/29 CHECK constraints captured.  
+**Fix:** Replaced the per-line regex with `_extract_check_constraints()` — a
+balanced-parentheses extractor that counts `(` and `)` depth to find the true
+closing parenthesis of each CHECK expression, regardless of newlines or nested parens.  
+Rules count: 795 → **797** (+1 check_constraint).
+
+---
+
+### Problem 18: `-- NOTE:` and `-- WARNING:` comments not extracted
+**What happened:** OSIRIS extracted BUSINESS/RULE/CONSTRAINT/BUG/VALIDATION tags
+but never called `extract_inline_comments()` with `"NOTE"` or `"WARNING"`. There
+are 10 `-- NOTE:` comments and 1 `-- WARNING:` comment in the source — across
+pkb files, PLL libraries, triggers, sequences, and the views file.  
+**Fix:** Added NOTE + WARNING extraction in:
+- `deep_parse_pkb()` — package body level (notes, warnings fields)
+- `parse_pll_library()` — all_notes, all_warnings fields
+- Trigger extractor — notes, warnings per trigger
+- `parse_sequences()` — tagged_notes, tagged_warnings from preceding lines
+- `deep_parse_schema()` views — scans 10 lines before each CREATE OR REPLACE VIEW
+- `consolidate_business_rules()` — all new fields wired as `note` and `warning` categories  
+Rules count: 797 → **807** (+10 notes, +1 warning).
+
+---
+
 ## Final Output — `parser-output/`
 
 | File | Contents |
@@ -473,7 +502,7 @@ Rules count: 721 → **775**.
 | `menu_deep.json` | HRMS_MENU — 7 menus, 31 items, OPEN_FORM calls |
 | `schema_deep.json` | 30 tables, 6 views (full SQL incl UNION ALL), 6 triggers, 29 sequences |
 | `seed_deep.json` | 133 seed rows with all column values |
-| `business_rules.json` | 775 rules BR-0001 to BR-0775 |
+| `business_rules.json` | 807 rules BR-0001 to BR-0807 |
 | `DEEP_REPORT.md` | Human-readable full summary |
 
 ---
@@ -499,19 +528,21 @@ sequence START WITH + INCREMENT BY values, form trigger PKG calls.
 
 ---
 
-## Rule Breakdown (775 total)
+## Rule Breakdown (807 total)
 
 | Category | Count | Description |
 |---|---|---|
 | validation_rule | 491 | Inferred from code patterns + RULE comments |
 | business_rule | 106 | BUSINESS comments verbatim |
+| error_rule | 55 | RAISE_APPLICATION_ERROR codes + PRAGMA codes + messages |
 | validation_note | 54 | VALIDATION comments verbatim |
-| error_rule | 38 | RAISE_APPLICATION_ERROR codes + messages |
-| constraint | 33 | CONSTRAINT comments |
-| check_constraint | 28 | Database-level CHECK expressions |
+| constraint | 36 | CONSTRAINT comments |
+| check_constraint | 29 | Database-level CHECK expressions (incl. multi-line) |
 | known_bug | 15 | BUG comments |
+| note | 10 | NOTE comments across pkb/pll/triggers/sequences |
 | unique_constraint | 10 | UNIQUE constraint definitions |
-| **Total** | **775** | |
+| warning | 1 | WARNING comment on VW_ORG_HIERARCHY |
+| **Total** | **807** | |
 
 ---
 

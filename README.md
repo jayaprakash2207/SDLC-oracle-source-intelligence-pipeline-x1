@@ -1,11 +1,11 @@
 <div align="center">
 
-<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=32&duration=2800&pause=2000&color=F7931A&center=true&vCenter=true&width=940&lines=OSIRIS+%E2%80%94+Oracle+Source+Intelligence+System;100%25+Verified+%C2%B7+775+Rules+%C2%B7+3%2C245+Checks;Zero+External+Dependencies+%C2%B7+Pure+Python" alt="Typing SVG" />
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=32&duration=2800&pause=2000&color=F7931A&center=true&vCenter=true&width=940&lines=OSIRIS+%E2%80%94+Oracle+Source+Intelligence+System;100%25+Verified+%C2%B7+807+Rules+%C2%B7+3%2C245+Checks;Zero+External+Dependencies+%C2%B7+Pure+Python" alt="Typing SVG" />
 
 <br/>
 
 <img src="https://img.shields.io/badge/Coverage-100%25-brightgreen?style=for-the-badge&logo=checkmarx&logoColor=white"/>
-<img src="https://img.shields.io/badge/Rules%20Extracted-775-blue?style=for-the-badge&logo=databricks&logoColor=white"/>
+<img src="https://img.shields.io/badge/Rules%20Extracted-807-blue?style=for-the-badge&logo=databricks&logoColor=white"/>
 <img src="https://img.shields.io/badge/Audit%20Checks-3%2C245%20%2F%203%2C245-success?style=for-the-badge&logo=testcafe&logoColor=white"/>
 <img src="https://img.shields.io/badge/Source%20Files-42-orange?style=for-the-badge&logo=oracle&logoColor=white"/>
 <img src="https://img.shields.io/badge/Fake%20Data-Zero-red?style=for-the-badge&logo=shield&logoColor=white"/>
@@ -63,7 +63,7 @@ Built entirely from scratch. Zero external dependencies. Pure Python stdlib only
 | Database tables | **30** | ✅ |
 | Table columns | **441** | ✅ |
 | Foreign keys (with referenced tables) | **30** | ✅ |
-| CHECK constraints (verbatim) | **28** | ✅ |
+| CHECK constraints (verbatim) | **29** | ✅ |
 | UNIQUE constraints | **10** | ✅ |
 | Database sequences | **29** | ✅ |
 | Database triggers | **6** | ✅ |
@@ -73,7 +73,7 @@ Built entirely from scratch. Zero external dependencies. Pure Python stdlib only
 | LOVs with column mappings | **5** | ✅ |
 | PLL library procedures/functions | **22** | ✅ |
 | Seed data rows | **133** | ✅ |
-| **Business rules (BR-0001 → BR-0775)** | **775** | ✅ |
+| **Business rules (BR-0001 → BR-0807)** | **807** | ✅ |
 | **Total audit checks passed** | **3,245 / 3,245** | ✅ |
 
 </div>
@@ -98,7 +98,7 @@ oracle_deep_parser.py
 ├── Engine 7 ── Menu Module Parser       (.mmb)   → tree structure, actions, permissions
 ├── Engine 8 ── Seed Data Parser         (.sql)   → row values via state-machine value parser
 │
-└── Business Rules Consolidator          → BR-0001..BR-0775 with source + category tags
+└── Business Rules Consolidator          → BR-0001..BR-0807 with source + category tags
 ```
 
 **Key techniques used:**
@@ -129,7 +129,7 @@ output/
 │                              relations, alerts, tab pages, record groups
 │
 ├── schema_deep.json      ── 30 tables, 6 views, 29 sequences, 6 triggers
-│                              441 columns, 30 FKs, 28 CHECKs, 10 UNIQUEs
+│                              441 columns, 30 FKs, 29 CHECKs, 10 UNIQUEs
 │
 ├── pll_deep.json         ── 2 PLL libraries
 │                              17 procedures/functions, all rule tags
@@ -140,7 +140,7 @@ output/
 ├── seed_deep.json        ── 133 seed rows across 10 tables
 │                              structured {column: value} per row
 │
-├── business_rules.json   ── 775 rules, BR-0001 → BR-0775
+├── business_rules.json   ── 807 rules, BR-0001 → BR-0807
 │                              source, source_type, category per rule
 │
 └── DEEP_REPORT.md        ── human-readable summary of everything above
@@ -157,16 +157,18 @@ output/
 <div align="center">
 
 ```
-  validation_rule    ████████████████████████████████████████  491  (63%)
-  business_rule      ████████████████                          106  (14%)
+  validation_rule    ████████████████████████████████████████  491  (61%)
+  business_rule      ████████████████                          106  (13%)
+  error_rule         ███████                                    55   (7%)
   validation_note    ████████                                   54   (7%)
-  error_rule         █████                                      38   (5%)
-  constraint         ████                                       33   (4%)
-  check_constraint   ████                                       28   (4%)
+  constraint         ████                                       36   (4%)
+  check_constraint   ████                                       29   (4%)
   known_bug          ██                                         15   (2%)
+  note               █                                          10   (1%)
   unique_constraint  █                                          10   (1%)
+  warning            ▌                                           1   (<1%)
   ─────────────────────────────────────────────────────────────────
-  TOTAL                                                        775
+  TOTAL                                                        807
 ```
 
 </div>
@@ -298,12 +300,12 @@ SDLC-oracle-source-intelligence-pipeline-x1/
 │   ├── pll_deep.json           ◄── 2 PLL libraries
 │   ├── menu_deep.json          ◄── menu tree
 │   ├── seed_deep.json          ◄── 133 seed rows
-│   ├── business_rules.json     ◄── 775 rules with BR-IDs
+│   ├── business_rules.json     ◄── 807 rules with BR-IDs
 │   └── DEEP_REPORT.md          ◄── human-readable summary
 │
 ├── source/                     ◄── 42 Oracle HRMS source files (input)
 │
-├── WHAT_WE_DID.md              ◄── full journey — 16 problems + how parser works
+├── WHAT_WE_DID.md              ◄── full journey — 18 problems + how parser works
 ├── FULL_COMPARISON_REPORT.md   ◄── OSIRIS vs chunks vs source (13 dimensions)
 ├── OSIRIS_GAP_REPORT.md        ◄── OSIRIS gaps — what's missing and where
 ├── TEAM_CHUNKS_GAP_REPORT.md   ◄── team chunk gaps — verified against source

@@ -21,7 +21,7 @@
 | Package procedures/functions | ✅ 100% | All 117 (115 public + 2 private helpers) |
 | Table columns | ✅ 100% | All 441 columns with types, defaults |
 | Table constraints (PK/FK/UK) | ✅ 100% | All FKs with referenced tables |
-| CHECK constraints | ✅ 28/29 | 1 not structured (inline DDL edge case) |
+| CHECK constraints | ✅ **29/29** | **All captured — FIXED (multi-line balanced-paren extractor)** |
 | Sequences | ✅ 100% | All 29 with correct START WITH + INCREMENT BY |
 | Triggers | ✅ 100% | All 6 triggers |
 | RAISE_APPLICATION_ERROR codes | ✅ 100% | All 31 |
@@ -37,6 +37,8 @@
 | CONSTRAINT tagged comments | ✅ **100%** | **All captured — FIXED** |
 | VALIDATION tagged comments | ✅ 100% | All verbatim |
 | BUG tagged comments | ✅ **100%** | **All captured — FIXED** |
+| NOTE tagged comments | ✅ **100%** | **All 10 captured — FIXED** |
+| WARNING tagged comments | ✅ **100%** | **All 1 captured — FIXED** |
 
 ---
 
@@ -116,7 +118,7 @@ that no longer exists in the repo.
 
 | File | Entries |
 |---|---|
-| `business_rules.json` | 795 rules (was 775) |
+| `business_rules.json` | 807 rules (was 795) |
 | `plsql_deep.json` | 11 packages, 117 procedures/functions |
 | `schema_deep.json` | 30 tables, 6 views (complete), 6 triggers, 29 sequences |
 | `pll_deep.json` | 2 PLL libraries, 22 procedures/functions |
@@ -130,6 +132,44 @@ that no longer exists in the repo.
 | Item | Detail |
 |---|---|
 | No procedure narrative | OSIRIS extracts structured facts — it does not write prose descriptions of what each procedure does. That is the role of the team chunk scan. |
+
+---
+
+## Fix 6 — Multi-line CHECK constraint (EMPLOYEE_HISTORY.CHANGE_TYPE)
+
+**Root cause:** `_parse_ddl_columns()` used the regex `CHECK\s*\(([^)]+)\)` — `[^)]+` stops at the
+first `)` it finds. The `CHANGE_TYPE IN (...)` list spans multiple lines with `)` characters inside
+the values, so the regex closed early and discarded the whole constraint.
+
+**Fix:** Replaced the per-line regex with `_extract_check_constraints()` — a balanced-parentheses
+extractor that counts `(` and `)` depth to find the true end of each CHECK expression.
+
+**Result:** 29/29 CHECK constraints captured. `EMPLOYEE_HISTORY.CHANGE_TYPE IN ('HIRE', 'TRANSFER',
+'PROMOTION', 'DEMOTION', 'SALARY_CHANGE', 'TERMINATION', 'REHIRE', 'LEAVE_START', 'LEAVE_END',
+'STATUS_CHANGE')` is now present verbatim.
+
+---
+
+## Fix 7 — NOTE and WARNING comments not extracted
+
+**Root cause:** `extract_inline_comments()` was never called with `"NOTE"` or `"WARNING"` tags
+anywhere in the parser. These tags existed in pkb files, PLL libraries, triggers, sequences, and
+the views file — but were silently dropped.
+
+**Fix:** Added NOTE + WARNING extraction in:
+- `deep_parse_pkb()` — package body level
+- `parse_pll_library()` — library level  
+- Trigger extractor — trigger body level
+- `parse_sequences()` — sequence preceding-comment block
+- `deep_parse_schema()` views section — scans 10 lines before each `CREATE OR REPLACE VIEW`
+- `consolidate_business_rules()` — wires all new fields into `business_rules.json`
+
+**Result:** 10 `note` entries + 1 `warning` entry now in output:
+- `[VW_ORG_HIERARCHY]` Performance degrades significantly with >500 employees
+- `[TRG_EMP_BEFORE_UPDATE]` This trigger converts DELETE into an UPDATE, which is confusing but necessary
+- `[HRMS_COMMON_LIB]` MESSAGE called twice intentionally — Oracle Forms requires two calls
+- `[PKG_PAYROLL]` Hard-coded 2024 brackets — should read from TAX_BRACKETS table
+- And 6 more NOTE entries across PKG_EMPLOYEE, PKG_SECURITY, HRMS_VALIDATION_LIB, sequences
 
 ---
 
