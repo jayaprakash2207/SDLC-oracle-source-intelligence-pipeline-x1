@@ -14,7 +14,12 @@ import json
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-SOURCE_DIR   = Path(__file__).parent.parent / "source"
+SOURCE_DIR   = (Path(__file__).parent.parent
+                / "automated-reverse-engineering-pipeline-main"
+                / "automated-reverse-engineering-pipeline-main"
+                / "source"
+                / "ts-plsql-oracle-forms-hrms"
+                / "ts-plsql-oracle-forms-hrms-main")
 
 OUTPUT_DIR   = Path(__file__).parent / "parser-output"
 PKG_DIR      = SOURCE_DIR / "plsql" / "packages"
@@ -61,19 +66,20 @@ def extract_inline_comments(content: str, tag: str) -> list:
     return [m.group(1).strip() for m in pattern.finditer(content)]
 
 def extract_all_tagged_comments(content: str) -> list:
-    """Extract every tagged comment: BUSINESS, RULE, CONSTRAINT, BUG, VALIDATION, NOTE, WARNING."""
+    """Extract every tagged comment: BUSINESS, RULE, CONSTRAINT, BUG, VALIDATION, NOTE, WARNING, VULNERABILITY, WEAKNESS."""
     results = []
-    for tag in ("BUSINESS", "RULE", "CONSTRAINT", "BUG", "VALIDATION", "NOTE", "WARNING"):
+    for tag in ("BUSINESS", "RULE", "CONSTRAINT", "BUG", "VALIDATION", "NOTE", "WARNING", "VULNERABILITY", "WEAKNESS"):
         for m in re.finditer(r"--\s*" + tag + r":?\s*(.+)", content, re.IGNORECASE):
             results.append({"tag": tag, "text": m.group(1).strip()})
     return results
 
 
 def _extract_check_constraints(body: str) -> list:
-    """Extract CHECK constraint expressions using balanced-paren matching.
+    """Extract CHECK constraints as {name, expression} dicts using balanced-paren matching.
     Handles multi-line IN(...) lists that break single-line regex."""
     checks = []
-    for m in re.finditer(r"CONSTRAINT\s+\w+\s+CHECK\s*\(", body, re.IGNORECASE):
+    for m in re.finditer(r"CONSTRAINT\s+(\w+)\s+CHECK\s*\(", body, re.IGNORECASE):
+        constraint_name = m.group(1)
         depth, buf, i = 0, [], m.end() - 1
         while i < len(body):
             ch = body[i]
@@ -91,7 +97,7 @@ def _extract_check_constraints(body: str) -> list:
             i += 1
         expr = re.sub(r"\s+", " ", "".join(buf)).strip()
         if expr:
-            checks.append(expr)
+            checks.append({"name": constraint_name, "expression": expr})
     return checks
 
 def extract_raise_application_errors(content: str) -> list:
@@ -291,6 +297,9 @@ def deep_parse_pkb(filepath: Path) -> dict:
     if re.search(r"EXCEPTION\s+WHEN\s+OTHERS\s+THEN\s*\n\s*(?:ROLLBACK\s*;?\s*\n\s*)?(?:NULL|--)", content, re.IGNORECASE):
         pkg_bugs.append("Exception swallowing: WHEN OTHERS THEN ROLLBACK/NULL — errors silently suppressed")
 
+    pkg_vulnerabilities = extract_inline_comments(content, "VULNERABILITY")
+    pkg_weaknesses = extract_inline_comments(content, "WEAKNESS")
+
     # Per-procedure extraction
     procedures = _extract_proc_bodies(content)
 
@@ -305,6 +314,8 @@ def deep_parse_pkb(filepath: Path) -> dict:
         "notes": extract_inline_comments(content, "NOTE"),
         "warnings": extract_inline_comments(content, "WARNING"),
         "bugs": pkg_bugs,
+        "vulnerabilities": pkg_vulnerabilities,
+        "weaknesses": pkg_weaknesses,
         "raise_errors": extract_raise_application_errors(content),
         "sql": extract_sql_tables(content),
         "procedures": procedures,
@@ -1266,6 +1277,10 @@ def consolidate_business_rules(packages, forms, schema, pll_libs, seed_data) -> 
             add(pkg_name, "plsql_package", "warning", r)
         for r in body.get("bugs", []):
             add(pkg_name, "plsql_package", "known_bug", r)
+        for r in body.get("vulnerabilities", []):
+            add(pkg_name, "plsql_package", "vulnerability", r)
+        for r in body.get("weaknesses", []):
+            add(pkg_name, "plsql_package", "weakness", r)
         for proc in body.get("procedures", []):
             for r in proc.get("business_rules", []):
                 add(f"{pkg_name}.{proc['name']}", "plsql_procedure", "business_rule", r)
@@ -1331,7 +1346,8 @@ def consolidate_business_rules(packages, forms, schema, pll_libs, seed_data) -> 
 
     for tbl_name, tbl in schema.get("tables", {}).items():
         for chk in tbl.get("check_constraints", []):
-            add(tbl_name, "ddl_table", "check_constraint", chk)
+            name_part = f"[{chk['name']}] " if chk.get("name") else ""
+            add(tbl_name, "ddl_table", "check_constraint", f"{name_part}{chk['expression']}")
         for uk in tbl.get("unique_constraints", []):
             add(tbl_name, "ddl_table", "unique_constraint",
                 f"UNIQUE({', '.join(uk['columns'])}) — constraint: {uk['name']}")
@@ -1485,7 +1501,8 @@ def generate_deep_report(packages, forms, schema, rules, pll_libs, menus, seed_d
         for uk in tbl.get("unique_constraints", []):
             lines.append(f"- UNIQUE({', '.join(uk['columns'])}) [{uk['name']}]")
         for chk in tbl.get("check_constraints", []):
-            lines.append(f"- CHECK: `{chk}`")
+            chk_name = f"[{chk['name']}] " if chk.get("name") else ""
+            lines.append(f"- CHECK {chk_name}: `{chk['expression']}`")
         lines.append("")
 
     lines.append("---\n## Triggers\n")

@@ -1,11 +1,11 @@
 <div align="center">
 
-<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=32&duration=2800&pause=2000&color=F7931A&center=true&vCenter=true&width=940&lines=OSIRIS+%E2%80%94+Oracle+Source+Intelligence+System;100%25+Verified+%C2%B7+807+Rules+%C2%B7+3%2C245+Checks;Zero+External+Dependencies+%C2%B7+Pure+Python" alt="Typing SVG" />
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=32&duration=2800&pause=2000&color=F7931A&center=true&vCenter=true&width=940&lines=OSIRIS+%E2%80%94+Oracle+Source+Intelligence+System;100%25+Verified+%C2%B7+812+Rules+%C2%B7+3%2C245+Checks;Zero+External+Dependencies+%C2%B7+Pure+Python" alt="Typing SVG" />
 
 <br/>
 
 <img src="https://img.shields.io/badge/Coverage-100%25-brightgreen?style=for-the-badge&logo=checkmarx&logoColor=white"/>
-<img src="https://img.shields.io/badge/Rules%20Extracted-807-blue?style=for-the-badge&logo=databricks&logoColor=white"/>
+<img src="https://img.shields.io/badge/Rules%20Extracted-812-blue?style=for-the-badge&logo=databricks&logoColor=white"/>
 <img src="https://img.shields.io/badge/Audit%20Checks-3%2C245%20%2F%203%2C245-success?style=for-the-badge&logo=testcafe&logoColor=white"/>
 <img src="https://img.shields.io/badge/Source%20Files-42-orange?style=for-the-badge&logo=oracle&logoColor=white"/>
 <img src="https://img.shields.io/badge/Fake%20Data-Zero-red?style=for-the-badge&logo=shield&logoColor=white"/>
@@ -73,7 +73,7 @@ Built entirely from scratch. Zero external dependencies. Pure Python stdlib only
 | LOVs with column mappings | **5** | ✅ |
 | PLL library procedures/functions | **22** | ✅ |
 | Seed data rows | **133** | ✅ |
-| **Business rules (BR-0001 → BR-0807)** | **807** | ✅ |
+| **Business rules (BR-0001 → BR-0812)** | **812** | ✅ |
 | **Total audit checks passed** | **3,245 / 3,245** | ✅ |
 
 </div>
@@ -98,7 +98,7 @@ oracle_deep_parser.py
 ├── Engine 7 ── Menu Module Parser       (.mmb)   → tree structure, actions, permissions
 ├── Engine 8 ── Seed Data Parser         (.sql)   → row values via state-machine value parser
 │
-└── Business Rules Consolidator          → BR-0001..BR-0807 with source + category tags
+└── Business Rules Consolidator          → BR-0001..BR-0812 with source + category tags
 ```
 
 **Key techniques used:**
@@ -140,7 +140,7 @@ output/
 ├── seed_deep.json        ── 133 seed rows across 10 tables
 │                              structured {column: value} per row
 │
-├── business_rules.json   ── 807 rules, BR-0001 → BR-0807
+├── business_rules.json   ── 812 rules, BR-0001 → BR-0812
 │                              source, source_type, category per rule
 │
 └── DEEP_REPORT.md        ── human-readable summary of everything above
@@ -166,9 +166,11 @@ output/
   known_bug          ██                                         15   (2%)
   note               █                                          10   (1%)
   unique_constraint  █                                          10   (1%)
+  vulnerability      ▌                                           4   (<1%)
   warning            ▌                                           1   (<1%)
+  weakness           ▌                                           1   (<1%)
   ─────────────────────────────────────────────────────────────────
-  TOTAL                                                        807
+  TOTAL                                                        812
 ```
 
 </div>
@@ -251,7 +253,7 @@ TOTAL                                                        3,245 / 3,245  ✅ 
 
 <div align="center">
 
-## 18 Problems Solved — Journey to 100%
+## 20 Problems Solved — Journey to 100%
 
 </div>
 
@@ -275,6 +277,8 @@ TOTAL                                                        3,245 / 3,245  ✅ 
 | 16 | Wrong ground truth — comparing against AI chunk outputs not source | Compared directly against 42 source files |
 | 17 | Multi-line CHECK constraint missed — `EMPLOYEE_HISTORY` STATUS IN(...) | Balanced-paren `_extract_check_constraints()` |
 | 18 | NOTE + WARNING comments not extracted in packages, views, triggers | Added NOTE/WARNING extraction across all 8 engines |
+| 19 | VULNERABILITY + WEAKNESS tags not extracted — PKG_SECURITY vulns invisible in business_rules.json | Added VULNERABILITY/WEAKNESS to all tag extractors + new categories in consolidator |
+| 20 | CHECK constraint names lost — only expression stored, not `CHK_EMP_STATUS` etc. | `_extract_check_constraints()` now returns `{name, expression}` dicts |
 
 > Full technical details: [02_PARSER_DETAILS.md](02_PARSER_DETAILS.md)
 
@@ -301,13 +305,13 @@ SDLC-oracle-source-intelligence-pipeline-x1/
 │   ├── pll_deep.json           ◄── 2 PLL libraries
 │   ├── menu_deep.json          ◄── menu tree
 │   ├── seed_deep.json          ◄── 133 seed rows
-│   ├── business_rules.json     ◄── 807 rules with BR-IDs
+│   ├── business_rules.json     ◄── 812 rules with BR-IDs
 │   └── DEEP_REPORT.md          ◄── human-readable summary
 │
 ├── source/                     ◄── 42 Oracle HRMS source files (input)
 │
 ├── 01_QUICK_SUMMARY.md         ◄── START HERE — what this is, outputs, audit results
-├── 02_PARSER_DETAILS.md        ◄── technical deep dive — all 807 rules, 18 fixes, comparison
+├── 02_PARSER_DETAILS.md        ◄── technical deep dive — all 812 rules, 20 fixes, comparison
 └── 03_CHUNK_SCAN_ANALYSIS.md   ◄── chunk deep scan — coverage, gaps, chunk map
 ```
 
