@@ -244,15 +244,14 @@ TOTAL                                                        3,245 / 3,245  ✅ 
 | Procedure narrative | ❌ No | ✅ Rich |
 | Source line references | ❌ No | ✅ [SOURCE: Lxx] |
 
-> Full report: [FULL_COMPARISON_REPORT.md](FULL_COMPARISON_REPORT.md)
-> OSIRIS gaps: [OSIRIS_GAP_REPORT.md](OSIRIS_GAP_REPORT.md)
-> Chunks gaps: [TEAM_CHUNKS_GAP_REPORT.md](TEAM_CHUNKS_GAP_REPORT.md)
+> Full comparison: [02_PARSER_DETAILS.md](02_PARSER_DETAILS.md)
+> Chunk scan analysis: [03_CHUNK_SCAN_ANALYSIS.md](03_CHUNK_SCAN_ANALYSIS.md)
 
 ---
 
 <div align="center">
 
-## 16 Problems Solved — Journey to 100%
+## 18 Problems Solved — Journey to 100%
 
 </div>
 
@@ -274,8 +273,10 @@ TOTAL                                                        3,245 / 3,245  ✅ 
 | 14 | `VW_PENDING_APPROVALS` UNION ALL body truncated at 226 chars | `re.split` on CREATE boundaries + greedy match |
 | 15 | 27 `-- VALIDATION:` comments missed — tag not in any extractor | Added VALIDATION to all extractors |
 | 16 | Wrong ground truth — comparing against AI chunk outputs not source | Compared directly against 42 source files |
+| 17 | Multi-line CHECK constraint missed — `EMPLOYEE_HISTORY` STATUS IN(...) | Balanced-paren `_extract_check_constraints()` |
+| 18 | NOTE + WARNING comments not extracted in packages, views, triggers | Added NOTE/WARNING extraction across all 8 engines |
 
-> Full journey: [WHAT_WE_DID.md](WHAT_WE_DID.md)
+> Full technical details: [02_PARSER_DETAILS.md](02_PARSER_DETAILS.md)
 
 ---
 
@@ -305,11 +306,9 @@ SDLC-oracle-source-intelligence-pipeline-x1/
 │
 ├── source/                     ◄── 42 Oracle HRMS source files (input)
 │
-├── WHAT_WE_DID.md              ◄── full journey — 18 problems + how parser works
-├── FULL_COMPARISON_REPORT.md   ◄── OSIRIS vs chunks vs source (13 dimensions)
-├── OSIRIS_GAP_REPORT.md        ◄── OSIRIS gaps — what's missing and where
-├── TEAM_CHUNKS_GAP_REPORT.md   ◄── team chunk gaps — verified against source
-└── COMPARISON_OSIRIS_VS_TEAM_CHUNKS.md  ◄── side-by-side fact check
+├── 01_QUICK_SUMMARY.md         ◄── START HERE — what this is, outputs, audit results
+├── 02_PARSER_DETAILS.md        ◄── technical deep dive — all 807 rules, 18 fixes, comparison
+└── 03_CHUNK_SCAN_ANALYSIS.md   ◄── chunk deep scan — coverage, gaps, chunk map
 ```
 
 ---
